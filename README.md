@@ -201,11 +201,13 @@ sudo systemctl enable docker
 #### 3.15. Zabbix
 * [Step-by-Step](https://websiteforstudents.com/how-to-install-zabbix-4-0-monitoring-system-with-apache2-mariadb-and-php-7-2-on-ubuntu-16-04-18-04-18-10/)
 
+
 ---
 #### 3.16. Kubernets
 * [Pre-conditions](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
 
 ```sh
+sudo apt  install curl
 sudo snap install microk8s --channel=1.14/beta --classic
 sudo snap start   microk8s
 sudo snap stop    microk8s
