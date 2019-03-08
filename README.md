@@ -204,7 +204,9 @@ sudo systemctl enable docker
 
 ---
 #### 3.16. Kubernets
-* [Pre-conditions](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
+* Pre-conditions
+  * [About Kubernets](https://bit.ly/ubuntu-containerd)
+  * [Step-by-Step](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
 
 ```sh
 sudo apt  install curl
