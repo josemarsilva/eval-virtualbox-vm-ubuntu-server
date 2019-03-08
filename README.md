@@ -95,7 +95,7 @@ postgres=# \l postgres
 ---
 #### 3.7. MySQL
 
-````sh
+```sh
 sudo apt install mysql-server
 sudo mysql_secure_installation
 systemctl start  mysql.service
