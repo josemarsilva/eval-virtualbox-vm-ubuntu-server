@@ -17,6 +17,21 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 * Port(s): Apache2/NGINX(80,81,443), OpenSSH(22), Jenkins/Tomcat/microk8s(8080,8081), JupyterNotebook(8888), PostgreSQL(5432), MySQL(3306), Casandra(7000,7199,9042,9160), MongoDB(27017,27018,27019)
 
 ---
+#### 2.3. Profile (~/.profile)
+
+```sh
+$ vim ~/.profile
+  :
+  :
+```
+
+---
+#### 2.4. Custom Scripts
+
+
+
+
+---
 ### 3. Installed Softwares and Packages
 
 #### 3.1. NodeJs
@@ -46,10 +61,19 @@ sudo apt install openjdk-8-jdk -y
 ---
 #### 3.4. Python 2.7
 
+* Step-by-Step instalation Python
+
 ```sh
 sudo apt update
 sudo apt install python -y
 ```
+
+* Step-by-Step instalation Numpy
+
+```sh
+sudo pip3 install numpy
+```
+
 
 ---
 #### 3.5. Casandra
@@ -135,7 +159,7 @@ systemctl status jenkins
     * Authentication: admin/admin
 
 ---
-#### 3.9. Jenkins
+#### 3.9. UFW
 
 * [Pre-conditions](http://wiki.ubuntu-br.org/UFW)
 
@@ -151,13 +175,43 @@ sudo systemctl enable ufw
 * [Pre-conditions](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
 
 ```sh
-sudo apt-get install apache2
-sudo systemctl start apache2
-sudo systemctl status apache2
+revisar pois faltou
+sudo apt-get   install apache2
+sudo systemctl start   apache2
+sudo systemctl status  apache2
 ```
 
 ---
-#### 3.11. NGINX
+#### 3.11. PHP 7.3
+* [Pre-conditions Reading](https://www.rosehosting.com/blog/how-to-install-php-7-3-on-ubuntu-18-04/)
+
+```sh
+$ sudo apt update
+$ sudo apt upgrade
+$ sudo apt install software-properties-common
+$ sudo apt install python-software-properties
+$ sudo add-apt-repository ppa:ondrej/php
+  :
+  Press [ENTER] to continue or Ctrl-c to cancel adding it. [ENTER]
+  :
+$ sudo apt update
+$ sudo apt-cache search php7.3
+$ sudo apt install php7.3 php7.3-cli php7.3-common php7.3-opcache php7.3-curl php7.3-mbstring php7.3-mysql php7.3-zip php7.3-xml
+$ php -v  # Verificar a versao 7.3
+$ php --ini | grep "Loaded Configuration File"
+$ sudo vim /etc/php/7.3/cli/php.ini
+$ sudo vim /var/www/html/phpinfo.php
+<?php phpinfo(); ?>
+$ sudo systemctl stop   apache2
+$ sudo systemctl start  apache2
+$ sudo systemctl status apache2
+
+# Open url
+http://IP-ADDRESS/phpinfo.php
+```
+
+---
+#### 3.12. NGINX
 
 * [Pre-conditions](https://www.digitalocean.com/community/tutorials/como-instalar-o-nginx-no-ubuntu-18-04-pt)
 
@@ -171,13 +225,13 @@ sudo systemctl start nginx
 ```
 
 ---
-#### 3.12. Tomcat
+#### 3.13. Tomcat
 
 * [Step-by-Step](https://linuxize.com/post/how-to-install-tomcat-9-on-ubuntu-18-04/)
 
 
 ---
-#### 3.13. Docker
+#### 3.14. Docker
 
 * [Pre-conditions](https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04/)
 
@@ -190,7 +244,7 @@ sudo systemctl enable docker
 ```
 
 ---
-#### 3.14. Apache Kafka
+#### 3.15. Apache Kafka
 
 * [Step-by-Step](https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-18-04/)
 * Configuration Management
@@ -198,12 +252,11 @@ sudo systemctl enable docker
 
 
 ---
-#### 3.15. Zabbix
+#### 3.16. Zabbix
 * [Step-by-Step](https://websiteforstudents.com/how-to-install-zabbix-4-0-monitoring-system-with-apache2-mariadb-and-php-7-2-on-ubuntu-16-04-18-04-18-10/)
 
-
 ---
-#### 3.16. Kubernets
+#### 3.17. Kubernets
 * Pre-conditions
   * [About Kubernets](https://bit.ly/ubuntu-containerd)
   * [Step-by-Step](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
@@ -217,7 +270,7 @@ sudo snap disable microk8s
 ```
 
 ---
-#### 3.17. NMON
+#### 3.18. NMON
 * [Pre-conditions](http://nmon.sourceforge.net/pmwiki.php?n=Site.ScreenShots)
 * [Step-by-Step](http://josemarfuregattideabreusilva.blogspot.com/2012/05/)
 
@@ -256,21 +309,91 @@ sudo ufw allow 27019/tcp # MongoDB configsrv
 
 ```sh
 # Install Python, Pip3 e VirtualEnv ...
-sudo apt update
-sudo apt install python3-pip python3-dev
-sudo -H pip3 install --upgrade pip
-sudo -H pip3 install virtualenv
+$ sudo apt update
+$ sudo apt install python3-pip python3-dev
+$ sudo -H pip3 install --upgrade pip
+$ sudo -H pip3 install virtualenv
+
 # O flag -H garante politica de seguranca configure a variavel home para o diretório do usuário
-cd ~/GitHome
-mkdir ~/GitHome/py-jupyter-env
-cd    ~/GitHome/py-jupyter-env
-virtualenv py-jupyter-env # criando o ambiente virtual chamado 'py-jupyter-env'
-source py-jupyter-env/bin/activate
+$ cd ~/GitHome
+$ mkdir ~/GitHome/py-jupyter-env
+$ cd    ~/GitHome/py-jupyter-env
+$ virtualenv py-jupyter-env # criando o ambiente virtual chamado 'py-jupyter-env'
+$ source py-jupyter-env/bin/activate
 
 # Install Jupyter no ambiente criado pelo virtualenv
-pip install jupyter
+$ pip install jupyter
+
+# Generating Jupyter Notebook configuration file
+$ jupyter notebook --generate-config
+
+# Enabling 
+$ vim /home/ubuntu/.jupyter/jupyter_notebook_config.py
+  :
+c.NotebookApp.allow_origin = '*' #allow all origins
+c.NotebookApp.ip = '0.0.0.0' # listen on all IPs
+  :
+
 
 # Starting Jupyter Notebook
 jupyter notebook
 ```
 
+#### 3.21. WordPress
+* [Step-by-Step](https://www.rosehosting.com/blog/how-to-install-wordpress-with-lamp-stack-on-ubuntu-18-04/)
+
+* Step-1: Install MySQL database
+
+```sh
+$ sudo mysql
+  mysql> CREATE DATABASE wordpress;
+  mysql> CREATE USER 'admin_user'@'localhost' IDENTIFIED BY 'admin_user';
+  mysql> GRANT ALL PRIVILEGES ON wordpress.* TO 'admin_user'@'localhost' IDENTIFIED BY 'admin_user';
+  mysql> FLUSH PRIVILEGES;
+  mysql> exit
+```
+
+* Step-2: Install WordPress PHP source code
+
+```sh
+$ cd /var/www/html
+$ sudo wget -c http://wordpress.org/latest.zip
+$ sudo apt install unzip
+$ sudo unzip latest.zip
+$ sudo chown -R www-data:www-data wordpress
+$ sudo rm latest.zip
+$ cd /var/www/html/wordpress
+$ sudo mv wp-config-sample.php wp-config.php
+$ sudo vim wp-config.php
+  :
+define('DB_NAME', 'wordpress');
+define('DB_USER', 'admin_user');
+define('DB_PASSWORD', 'admin_user');
+  :
+
+$ sudo vim /etc/apache2/sites-available/wordpress.com.conf
+<VirtualHost *:80>
+
+ServerAdmin admin@wordpress.com
+ServerName wordpress.com
+ServerAlias www.wordpress.com
+DocumentRoot /var/www/html/wordpress
+
+<Directory /var/www/html/wordpress>
+     Options Indexes FollowSymLinks
+     AllowOverride All
+     Require all granted
+</Directory>
+
+ErrorLog ${APACHE_LOG_DIR}/wordpress.com_error.log 
+CustomLog ${APACHE_LOG_DIR}/wordpress.com_access.log combined 
+</VirtualHost>
+
+$ cd /etc/apache2/sites-enabled
+$ sudo ln -s ../sites-available/wordpress.com.conf wordpress.com.conf
+```
+
+* Step-3: Configure WordPress Site
+  * Site Title: `WordPress`
+  * Username: `admin` - Password: `admin`
+  * Click install button
