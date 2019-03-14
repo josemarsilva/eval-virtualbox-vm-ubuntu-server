@@ -16,17 +16,10 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 * Host -> Guest (127.0.0.1)
 * Port(s): Apache2/NGINX(80,81,443), OpenSSH(22), Jenkins/Tomcat/microk8s(8080,8081), JupyterNotebook(8888), PostgreSQL(5432), MySQL(3306), Casandra(7000,7199,9042,9160), MongoDB(27017,27018,27019)
 
----
-#### 2.3. Profile (~/.profile)
-
-```sh
-$ vim ~/.profile
-  :
-  :
-```
+* [Passo a passo da configuração da rede do Virtual Box](doc/README_NetworkConfiguration_StepByStep.md)
 
 ---
-#### 2.4. Custom Scripts
+#### 2.3. Custom Scripts
 
 
 
@@ -36,6 +29,8 @@ $ vim ~/.profile
 
 #### 3.1. NodeJs
 
+#### a. Installation procedure
+
 ```sh
 sudo apt install npm
 npm -b # 3.5.2
@@ -43,6 +38,8 @@ npm -b # 3.5.2
 
 ---
 #### 3.2. MongoDB
+
+#### a. Installation procedure
 
 ```sh
 sudo apt install -y mongodb 
@@ -54,12 +51,16 @@ mongo --eval 'db.runCommand({ connectionStatus: 1 })'
 ---
 #### 3.3. Java 8 JDK
 
+#### a. Installation procedure
+
 ```sh
 sudo apt install openjdk-8-jdk -y
 ```
 
 ---
 #### 3.4. Python 2.7
+
+#### a. Installation procedure
 
 * Step-by-Step instalation Python
 
@@ -78,7 +79,9 @@ sudo pip3 install numpy
 ---
 #### 3.5. Casandra
 
-* [Pre-requisites before instalation](http://cassandra.apache.org/download/) 
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](http://cassandra.apache.org/download/) 
 
 ```sh
 echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
@@ -101,6 +104,8 @@ cqlsh
 ---
 #### 3.6. PostgreSQL
 
+#### a. Installation procedure
+
 ```sh
 sudo apt install postgresql postgresql-contrib
 sudo systemctl start  postgresql
@@ -118,6 +123,8 @@ postgres=# \l postgres
 
 ---
 #### 3.7. MySQL
+
+#### a. Installation procedure
 
 ```sh
 sudo apt install mysql-server
@@ -146,7 +153,9 @@ mysql> show databases;
 ---
 #### 3.8. Jenkins
 
-* [Pre-requisites before installation](https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/)
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/)
 
 ```sh
 sudo apt install jenkins
@@ -161,7 +170,9 @@ systemctl status jenkins
 ---
 #### 3.9. UFW
 
-* [Pre-conditions](http://wiki.ubuntu-br.org/UFW)
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](http://wiki.ubuntu-br.org/UFW)
 
 ```sh
 sudo systemctl start  ufw
@@ -172,7 +183,9 @@ sudo systemctl enable ufw
 ---
 #### 3.10. Apache2
 
-* [Pre-conditions](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
 
 ```sh
 revisar pois faltou
@@ -183,7 +196,10 @@ sudo systemctl status  apache2
 
 ---
 #### 3.11. PHP 7.3
-* [Pre-conditions Reading](https://www.rosehosting.com/blog/how-to-install-php-7-3-on-ubuntu-18-04/)
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://www.rosehosting.com/blog/how-to-install-php-7-3-on-ubuntu-18-04/)
 
 ```sh
 $ sudo apt update
@@ -213,7 +229,9 @@ http://IP-ADDRESS/phpinfo.php
 ---
 #### 3.12. NGINX
 
-* [Pre-conditions](https://www.digitalocean.com/community/tutorials/como-instalar-o-nginx-no-ubuntu-18-04-pt)
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/como-instalar-o-nginx-no-ubuntu-18-04-pt)
 
 ```sh
 sudo apt install nginx
@@ -227,13 +245,17 @@ sudo systemctl start nginx
 ---
 #### 3.13. Tomcat
 
-* [Step-by-Step](https://linuxize.com/post/how-to-install-tomcat-9-on-ubuntu-18-04/)
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://linuxize.com/post/how-to-install-tomcat-9-on-ubuntu-18-04/)
 
 
 ---
 #### 3.14. Docker
 
-* [Pre-conditions](https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04/)
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04/)
 
 ```sh
 sudo apt-get remove docker docker-engine docker.io
@@ -246,18 +268,28 @@ sudo systemctl enable docker
 ---
 #### 3.15. Apache Kafka
 
-* [Step-by-Step](https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-18-04/)
-* Configuration Management
-    * Authentication Credentials: kafka/kafka
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-18-04/)
+
+#### b. Configuration management
+    * Authentication Credentials: **kafka/kafka**
 
 
 ---
 #### 3.16. Zabbix
-* [Step-by-Step](https://websiteforstudents.com/how-to-install-zabbix-4-0-monitoring-system-with-apache2-mariadb-and-php-7-2-on-ubuntu-16-04-18-04-18-10/)
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://websiteforstudents.com/how-to-install-zabbix-4-0-monitoring-system-with-apache2-mariadb-and-php-7-2-on-ubuntu-16-04-18-04-18-10/)
+
 
 ---
 #### 3.17. Kubernets
-* Pre-conditions
+
+#### a. Installation procedure
+
+* Reading Pre-requisites before instalation:
   * [About Kubernets](https://bit.ly/ubuntu-containerd)
   * [Step-by-Step](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
 
@@ -271,7 +303,10 @@ sudo snap disable microk8s
 
 ---
 #### 3.18. NMON
-* [Pre-conditions](http://nmon.sourceforge.net/pmwiki.php?n=Site.ScreenShots)
+
+#### a. Installation procedure
+* [Reading Pre-requisites before instalation](http://nmon.sourceforge.net/pmwiki.php?n=Site.ScreenShots)
+
 * [Step-by-Step](http://josemarfuregattideabreusilva.blogspot.com/2012/05/)
 
 ```sh
@@ -280,6 +315,8 @@ which nmon
 
 ---
 #### 3.18. UFW
+
+#### a. Installation procedure
 
 ```sh
 sudo ufw status
@@ -303,7 +340,8 @@ sudo ufw allow 27019/tcp # MongoDB configsrv
 ---
 #### 3.19. Jupyter Notebook
 
-* [Reading Pre-requisites](https://www.digitalocean.com/community/tutorials/como-configurar-o-jupyter-notebook-com-python-3-no-ubuntu-18-04-pt)
+#### a. Installation procedure
+* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/como-configurar-o-jupyter-notebook-com-python-3-no-ubuntu-18-04-pt)
 
 * Step-by-step:
 
@@ -340,7 +378,9 @@ jupyter notebook
 ```
 
 #### 3.21. WordPress
-* [Step-by-Step](https://www.rosehosting.com/blog/how-to-install-wordpress-with-lamp-stack-on-ubuntu-18-04/)
+
+#### a. Installation procedure
+* [Reading Pre-requisites before instalation](https://www.rosehosting.com/blog/how-to-install-wordpress-with-lamp-stack-on-ubuntu-18-04/)
 
 * Step-1: Install MySQL database
 
@@ -397,3 +437,12 @@ $ sudo ln -s ../sites-available/wordpress.com.conf wordpress.com.conf
   * Site Title: `WordPress`
   * Username: `admin` - Password: `admin`
   * Click install button
+
+ 
+#### 3.22. Pentaho Community
+
+#### a. Installation procedure
+* Reading Pre-requisites before instalation
+  * [Evaluation](https://help.pentaho.com/Documentation/8.2/Setup/Evaluation)
+
+_Working in progress_
