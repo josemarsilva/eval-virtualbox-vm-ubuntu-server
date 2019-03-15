@@ -5,6 +5,11 @@
 
 Evaluation Virtual Box VM is a guide project to install, configure and manage a lot of stuff into a Ubuntu 18.04 VM in Virtual Box.
 
+### 1.1. Deploy Diagram
+
+![UseCaseDiagram - Context - EvalVirtualboxVmUbuntuServer](images/UseCaseDiagram - Context - EvalVirtualboxVmUbuntuServer.png)
+
+
 ---
 ## 2. Configuration Managment
 
@@ -15,14 +20,7 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 #### 2.2. Network Configurations
 * Host -> Guest (127.0.0.1)
 * Port(s): Apache2/NGINX(80,81,443), OpenSSH(22), Jenkins/Tomcat/microk8s(8080,8081), JupyterNotebook(8888), PostgreSQL(5432), MySQL(3306), Casandra(7000,7199,9042,9160), MongoDB(27017,27018,27019)
-
 * [Passo a passo da configuração da rede do Virtual Box](doc/README_NetworkConfiguration_StepByStep.md)
-
----
-#### 2.3. Custom Scripts
-
-
-
 
 ---
 ### 3. Installed Softwares and Packages
@@ -37,19 +35,7 @@ npm -b # 3.5.2
 ```
 
 ---
-#### 3.2. MongoDB
-
-#### a. Installation procedure
-
-```sh
-sudo apt install -y mongodb 
-sudo systemctl start  mongodb
-sudo systemctl status mongodb
-mongo --eval 'db.runCommand({ connectionStatus: 1 })'
-```
-
----
-#### 3.3. Java 8 JDK
+#### 3.2. Java 8 JDK
 
 #### a. Installation procedure
 
@@ -58,7 +44,7 @@ sudo apt install openjdk-8-jdk -y
 ```
 
 ---
-#### 3.4. Python 2.7
+#### 3.3. Python 2.7
 
 #### a. Installation procedure
 
@@ -75,100 +61,8 @@ sudo apt install python -y
 sudo pip3 install numpy
 ```
 
-
 ---
-#### 3.5. Casandra
-
-#### a. Installation procedure
-
-* [Reading Pre-requisites before instalation](http://cassandra.apache.org/download/) 
-
-```sh
-echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
-curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -
-sudo apt-get update
-sudo apt-key adv --keyserver pool.sks-keyservers.net --recv-key A278B781FE4B2BDA
-```
-
-* Step-by-Step Casandra installation and post installation health check
-
-```sh
-sudo apt-get install cassandra
-sudo systemctl start  cassandra
-sudo systemctl status cassandra
-nodetool status
-cqlsh 
-  cqsql> SELECT cluster_name, listen_address FROM system.local;
-```
-
----
-#### 3.6. PostgreSQL
-
-#### a. Installation procedure
-
-```sh
-sudo apt install postgresql postgresql-contrib
-sudo systemctl start  postgresql
-sudo systemctl status postgresql
-sudo -u postgres psql -c "SELECT version();"
-sudo su - postgres
-$ psql
-postgres=# \l postgres
-                               List of databases
-   Name   |  Owner   | Encoding |   Collate   |    Ctype    | Access privileges
-----------+----------+----------+-------------+-------------+------------------
- postgres | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
-(1 row)
-```
-
----
-#### 3.7. MySQL
-
-#### a. Installation procedure
-
-```sh
-sudo apt install mysql-server
-sudo mysql_secure_installation
-systemctl start  mysql.service
-systemctl status mysql.service
-sudo mysql
-mysql> show databases;
-+--------------------+
-| Database           |
-+--------------------+
-| information_schema |
-| mysql              |
-| performance_schema |
-| sys                |
-| zabbix             |
-+--------------------+
-6 rows in set (0.27 sec)
-```
-
-* Configuration Management
-    * Port: 3306, User: 'ubuntu'@'%', Password: ubuntu
-    * Port: 3306, User: 'zabbixuser'@'localhost,' Password: 'zabbixuser'
-
-
----
-#### 3.8. Jenkins
-
-#### a. Installation procedure
-
-* [Reading Pre-requisites before instalation](https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/)
-
-```sh
-sudo apt install jenkins
-systemctl start  jenkins
-systemctl status jenkins
-```
-
-* Configuration Management
-    * Url: http://127.0.0.1:8080/
-    * Authentication: admin/admin
-
----
-#### 3.9. UFW
+#### 3.4. UFW
 
 #### a. Installation procedure
 
@@ -178,24 +72,28 @@ systemctl status jenkins
 sudo systemctl start  ufw
 sudo systemctl status ufw
 sudo systemctl enable ufw
+
+sudo ufw status
+sudo ufw status verbose
+sudo ufw app list
+sudo ufw allow 'Nginx HTTP'
+sudo ufw allow 'Nginx HTTPS'
+sudo ufw allow 'Nginx Full'
+sudo ufw allow 'Apache Full'
+sudo ufw allow 'OpenSSH'
+sudo ufw allow 80/tcp    # Apache2, NGINX
+sudo ufw allow 8080/tcp  # Jenkins/Tomcat/microk8s
+sudo ufw allow 3306/tcp  # MySQL
+sudo ufw allow 5432/tcp  # PostgreSQL
+sudo ufw allow 8888/tcp  # JupyterNotebook
+sudo ufw allow 27017/tcp # MongoDB mongod/mongos
+sudo ufw allow 27018/tcp # MongoDB shardsrv
+sudo ufw allow 27019/tcp # MongoDB configsrv
+
 ```
 
 ---
-#### 3.10. Apache2
-
-#### a. Installation procedure
-
-* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
-
-```sh
-revisar pois faltou
-sudo apt-get   install apache2
-sudo systemctl start   apache2
-sudo systemctl status  apache2
-```
-
----
-#### 3.11. PHP 7.3
+#### 3.5. PHP 7.3
 
 #### a. Installation procedure
 
@@ -227,7 +125,107 @@ http://IP-ADDRESS/phpinfo.php
 ```
 
 ---
-#### 3.12. NGINX
+#### 3.6. MySQL 
+
+#### a. Installation procedure
+
+```sh
+sudo apt install mysql-server
+sudo mysql_secure_installation
+systemctl start  mysql.service
+systemctl status mysql.service
+sudo mysql
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| zabbix             |
++--------------------+
+6 rows in set (0.27 sec)
+```
+
+* Configuration Management
+    * Port: 3306, User: 'ubuntu'@'%', Password: ubuntu
+    * Port: 3306, User: 'zabbixuser'@'localhost,' Password: 'zabbixuser'
+
+
+---
+#### 3.7. PostgreSQL
+
+#### a. Installation procedure
+
+```sh
+sudo apt install postgresql postgresql-contrib
+sudo systemctl start  postgresql
+sudo systemctl status postgresql
+sudo -u postgres psql -c "SELECT version();"
+sudo su - postgres
+$ psql
+postgres=# \l postgres
+                               List of databases
+   Name   |  Owner   | Encoding |   Collate   |    Ctype    | Access privileges
+----------+----------+----------+-------------+-------------+------------------
+ postgres | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
+(1 row)
+```
+
+---
+#### 3.8. MongoDB
+
+#### a. Installation procedure
+
+```sh
+sudo apt install -y mongodb 
+sudo systemctl start  mongodb
+sudo systemctl status mongodb
+mongo --eval 'db.runCommand({ connectionStatus: 1 })'
+```
+
+---
+#### 3.9. Casandra
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](http://cassandra.apache.org/download/) 
+
+```sh
+echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
+curl https://www.apache.org/dist/cassandra/KEYS | sudo apt-key add -
+sudo apt-get update
+sudo apt-key adv --keyserver pool.sks-keyservers.net --recv-key A278B781FE4B2BDA
+```
+
+* Step-by-Step Casandra installation and post installation health check
+
+```sh
+sudo apt-get install cassandra
+sudo systemctl start  cassandra
+sudo systemctl status cassandra
+nodetool status
+cqlsh 
+  cqsql> SELECT cluster_name, listen_address FROM system.local;
+```
+
+---
+#### 3.10. Apache2
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
+
+```sh
+revisar pois faltou
+sudo apt-get   install apache2
+sudo systemctl start   apache2
+sudo systemctl status  apache2
+```
+
+---
+#### 3.11. NGINX
 
 #### a. Installation procedure
 
@@ -243,7 +241,7 @@ sudo systemctl start nginx
 ```
 
 ---
-#### 3.13. Tomcat
+#### 3.12. Tomcat
 
 #### a. Installation procedure
 
@@ -251,94 +249,24 @@ sudo systemctl start nginx
 
 
 ---
-#### 3.14. Docker
+#### 3.13. Jenkins
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04/)
+* [Reading Pre-requisites before instalation](https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/)
 
 ```sh
-sudo apt-get remove docker docker-engine docker.io
-sudo apt install docker.io
-sudo systemctl start  docker
-sudo systemctl status docker
-sudo systemctl enable docker
+sudo apt install jenkins
+systemctl start  jenkins
+systemctl status jenkins
 ```
 
----
-#### 3.15. Apache Kafka
-
-#### a. Installation procedure
-
-* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-18-04/)
-
-#### b. Configuration management
-    * Authentication Credentials: **kafka/kafka**
-
+* Configuration Management
+    * Url: http://127.0.0.1:8080/
+    * Authentication: admin/admin
 
 ---
-#### 3.16. Zabbix
-
-#### a. Installation procedure
-
-* [Reading Pre-requisites before instalation](https://websiteforstudents.com/how-to-install-zabbix-4-0-monitoring-system-with-apache2-mariadb-and-php-7-2-on-ubuntu-16-04-18-04-18-10/)
-
-
----
-#### 3.17. Kubernets
-
-#### a. Installation procedure
-
-* Reading Pre-requisites before instalation:
-  * [About Kubernets](https://bit.ly/ubuntu-containerd)
-  * [Step-by-Step](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
-
-```sh
-sudo apt  install curl
-sudo snap install microk8s --channel=1.14/beta --classic
-sudo snap start   microk8s
-sudo snap stop    microk8s
-sudo snap disable microk8s
-```
-
----
-#### 3.18. NMON
-
-#### a. Installation procedure
-* [Reading Pre-requisites before instalation](http://nmon.sourceforge.net/pmwiki.php?n=Site.ScreenShots)
-
-* [Step-by-Step](http://josemarfuregattideabreusilva.blogspot.com/2012/05/)
-
-```sh
-which nmon
-```
-
----
-#### 3.18. UFW
-
-#### a. Installation procedure
-
-```sh
-sudo ufw status
-sudo ufw status verbose
-sudo ufw app list
-sudo ufw allow 'Nginx HTTP'
-sudo ufw allow 'Nginx HTTPS'
-sudo ufw allow 'Nginx Full'
-sudo ufw allow 'Apache Full'
-sudo ufw allow 'OpenSSH'
-sudo ufw allow 80/tcp    # Apache2, NGINX
-sudo ufw allow 8080/tcp  # Jenkins/Tomcat/microk8s
-sudo ufw allow 3306/tcp  # MySQL
-sudo ufw allow 5432/tcp  # PostgreSQL
-sudo ufw allow 8888/tcp  # JupyterNotebook
-sudo ufw allow 27017/tcp # MongoDB mongod/mongos
-sudo ufw allow 27018/tcp # MongoDB shardsrv
-sudo ufw allow 27019/tcp # MongoDB configsrv
-```
-
----
-#### 3.19. Jupyter Notebook
+#### 3.14. Jupyter Notebook
 
 #### a. Installation procedure
 * [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/como-configurar-o-jupyter-notebook-com-python-3-no-ubuntu-18-04-pt)
@@ -376,6 +304,150 @@ c.NotebookApp.ip = '0.0.0.0' # listen on all IPs
 # Starting Jupyter Notebook
 jupyter notebook
 ```
+
+---
+#### 3.15. Docker
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04/)
+
+```sh
+sudo apt-get remove docker docker-engine docker.io
+sudo apt install docker.io
+sudo systemctl start  docker
+sudo systemctl status docker
+sudo systemctl enable docker
+```
+
+---
+#### 3.16. Docker Composer - hello-world
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04)
+
+```sh
+$ sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+$ sudo chmod +x /usr/local/bin/docker-compose
+$ docker-compose --version # docker-compose version 1.21.2, build a133471
+$ mkdir hello-world
+$ cd hello-world
+$ docker-compose.yml
+my-test:
+ image: hello-world
+$ sudo systemctl start  docker.service # starting docker service ...
+$ sudo docker-compose up # search for default file 'docker-compose.yml' and pull 'hello-world' image
+Pulling my-test (hello-world:latest)...
+latest: Pulling from library/hello-world
+c04b14da8d14: Downloading [==================================================>] 
+$ sudo docker images # list all docker images pulled
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+hello-world         latest              fce289e99eb9        2 months ago        1.84kB
+$ docker ps # list images running ...
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+$ docker ps -a # list all docker images independent if running or not ...
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                          PORTS               NAMES
+db160e0532ff        hello-world         "/hello"            5 minutes ago       Exited (0) About a minute ago                       hello-world_my-test_1
+$ 
+```
+
+#### b. Configuration management
+  * n/a
+
+
+---
+#### 3.17. Docker Composer - MySQL 5.7
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://medium.com/@chrischuck35/how-to-create-a-mysql-instance-with-docker-compose-1598f3cc1bee)
+
+```sh
+$ mkdir ~/docker-mysql ; cd ~/docker-mysql
+$ vim ~/docker-compose.yml
+  :
+version: '3.3'
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+      # Where our data will be persisted
+    volumes:
+      - my-db:/var/lib/mysql
+# Names our volume
+volumes:
+  my-db:
+  :
+$ pwd # /home/ubuntu/docker-mysql
+$ sudo docker-compose up # search for default file 'docker-compose.yml' and pull 'mysql' image
+```
+
+#### b. Configuration management
+  * n/a
+
+
+---
+#### 3.18. Zabbix
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://websiteforstudents.com/how-to-install-zabbix-4-0-monitoring-system-with-apache2-mariadb-and-php-7-2-on-ubuntu-16-04-18-04-18-10/)
+
+
+---
+#### 3.19. NMON
+
+#### a. Installation procedure
+* [Reading Pre-requisites before instalation](http://nmon.sourceforge.net/pmwiki.php?n=Site.ScreenShots)
+
+* [Step-by-Step](http://josemarfuregattideabreusilva.blogspot.com/2012/05/)
+
+```sh
+which nmon
+```
+
+---
+#### 3.20. Kubernets
+
+#### a. Installation procedure
+
+* Reading Pre-requisites before instalation:
+  * [About Kubernets](https://bit.ly/ubuntu-containerd)
+  * [Step-by-Step](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
+
+```sh
+sudo apt  install curl
+sudo snap install microk8s --channel=1.14/beta --classic
+sudo snap start   microk8s
+sudo snap stop    microk8s
+sudo snap disable microk8s
+```
+
+---
+#### 3.21. Apache Kafka
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-18-04/)
+
+#### b. Configuration management
+    * Authentication Credentials: **kafka/kafka**
+
 
 #### 3.21. WordPress
 
