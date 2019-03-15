@@ -48,14 +48,14 @@ sudo apt install openjdk-8-jdk -y
 
 #### a. Installation procedure
 
-* Step-by-Step instalation Python
+* Step-by-Step installation Python
 
 ```sh
 sudo apt update
 sudo apt install python -y
 ```
 
-* Step-by-Step instalation Numpy
+* Step-by-Step installation Numpy
 
 ```sh
 sudo pip3 install numpy
@@ -66,7 +66,7 @@ sudo pip3 install numpy
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](http://wiki.ubuntu-br.org/UFW)
+* [Reading Pre-requisites before installation](http://wiki.ubuntu-br.org/UFW)
 
 ```sh
 sudo systemctl start  ufw
@@ -97,7 +97,7 @@ sudo ufw allow 27019/tcp # MongoDB configsrv
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](https://www.rosehosting.com/blog/how-to-install-php-7-3-on-ubuntu-18-04/)
+* [Reading Pre-requisites before installation](https://www.rosehosting.com/blog/how-to-install-php-7-3-on-ubuntu-18-04/)
 
 ```sh
 $ sudo apt update
@@ -190,7 +190,7 @@ mongo --eval 'db.runCommand({ connectionStatus: 1 })'
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](http://cassandra.apache.org/download/) 
+* [Reading Pre-requisites before installation](http://cassandra.apache.org/download/) 
 
 ```sh
 echo "deb http://www.apache.org/dist/cassandra/debian 311x main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
@@ -215,7 +215,7 @@ cqlsh
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
+* [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
 
 ```sh
 revisar pois faltou
@@ -229,7 +229,7 @@ sudo systemctl status  apache2
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/como-instalar-o-nginx-no-ubuntu-18-04-pt)
+* [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/como-instalar-o-nginx-no-ubuntu-18-04-pt)
 
 ```sh
 sudo apt install nginx
@@ -245,7 +245,7 @@ sudo systemctl start nginx
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](https://linuxize.com/post/how-to-install-tomcat-9-on-ubuntu-18-04/)
+* [Reading Pre-requisites before installation](https://linuxize.com/post/how-to-install-tomcat-9-on-ubuntu-18-04/)
 
 
 ---
@@ -253,7 +253,7 @@ sudo systemctl start nginx
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/)
+* [Reading Pre-requisites before installation](https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/)
 
 ```sh
 sudo apt install jenkins
@@ -269,7 +269,7 @@ systemctl status jenkins
 #### 3.14. Jupyter Notebook
 
 #### a. Installation procedure
-* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/como-configurar-o-jupyter-notebook-com-python-3-no-ubuntu-18-04-pt)
+* [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/como-configurar-o-jupyter-notebook-com-python-3-no-ubuntu-18-04-pt)
 
 * Step-by-step:
 
@@ -310,7 +310,7 @@ jupyter notebook
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04/)
+* [Reading Pre-requisites before installation](https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04/)
 
 ```sh
 sudo apt-get remove docker docker-engine docker.io
@@ -325,7 +325,7 @@ sudo systemctl enable docker
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04)
+* [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04)
 
 ```sh
 $ sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
@@ -357,42 +357,40 @@ $
 
 
 ---
-#### 3.17. Docker Composer - MySQL 5.7
+#### 3.17. Docker Composer - MySQL 5.7 & Php MyAdmin
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](https://medium.com/@chrischuck35/how-to-create-a-mysql-instance-with-docker-compose-1598f3cc1bee)
+* [Reading Pre-requisites before installation](https://share.atelie.software/subindo-um-banco-de-dados-mysql-e-phpmyadmin-com-docker-642be41f7638)
+* [Reading Pre-requisites before installation](https://medium.com/@chrischuck35/how-to-create-a-mysql-instance-with-docker-compose-1598f3cc1bee)
 
 ```sh
-$ mkdir ~/docker-mysql ; cd ~/docker-mysql
-$ vim ~/docker-compose.yml
+$ mkdir ~/docker-mysql
+$ cd ~/docker-mysql
+$ vim docker-compose.yml # ~/docker-mysql
   :
 version: '3.3'
+volumes:
+  data:
 services:
   db:
     image: mysql:5.7
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'db'
-      # So you don't have to use root, but you can if you like
-      MYSQL_USER: 'user'
-      # You can use whatever password you like
-      MYSQL_PASSWORD: 'password'
-      # Password for root access
-      MYSQL_ROOT_PASSWORD: 'password'
     ports:
-      # <Port exposed> : < MySQL Port running inside container>
-      - '3306:3306'
-    expose:
-      # Opens port 3306 on the container
-      - '3306'
-      # Where our data will be persisted
+      - "3306:3306"
     volumes:
-      - my-db:/var/lib/mysql
-# Names our volume
-volumes:
-  my-db:
-  :
+      - data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=app_development
+  app:
+    image: phpmyadmin/phpmyadmin:latest
+    links:
+      - db
+    ports:
+      - 80:80
+    environment:
+      - PMA_ARBITRARY=1
+	  :
 $ pwd # /home/ubuntu/docker-mysql
 $ sudo docker-compose up # search for default file 'docker-compose.yml' and pull 'mysql' image
 ```
@@ -406,14 +404,14 @@ $ sudo docker-compose up # search for default file 'docker-compose.yml' and pull
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](https://websiteforstudents.com/how-to-install-zabbix-4-0-monitoring-system-with-apache2-mariadb-and-php-7-2-on-ubuntu-16-04-18-04-18-10/)
+* [Reading Pre-requisites before installation](https://websiteforstudents.com/how-to-install-zabbix-4-0-monitoring-system-with-apache2-mariadb-and-php-7-2-on-ubuntu-16-04-18-04-18-10/)
 
 
 ---
 #### 3.19. NMON
 
 #### a. Installation procedure
-* [Reading Pre-requisites before instalation](http://nmon.sourceforge.net/pmwiki.php?n=Site.ScreenShots)
+* [Reading Pre-requisites before installation](http://nmon.sourceforge.net/pmwiki.php?n=Site.ScreenShots)
 
 * [Step-by-Step](http://josemarfuregattideabreusilva.blogspot.com/2012/05/)
 
@@ -426,7 +424,7 @@ which nmon
 
 #### a. Installation procedure
 
-* Reading Pre-requisites before instalation:
+* Reading Pre-requisites before installation:
   * [About Kubernets](https://bit.ly/ubuntu-containerd)
   * [Step-by-Step](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
 
@@ -443,7 +441,7 @@ sudo snap disable microk8s
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before instalation](https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-18-04/)
+* [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-18-04/)
 
 #### b. Configuration management
     * Authentication Credentials: **kafka/kafka**
@@ -452,7 +450,7 @@ sudo snap disable microk8s
 #### 3.21. WordPress
 
 #### a. Installation procedure
-* [Reading Pre-requisites before instalation](https://www.rosehosting.com/blog/how-to-install-wordpress-with-lamp-stack-on-ubuntu-18-04/)
+* [Reading Pre-requisites before installation](https://www.rosehosting.com/blog/how-to-install-wordpress-with-lamp-stack-on-ubuntu-18-04/)
 
 * Step-1: Install MySQL database
 
@@ -514,7 +512,7 @@ $ sudo ln -s ../sites-available/wordpress.com.conf wordpress.com.conf
 #### 3.22. Pentaho Community
 
 #### a. Installation procedure
-* Reading Pre-requisites before instalation
+* Reading Pre-requisites before installation
   * [Evaluation](https://help.pentaho.com/Documentation/8.2/Setup/Evaluation)
 
 _Working in progress_
