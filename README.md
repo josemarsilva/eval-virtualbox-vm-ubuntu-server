@@ -7,7 +7,7 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 
 ### 1.1. Deploy Diagram
 
-![UseCaseDiagram - Context - EvalVirtualboxVmUbuntuServer](images/UseCaseDiagram - Context - EvalVirtualboxVmUbuntuServer.png)
+![DeployDiagram - Context - EvalVirtualboxVmUbuntuServer](doc/images/DeployDiagram - Context - EvalVirtualboxVmUbuntuServer.png)
 
 
 ---
