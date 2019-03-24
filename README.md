@@ -7,7 +7,7 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 
 ### 1.1. Deploy Diagram
 
-![DeployDiagram - Context - EvalVirtualboxVmUbuntuServer](doc/images/DeployDiagram - Context - EvalVirtualboxVmUbuntuServer.png)
+![DeployDiagram - Context - EvalVirtualboxVmUbuntuServer](doc/images/DeployDiagram%20-%20Context%20-%20EvalVirtualboxVmUbuntuServer.png)
 
 
 ---
@@ -89,6 +89,7 @@ sudo ufw allow 8888/tcp  # JupyterNotebook
 sudo ufw allow 27017/tcp # MongoDB mongod/mongos
 sudo ufw allow 27018/tcp # MongoDB shardsrv
 sudo ufw allow 27019/tcp # MongoDB configsrv
+sudo ufw allow 18083/tcp # VBoxWebService
 
 ```
 
@@ -365,8 +366,9 @@ $
 * [Reading Pre-requisites before installation](https://medium.com/@chrischuck35/how-to-create-a-mysql-instance-with-docker-compose-1598f3cc1bee)
 
 ```sh
-$ mkdir ~/docker-mysql
-$ cd ~/docker-mysql
+$ mkdir ~/docker-compose
+$ mkdir ~/docker-compose/docker-mysql
+$ cd ~/docker-compose/docker-mysql
 $ vim docker-compose.yml # ~/docker-mysql
   :
 version: '3.3'
@@ -437,16 +439,6 @@ sudo snap disable microk8s
 ```
 
 ---
-#### 3.21. Apache Kafka
-
-#### a. Installation procedure
-
-* [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/how-to-install-apache-kafka-on-ubuntu-18-04/)
-
-#### b. Configuration management
-    * Authentication Credentials: **kafka/kafka**
-
-
 #### 3.21. WordPress
 
 #### a. Installation procedure
