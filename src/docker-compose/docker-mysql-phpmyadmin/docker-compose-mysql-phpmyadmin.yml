@@ -9,8 +9,8 @@ services:
     volumes:
       - data:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_USER=ubuntu
-      - MYSQL_ROOT_PASSWORD=ubuntu
+      - MYSQL_ROOT_USER=user
+      - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=app_development
   app:
     image: phpmyadmin/phpmyadmin:latest
@@ -20,3 +20,4 @@ services:
       - 80:80
     environment:
       - PMA_ARBITRARY=1
+
