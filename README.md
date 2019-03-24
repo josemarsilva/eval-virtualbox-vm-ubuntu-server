@@ -358,7 +358,7 @@ $
 
 
 ---
-#### 3.17. Docker Composer - MySQL 5.7 & Php MyAdmin
+#### 3.16.1. Docker Composer - MySQL 5.7 & Php MyAdmin
 
 #### a. Installation procedure
 
@@ -370,7 +370,7 @@ $ mkdir ~/docker-compose
 $ mkdir ~/docker-compose/docker-mysql-phpmyadmin
 $ cd ~/docker-compose/docker-mysql-phpmyadmin
 
-$ docker-compose-mysql5.7.yml # ~/docker-mysql (only)
+$ vim docker-compose-mysql5.7.yml # ~/docker-mysql (only)
 version: '3.3'
 services:
   db:
@@ -472,7 +472,28 @@ mysql> show databases;
 
 
 ---
-#### 3.17. Docker Composer - WordPress, MySQL 5.7
+#### 3.16.2. Docker Composer - PostgreSQL 9.6, pgAdmin4
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before installation](https://linuxhint.com/run_postgresql_docker_compose/)
+* [Reading Pre-requisites before installation](https://medium.com/@renato.groffe/postgresql-pgadmin-4-docker-compose-montando-rapidamente-um-ambiente-para-uso-55a2ab230b89)
+* https://stackoverflow.com/questions/41637505/how-to-persist-data-in-a-dockerized-postgres-database-using-volumes/41650891
+* https://stackoverflow.com/questions/42107364/how-to-use-volume-in-docker-compose-for-postgres
+
+```sh
+$ mkdir ~/docker-compose
+$ mkdir ~/docker-compose/docker-postgresql-pgadmin4
+$ cd    ~/docker-compose/docker-postgresql-pgadmin4
+
+$ vim docker-compose.yml
+
+
+
+
+
+
+#### 3.7. Docker Composer - WordPress, MySQL 5.7
 
 #### a. Installation procedure
 
