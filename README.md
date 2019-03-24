@@ -362,15 +362,42 @@ $
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before installation](https://share.atelie.software/subindo-um-banco-de-dados-mysql-e-phpmyadmin-com-docker-642be41f7638)
-* [Reading Pre-requisites before installation](https://medium.com/@chrischuck35/how-to-create-a-mysql-instance-with-docker-compose-1598f3cc1bee)
+* [Reading Pre-requisites before installation - MySQL](https://medium.com/@chrischuck35/how-to-create-a-mysql-instance-with-docker-compose-1598f3cc1bee)
+* [Reading Pre-requisites before installation - MySQL e phpMyAdmin](https://share.atelie.software/subindo-um-banco-de-dados-mysql-e-phpmyadmin-com-docker-642be41f7638)
 
 ```sh
 $ mkdir ~/docker-compose
-$ mkdir ~/docker-compose/docker-mysql
-$ cd ~/docker-compose/docker-mysql
-$ vim docker-compose.yml # ~/docker-mysql
-  :
+$ mkdir ~/docker-compose/docker-mysql-phpmyadmin
+$ cd ~/docker-compose/docker-mysql-phpmyadmin
+
+$ docker-compose-mysql5.7.yml # ~/docker-mysql (only)
+version: '3.3'
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'user'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'password'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+      # Where our data will be persisted
+    volumes:
+      - my-db:/var/lib/mysql
+# Names our volume
+volumes:
+  my-db:
+
+$ vim docker-compose-mysql-phpmyadmin.yml # ~/docker-mysql, phpmyadmin
 version: '3.3'
 volumes:
   data:
@@ -382,6 +409,7 @@ services:
     volumes:
       - data:/var/lib/mysql
     environment:
+      - MYSQL_ROOT_USER=user
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_DATABASE=app_development
   app:
@@ -392,17 +420,100 @@ services:
       - 80:80
     environment:
       - PMA_ARBITRARY=1
-	  :
-$ pwd # /home/ubuntu/docker-mysql
-$ sudo docker-compose up # search for default file 'docker-compose.yml' and pull 'mysql' image
+
+$ 
+
+$ pwd # /home/ubuntu/docker-compose/docker-mysql-phpmyadmin
+$ sudo docker-compose -f docker-compose-mysql5.7.yml up         # subindo imagem apenas com MySQL
+$ sudo docker-compose -f docker-compose-mysql-phpmyadmin.yml up # subindo imagem apenas com MySQL
+
 ```
 
 #### b. Configuration management
-  * n/a
+
+* docker-compose-mysql5.7.yml:
+  * MySQL - port: 3306; user: user; password: password; volume: my-db
+* docker-compose-mysql-phpmyadmin:
+  * MySQL - port: 3306; user: user; password: password; volume: my-db
+  * phpMyAdmin - port: 80/81; servidor db; user: user; password: password
 
 #### c. Deploy Diagram
 
 ![DeployDiagram - Context - EvalVirtualboxVmUbuntuServer](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20MySQL%20phpMyAdmin.png)
+
+
+#### d. Demonstration
+
+  * Subindo **docker-compose** com arquivo de configuração `docker-compose-mysql-phpmyadmin.yml`:
+
+```sh
+$ sudo docker-compose -f docker-compose-mysql-phpmyadmin.yml up         # subindo imagem apenas com MySQL
+```
+
+
+  * Conectando com MySQL através do client em linha de comando `mysql`:
+
+```sh
+$ mysql -h 127.0.0.1 -u user -ppassword
+  :
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| db                 |
++--------------------+
+  :
+```
+
+  * Conectando com MySQL através da aplicação web **phpMyAdmin**:
+
+![Demo - ](doc/images/PrintScreen-Demo-DockerCompose-MySQLphpMyAdmin.png)
+
+
+---
+#### 3.17. Docker Composer - WordPress, MySQL 5.7
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before installation](https://docs.docker.com/compose/wordpress/)
+
+```sh
+$ mkdir ~/docker/docker-wordpress-mysql
+$ cd    ~/docker/docker-wordpress-mysql
+$ vim docker-compose.yml
+version: '3.3'
+
+services:
+   db:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress:
+     depends_on:
+       - db
+     image: wordpress:latest
+     ports:
+       - "8000:80"
+     restart: always
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+       WORDPRESS_DB_NAME: wordpress
+volumes:
+    db_data: {}
+
+$ sudo docker-compose up
+```
+
 
 
 ---
