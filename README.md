@@ -400,6 +400,10 @@ $ sudo docker-compose up # search for default file 'docker-compose.yml' and pull
 #### b. Configuration management
   * n/a
 
+#### c. Deploy Diagram
+
+![DeployDiagram - Context - EvalVirtualboxVmUbuntuServer](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20MySQL%20phpMyAdmin.png)
+
 
 ---
 #### 3.18. Zabbix
