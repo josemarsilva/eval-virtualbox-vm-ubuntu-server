@@ -19,7 +19,7 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 ---
 #### 2.2. Network Configurations
 * Host -> Guest (127.0.0.1)
-* Port(s): Apache2/NGINX(80,81,443), OpenSSH(22), Jenkins/Tomcat/microk8s(8080,8081), JupyterNotebook(8888), PostgreSQL(5432), MySQL(3306), Casandra(7000,7199,9042,9160), MongoDB(27017,27018,27019)
+* Port(s): Apache2/NGINX(80,81,443), OpenSSH(22), Jenkins/Tomcat/microk8s(8080,8081), JupyterNotebook(8888), PostgreSQL(5432), MySQL(3306), Casandra(7000,7199,9042,9160), MongoDB(27017,27018,27019), pgAdmin4(16543)
 * [Passo a passo da configuração da rede do Virtual Box](doc/README_NetworkConfiguration_StepByStep.md)
 
 ---
@@ -439,7 +439,7 @@ $ sudo docker-compose -f docker-compose-mysql-phpmyadmin.yml up # subindo imagem
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - EvalVirtualboxVmUbuntuServer](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20MySQL%20phpMyAdmin.png)
+![DeployDiagram - Context - DockerCompose - MySQL phpMyAdmin](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20MySQL%20phpMyAdmin.png)
 
 
 #### d. Demonstration
@@ -476,10 +476,11 @@ mysql> show databases;
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before installation](https://linuxhint.com/run_postgresql_docker_compose/)
-* [Reading Pre-requisites before installation](https://medium.com/@renato.groffe/postgresql-pgadmin-4-docker-compose-montando-rapidamente-um-ambiente-para-uso-55a2ab230b89)
-* https://stackoverflow.com/questions/41637505/how-to-persist-data-in-a-dockerized-postgres-database-using-volumes/41650891
-* https://stackoverflow.com/questions/42107364/how-to-use-volume-in-docker-compose-for-postgres
+* [Reading Pre-requisites before installation - Official Documentation](https://linuxhint.com/run_postgresql_docker_compose/)
+* [Reading Pre-requisites before installation - Blog using Docker Composer](https://medium.com/@renato.groffe/postgresql-pgadmin-4-docker-compose-montando-rapidamente-um-ambiente-para-uso-55a2ab230b89)
+* [Reading Pre-requisites before installation - Stack Overflow about docker composer volume](https://stackoverflow.com/questions/41637505/how-to-persist-data-in-a-dockerized-postgres-database-using-volumes/41650891)
+* [Reading Pre-requisites before installation - Stack Overflow about docker composer volume](https://stackoverflow.com/questions/42107364/how-to-use-volume-in-docker-compose-for-postgres)
+* [Reading Pre-requisites before installation - pgAdmin4](https://hub.docker.com/r/dpage/pgadmin4/)
 
 ```sh
 $ mkdir ~/docker-compose
@@ -487,12 +488,78 @@ $ mkdir ~/docker-compose/docker-postgresql-pgadmin4
 $ cd    ~/docker-compose/docker-postgresql-pgadmin4
 
 $ vim docker-compose.yml
+version: '3'
+volumes:
+  pg-data:
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "josemarsilva@yahoo.com.br"
+      PGADMIN_DEFAULT_PASSWORD: "password"
+    ports:
+      - "16543:80"
+    depends_on:
+      - db
 
 
+$ pwd # /home/ubuntu/docker-compose/docker-postgresql-pgadmin4
+$ sudo docker-compose up
+
+```
+
+#### b. Configuration management
+
+* docker-compose.yml:
+  * PostgreSQL - port: 5432; user: postgres; password: ; volume: db
+  * pgAdmin4 - port: 16543; email: josemarsilva@yahoo.com.br; password: password
+
+#### c. Deploy Diagram
+
+![DeployDiagram - Context - DockerCompose - PostgreSQL](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20PostgreSQLpgAdmin4.png)
 
 
+#### d. Demonstration
+
+  * Subindo **docker-compose** com arquivo de configuração default `docker-compose.yml`:
+
+```sh
+$ sudo docker-compose up         # subindo imagem apenas com PostgreSQL
+```
 
 
+  * Conectando com PostgreSQL através do client em linha de comando `pgsql`:
+
+```sh
+$ sudo su - postgres
+postgres@ubuntu-server:~$ psql -h 127.0.0.1 -U postgres
+  :
+postgres=# \l
+                                 List of databases
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |
+-----------+----------+----------+------------+------------+
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
+ template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
+ template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
+           |          |          |            |            |
+  :
+postgres=# \q
+```
+
+  * Conectando com PostgreSQL através da aplicação webapp **pgAdmin4**:
+
+![Demo - ](doc/images/PrintScreen-Demo-DockerCompose-PostgreSQL.png)
+
+
+---
 #### 3.7. Docker Composer - WordPress, MySQL 5.7
 
 #### a. Installation procedure
