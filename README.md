@@ -3,12 +3,40 @@
 ---
 ## 1. Introduction
 
-Evaluation Virtual Box VM is a guide project to install, configure and manage a lot of stuff into a Ubuntu 18.04 VM in Virtual Box.
+Evaluation Virtual Box VM is a guide project to install, configure and manage a lot of softwares into a Ubuntu 18.04 VM in Virtual Box.
+
 
 ### 1.1. Deploy Diagram
 
 ![DeployDiagram - Context - EvalVirtualboxVmUbuntuServer](doc/images/DeployDiagram%20-%20Context%20-%20EvalVirtualboxVmUbuntuServer.png)
 
+
+* Lista de **Componentes**:
+
+ [NodeJS](#31-nodejs)
+ [Java 8 - JDK](#32-java-8-jdk)
+ [Python 2.7 - Pip3 - Jupyter Notebook](#33-python-27)
+ [Jupyter Notebook](#314-jupyter-notebook)
+ [UFW](#34-ufw)
+ [PHP 7.3](#35-php-73)
+ [MySQL](#36-mysql)
+ [PostgreSQL](#37-postgresql)
+ [MongoDB](#38-mongodb)
+ [Casandra](#39-casandra)
+ [Apache2](#310-apache2)
+ [NGINX](#311-nginx)
+ [Tomcat](#312-tomcat)
+ [Jenkins](#313-jenkins)
+ [Docker](#315-docker)
+ [Docker Composer](#316-docker-composer---hello-world)
+ [Docker Composer - MySQL e phpMyAdmin](#3161-docker-composer---mysql-57--php-myadmin)
+ [Docker Composer - PostgreSQL e pgAdmin4](#3162-docker-composer---postgresql-96-pgadmin4)
+ [Docker Composer - Wordpress](#37-docker-composer---wordpress-mysql-57)
+ [Zabbix](#318-zabbix)
+ [NMON](#319-nmon)
+ [Kubernets](#320-kubernets)
+ [Wordpress](#321-wordpress)
+ [Pentaho Community](#322-pentaho-community)
 
 ---
 ## 2. Configuration Managment
@@ -19,8 +47,9 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 ---
 #### 2.2. Network Configurations
 * Host -> Guest (127.0.0.1)
-* Port(s): Apache2/NGINX(80,81,443), OpenSSH(22), Jenkins/Tomcat/microk8s(8080,8081), JupyterNotebook(8888), PostgreSQL(5432), MySQL(3306), Casandra(7000,7199,9042,9160), MongoDB(27017,27018,27019), pgAdmin4(16543)
+* Port(s): Apache2/NGINX(80,81,443), OpenSSH/SCP/FTP(22,21), Jenkins/Tomcat/(8080,8081), JupyterNotebook(8888), PostgreSQL(5432), MySQL(3306), Casandra(7000,7199,9042,9160), MongoDB(27017,27018,27019), pgAdmin4(16543)
 * [Passo a passo da configuração da rede do Virtual Box](doc/README_NetworkConfiguration_StepByStep.md)
+
 
 ---
 ### 3. Installed Softwares and Packages
@@ -31,7 +60,7 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 
 ```sh
 sudo apt install npm
-npm -b # 3.5.2
+npm -v # 3.5.2
 ```
 
 ---
@@ -43,23 +72,62 @@ npm -b # 3.5.2
 sudo apt install openjdk-8-jdk -y
 ```
 
+
 ---
-#### 3.3. Python 2.7
+#### 3.3. Python 2.7, Jupyter Notebook, Numpy
 
 #### a. Installation procedure
 
-* Step-by-Step installation Python
+* Step-by-Step installation **Python**
 
 ```sh
+sudo apt upgrade
 sudo apt update
 sudo apt install python -y
+sudo apt install python3-pip
+pip3 --version
 ```
 
-* Step-by-Step installation Numpy
+* Step-by-Step installation **Numpy**
 
 ```sh
 sudo pip3 install numpy
 ```
+
+* Step-by-Step installation **Jupyter Notebook** [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/como-configurar-o-jupyter-notebook-com-python-3-no-ubuntu-18-04-pt)
+
+```sh
+# Install Python, Pip3 e VirtualEnv ...
+sudo apt update
+sudo apt install python3-pip python3-dev
+sudo -H pip3 install --upgrade pip
+sudo -H pip3 install virtualenv
+
+# O flag -H garante politica de seguranca configure a variavel home para o diretório do usuário
+cd ~/GitHome
+mkdir ~/GitHome/py-jupyter-env
+cd    ~/GitHome/py-jupyter-env
+virtualenv py-jupyter-env # criando o ambiente virtual chamado 'py-jupyter-env'
+source py-jupyter-env/bin/activate
+
+# Install Jupyter no ambiente criado pelo virtualenv
+pip install jupyter
+
+# Generating Jupyter Notebook configuration file
+jupyter notebook --generate-config
+
+# Enabling 
+vim /home/ubuntu/.jupyter/jupyter_notebook_config.py
+  :
+c.NotebookApp.allow_origin = '*' #allow all origins
+c.NotebookApp.ip = '0.0.0.0' # listen on all IPs
+  :
+
+
+# Starting Jupyter Notebook
+jupyter notebook
+```
+
 
 ---
 #### 3.4. UFW
@@ -76,13 +144,10 @@ sudo systemctl enable ufw
 sudo ufw status
 sudo ufw status verbose
 sudo ufw app list
-sudo ufw allow 'Nginx HTTP'
-sudo ufw allow 'Nginx HTTPS'
-sudo ufw allow 'Nginx Full'
-sudo ufw allow 'Apache Full'
-sudo ufw allow 'OpenSSH'
+sudo ufw allow 'OpenSSH' # port 22
 sudo ufw allow 80/tcp    # Apache2, NGINX
 sudo ufw allow 8080/tcp  # Jenkins/Tomcat/microk8s
+sudo ufw allow 8081/tcp  # Jenkins/Tomcat/microk8s
 sudo ufw allow 3306/tcp  # MySQL
 sudo ufw allow 5432/tcp  # PostgreSQL
 sudo ufw allow 8888/tcp  # JupyterNotebook
@@ -90,7 +155,7 @@ sudo ufw allow 27017/tcp # MongoDB mongod/mongos
 sudo ufw allow 27018/tcp # MongoDB shardsrv
 sudo ufw allow 27019/tcp # MongoDB configsrv
 sudo ufw allow 18083/tcp # VBoxWebService
-
+sudo ufw status verbose
 ```
 
 ---
@@ -101,28 +166,34 @@ sudo ufw allow 18083/tcp # VBoxWebService
 * [Reading Pre-requisites before installation](https://www.rosehosting.com/blog/how-to-install-php-7-3-on-ubuntu-18-04/)
 
 ```sh
-$ sudo apt update
-$ sudo apt upgrade
-$ sudo apt install software-properties-common
-$ sudo apt install python-software-properties
-$ sudo add-apt-repository ppa:ondrej/php
+sudo apt upgrade
+sudo apt update
+sudo apt install software-properties-common
+sudo apt install python-software-properties
+sudo add-apt-repository ppa:ondrej/php
   :
   Press [ENTER] to continue or Ctrl-c to cancel adding it. [ENTER]
   :
-$ sudo apt update
-$ sudo apt-cache search php7.3
-$ sudo apt install php7.3 php7.3-cli php7.3-common php7.3-opcache php7.3-curl php7.3-mbstring php7.3-mysql php7.3-zip php7.3-xml
-$ php -v  # Verificar a versao 7.3
-$ php --ini | grep "Loaded Configuration File"
-$ sudo vim /etc/php/7.3/cli/php.ini
-$ sudo vim /var/www/html/phpinfo.php
+
+sudo apt update
+sudo apt-cache search php7.3
+sudo apt install php7.3 php7.3-cli php7.3-common php7.3-opcache php7.3-curl php7.3-mbstring php7.3-mysql php7.3-zip php7.3-xml
+php -v  # Verificar a versao 7.3
+php --ini | grep "Loaded Configuration File"
+sudo vim /etc/php/7.3/cli/php.ini
+sudo vim /var/www/html/phpinfo.php
+  :
 <?php phpinfo(); ?>
-$ sudo systemctl stop   apache2
-$ sudo systemctl start  apache2
-$ sudo systemctl status apache2
+  :
 
 # Open url
 http://IP-ADDRESS/phpinfo.php
+
+# Stop and disable
+sudo systemctl stop    apache2
+sudo systemctl disable apache2
+sudo systemctl status  apache2
+
 ```
 
 ---
@@ -132,7 +203,7 @@ http://IP-ADDRESS/phpinfo.php
 
 ```sh
 sudo apt install mysql-server
-sudo mysql_secure_installation
+sudo mysql_secure_installation # password: password
 systemctl start  mysql.service
 systemctl status mysql.service
 sudo mysql
@@ -144,14 +215,17 @@ mysql> show databases;
 | mysql              |
 | performance_schema |
 | sys                |
-| zabbix             |
 +--------------------+
 6 rows in set (0.27 sec)
+mysql> CREATE USER 'root'@'%' IDENTIFIED BY 'root';
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+mysql> 
+sudo systemctl stop    mysql.service
+sudo systemctl disable mysql.service
 ```
 
 * Configuration Management
-    * Port: 3306, User: 'ubuntu'@'%', Password: ubuntu
-    * Port: 3306, User: 'zabbixuser'@'localhost,' Password: 'zabbixuser'
+    * Port: 3306, User/Password: 'root'@'%' IDENTIFIED BY 'root'
 
 
 ---
@@ -172,7 +246,10 @@ postgres=# \l postgres
 ----------+----------+----------+-------------+-------------+------------------
  postgres | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
 (1 row)
+sudo systemctl stop    postgresql
+sudo systemctl disable postgresql
 ```
+
 
 ---
 #### 3.8. MongoDB
@@ -181,9 +258,11 @@ postgres=# \l postgres
 
 ```sh
 sudo apt install -y mongodb 
-sudo systemctl start  mongodb
-sudo systemctl status mongodb
+sudo systemctl start   mongodb
+sudo systemctl status  mongodb
 mongo --eval 'db.runCommand({ connectionStatus: 1 })'
+sudo systemctl stop    mongodb
+sudo systemctl disable mongodb
 ```
 
 ---
@@ -203,12 +282,14 @@ sudo apt-key adv --keyserver pool.sks-keyservers.net --recv-key A278B781FE4B2BDA
 * Step-by-Step Casandra installation and post installation health check
 
 ```sh
-sudo apt-get install cassandra
-sudo systemctl start  cassandra
-sudo systemctl status cassandra
+sudo apt-get   install cassandra
+sudo systemctl start   cassandra
+sudo systemctl status  cassandra
 nodetool status
 cqlsh 
   cqsql> SELECT cluster_name, listen_address FROM system.local;
+sudo systemctl stop    cassandra
+sudo systemctl disable cassandra
 ```
 
 ---
@@ -219,10 +300,13 @@ cqlsh
 * [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
 
 ```sh
-revisar pois faltou
 sudo apt-get   install apache2
+sudo apt       install wget
 sudo systemctl start   apache2
 sudo systemctl status  apache2
+cd /tmp ; wget "http://localhost" ; cd ~
+sudo systemctl stop    apache2
+sudo systemctl disable apache2
 ```
 
 ---
@@ -237,8 +321,11 @@ sudo apt install nginx
 sudo ufw app list
 sudo ufw allow 'Nginx HTTP'
 sudo ufw status
+sudo systemctl start  nginx
 sudo systemctl status nginx
-sudo systemctl start nginx
+cd /tmp ; wget "http://localhost" ; cd ~
+sudo systemctl stop    nginx
+sudo systemctl disable nginx
 ```
 
 ---
@@ -267,45 +354,6 @@ systemctl status jenkins
     * Authentication: admin/admin
 
 ---
-#### 3.14. Jupyter Notebook
-
-#### a. Installation procedure
-* [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/como-configurar-o-jupyter-notebook-com-python-3-no-ubuntu-18-04-pt)
-
-* Step-by-step:
-
-```sh
-# Install Python, Pip3 e VirtualEnv ...
-$ sudo apt update
-$ sudo apt install python3-pip python3-dev
-$ sudo -H pip3 install --upgrade pip
-$ sudo -H pip3 install virtualenv
-
-# O flag -H garante politica de seguranca configure a variavel home para o diretório do usuário
-$ cd ~/GitHome
-$ mkdir ~/GitHome/py-jupyter-env
-$ cd    ~/GitHome/py-jupyter-env
-$ virtualenv py-jupyter-env # criando o ambiente virtual chamado 'py-jupyter-env'
-$ source py-jupyter-env/bin/activate
-
-# Install Jupyter no ambiente criado pelo virtualenv
-$ pip install jupyter
-
-# Generating Jupyter Notebook configuration file
-$ jupyter notebook --generate-config
-
-# Enabling 
-$ vim /home/ubuntu/.jupyter/jupyter_notebook_config.py
-  :
-c.NotebookApp.allow_origin = '*' #allow all origins
-c.NotebookApp.ip = '0.0.0.0' # listen on all IPs
-  :
-
-
-# Starting Jupyter Notebook
-jupyter notebook
-```
-
 ---
 #### 3.15. Docker
 
@@ -329,28 +377,40 @@ sudo systemctl enable docker
 * [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04)
 
 ```sh
+$ cd ~
 $ sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 $ sudo chmod +x /usr/local/bin/docker-compose
 $ docker-compose --version # docker-compose version 1.21.2, build a133471
-$ mkdir hello-world
-$ cd hello-world
-$ docker-compose.yml
+
+# Edit 
+$ vim docker-compose.yml
+  :
 my-test:
  image: hello-world
+  :
+
+# Start Docker
 $ sudo systemctl start  docker.service # starting docker service ...
 $ sudo docker-compose up # search for default file 'docker-compose.yml' and pull 'hello-world' image
 Pulling my-test (hello-world:latest)...
 latest: Pulling from library/hello-world
 c04b14da8d14: Downloading [==================================================>] 
+  :
+
 $ sudo docker images # list all docker images pulled
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 hello-world         latest              fce289e99eb9        2 months ago        1.84kB
-$ docker ps # list images running ...
+  :
+
+$ sudo docker ps # list images running ...
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
-$ docker ps -a # list all docker images independent if running or not ...
+  :
+
+$ sudo docker ps -a # list all docker images independent if running or not ...
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                          PORTS               NAMES
 db160e0532ff        hello-world         "/hello"            5 minutes ago       Exited (0) About a minute ago                       hello-world_my-test_1
-$ 
+  :
+
 ```
 
 #### b. Configuration management
@@ -510,7 +570,6 @@ services:
     depends_on:
       - db
 
-
 $ pwd # /home/ubuntu/docker-compose/docker-postgresql-pgadmin4
 $ sudo docker-compose up
 
@@ -551,6 +610,9 @@ postgres=# \l
  template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
            |          |          |            |            |
   :
+postgres=# create database test_db;
+postgres=# create user pguser with encrypted password 'password';
+postgres=# grant all privileges on database test_db to pguser;
 postgres=# \q
 ```
 
@@ -560,26 +622,71 @@ postgres=# \q
 
 
 ---
-#### 3.7. Docker Composer - WordPress, MySQL 5.7
+#### 3.16.3. Docker Composer - NPX HTTP Server (simple http server)
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before installation](https://share.atelie.software/subindo-um-servidor-web-em-1-minuto-31c0438ff6dd)
+
+```sh
+$ mkdir ~/docker-compose
+$ mkdir ~/docker-compose/docker-npx-httpserver
+$ cd    ~/docker-compose/docker-npx-httpserver
+
+$ vim docker-compose.yml
+version: '3'
+services:
+  web:
+    image: node
+    working_dir: /web
+    command: npx http-server
+    volumes:
+      - .:/web
+    ports:
+      - 8080:8080
+
+$ pwd # /home/ubuntu/docker-compose/docker-npx-httpserver
+$ sudo docker-compose up
+```
+
+#### b. Configuration management
+
+* docker-compose.yml:
+  * NPX HTTP Server - port: 8080
+
+#### c. Deploy Diagram
+
+n/a
+
+#### d. Demonstration
+
+  * Suba **docker-compose** com arquivo de configuração default `docker-compose.yml`:
+  * Faça wget http://localhost:8080
+
+
+---
+#### 3.16.4. Docker Composer - WordPress, MySQL 5.7
 
 #### a. Installation procedure
 
 * [Reading Pre-requisites before installation](https://docs.docker.com/compose/wordpress/)
 
 ```sh
-$ mkdir ~/docker/docker-wordpress-mysql
-$ cd    ~/docker/docker-wordpress-mysql
+$ mkdir ~/docker-compose/docker-wordpress-mysql
+$ cd    ~/docker-compose/docker-wordpress-mysql
 $ vim docker-compose.yml
 version: '3.3'
 
 services:
    db:
      image: mysql:5.7
+     ports:
+       - "3306:3306"
      volumes:
        - db_data:/var/lib/mysql
      restart: always
      environment:
-       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_ROOT_PASSWORD: password
        MYSQL_DATABASE: wordpress
        MYSQL_USER: wordpress
        MYSQL_PASSWORD: wordpress
@@ -589,7 +696,7 @@ services:
        - db
      image: wordpress:latest
      ports:
-       - "8000:80"
+       - "80:80"
      restart: always
      environment:
        WORDPRESS_DB_HOST: db:3306
@@ -602,7 +709,86 @@ volumes:
 $ sudo docker-compose up
 ```
 
+#### b. Configuration management
 
+* docker-compose.yml:
+  * WordPress - port: 80; Username: wordpress
+  * MySQL - port: 3306; user: wordpress; password: wordpress; volume: db_data
+
+#### c. Deploy Diagram
+
+n/a
+
+#### d. Demonstration
+
+  * Suba **docker-compose** com arquivo de configuração default `docker-compose.yml`:
+  * Faça wget http://localhost:80
+
+
+
+
+---
+#### 3.16.?. Docker Composer - Oracle XE 11.2
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before installation - Oracle 12.2 - Single Instance](https://github.com/oracle/docker-images/tree/master/OracleDatabase)
+
+```sh
+$ mkdir ~/docker-compose
+$ mkdir ~/docker-compose/docker-oracle
+$ cd    ~/docker-compose/docker-oracle
+
+$ vim docker-compose.yml
+
+
+$ pwd # /home/ubuntu/docker-compose/docker-oracle
+$ sudo docker-compose up
+```
+
+#### b. Configuration management
+
+* docker-compose.yml:
+  * Oracle Database - port: 1521; user: ???; password:??? ; volume: db
+
+#### c. Deploy Diagram
+
+![DeployDiagram - Context - DockerCompose - Oracle](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20Oracle.png)
+
+
+#### d. Demonstration
+
+  * Subindo **docker-compose** com arquivo de configuração default `docker-compose.yml`:
+
+```sh
+$ sudo docker-compose up         # subindo imagem apenas com PostgreSQL
+```
+
+
+  * Conectando com PostgreSQL através do client em linha de comando `pgsql`:
+
+```sh
+$ sudo su - postgres
+postgres@ubuntu-server:~$ psql -h 127.0.0.1 -U postgres
+  :
+postgres=# \l
+                                 List of databases
+   Name    |  Owner   | Encoding |  Collate   |   Ctype    |
+-----------+----------+----------+------------+------------+
+ postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
+ template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
+ template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
+           |          |          |            |            |
+  :
+postgres=# \q
+```
+
+  * Conectando com PostgreSQL através da aplicação webapp **pgAdmin4**:
+
+![Demo - ](doc/images/PrintScreen-Demo-DockerCompose-PostgreSQL.png)
+
+
+---
 
 ---
 #### 3.18. Zabbix
