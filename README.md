@@ -47,7 +47,7 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 ---
 #### 2.2. Network Configurations
 * Host -> Guest (127.0.0.1)
-* Port(s): Apache2/NGINX(80,81,443), OpenSSH/SCP/FTP(22,21), Jenkins/Tomcat/(8080,8081), JupyterNotebook(8888), PostgreSQL(5432), MySQL(3306), Casandra(7000,7199,9042,9160), MongoDB(27017,27018,27019), pgAdmin4(16543)
+* Port(s): Apache2/NGINX(80,81,443), OpenSSH/SCP/FTP(22,21), Jenkins/Tomcat/(8080,8081), JupyterNotebook(8888), PostgreSQL(5432), MySQL(3306), Casandra(7000,7199,9042,9160), MongoDB(27017,27018,27019), pgAdmin4(16543), Rails/Redmine(3000)
 * [Passo a passo da configuração da rede do Virtual Box](doc/README_NetworkConfiguration_StepByStep.md)
 
 
