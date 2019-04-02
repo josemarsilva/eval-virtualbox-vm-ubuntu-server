@@ -11,7 +11,7 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 ![DeployDiagram - Context - EvalVirtualboxVmUbuntuServer](doc/images/DeployDiagram%20-%20Context%20-%20EvalVirtualboxVmUbuntuServer.png)
 
 
-* Lista de **Componentes**:
+* Índice de **Componentes**:
 
  [NodeJS](#31-nodejs)
  [Java 8 - JDK](#32-java-8-jdk)
@@ -43,6 +43,11 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 
 ### 2.1. Authentication Credentials
 * ubuntu/ubuntu
+
+### 2.2. Installing Virtual Box Guest Additions
+
+* [https://www.virtualzero.net/blog/how-to-install-virtualbox-guest-additions-in-ubuntu-server-18.04-lts]
+
 
 ---
 #### 2.2. Network Configurations
@@ -125,6 +130,8 @@ c.NotebookApp.ip = '0.0.0.0' # listen on all IPs
 
 
 # Starting Jupyter Notebook
+cd    ~/GitHome/py-jupyter-env
+source py-jupyter-env/bin/activate
 jupyter notebook
 ```
 
@@ -193,7 +200,6 @@ http://IP-ADDRESS/phpinfo.php
 sudo systemctl stop    apache2
 sudo systemctl disable apache2
 sudo systemctl status  apache2
-
 ```
 
 ---
@@ -204,8 +210,20 @@ sudo systemctl status  apache2
 ```sh
 sudo apt install mysql-server
 sudo mysql_secure_installation # password: password
-systemctl start  mysql.service
-systemctl status mysql.service
+# setup VALIDATE PASSWORD plugin? N
+# New password: password
+# Re-enter new password: password
+# Remove anonymous users? Y
+# Disallow root login remotely? N
+# Remove test database ? N
+# Reload privilege tables now? Y
+sudo vim /etc/mysql/mysql.conf.d/mysqld.cnf
+  :
+bind-address            = 0.0.0.0
+  :
+
+sudo systemctl start  mysql.service
+sudo systemctl status mysql.service
 sudo mysql
 mysql> show databases;
 +--------------------+
@@ -217,15 +235,30 @@ mysql> show databases;
 | sys                |
 +--------------------+
 6 rows in set (0.27 sec)
-mysql> CREATE USER 'root'@'%' IDENTIFIED BY 'root';
-mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
-mysql> 
+mysql> CREATE USER 'user'@'%' IDENTIFIED BY 'password';
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' IDENTIFIED BY 'password' WITH GRANT OPTION;
+mysql> ALTER USER user IDENTIFIED BY 'password';
+mysql> FLUSH PRIVILEGES;
+mysql> USE mysql
+mysql> select Host, User from user;
++-----------+------------------+
+| Host      | User             |
++-----------+------------------+
+| %         | root             |
+| %         | user             |
+| localhost | debian-sys-maint |
+| localhost | mysql.session    |
+| localhost | mysql.sys        |
+| localhost | root             |
++-----------+------------------+
+mysql> EXIT
 sudo systemctl stop    mysql.service
 sudo systemctl disable mysql.service
 ```
 
-* Configuration Management
-    * Port: 3306, User/Password: 'root'@'%' IDENTIFIED BY 'root'
+#### b. Configuration management
+
+* MySQL - port: 3306; User/Password: 'user'@'%' / 'password'
 
 
 ---
@@ -336,6 +369,58 @@ sudo systemctl disable nginx
 * [Reading Pre-requisites before installation](https://linuxize.com/post/how-to-install-tomcat-9-on-ubuntu-18-04/)
 
 
+```sh
+$ sudo apt update
+$ sudo apt install default-jdk
+$ sudo useradd -r -m -U -d /opt/tomcat -s /bin/false tomcat
+$ sudo apt install wget
+$ echo Warning: version can change
+$ wget http://www-eu.apache.org/dist/tomcat/tomcat-9/v9.0.17/bin/apache-tomcat-9.0.17.tar.gz -P /tmp
+$ sudo tar xf /tmp/apache-tomcat-9*.tar.gz -C /opt/tomcat
+$ sudo ln -s /opt/tomcat/apache-tomcat-9.0.17 /opt/tomcat/latest
+$ sudo chown -RH tomcat: /opt/tomcat/latest
+$ sudo sh -c 'chmod +x /opt/tomcat/latest/bin/*.sh'  # deu ruim aqui
+$ sudo sh -c 'chmod +x /opt/tomcat/apache-tomcat-9.0.17/bin/*.sh'
+$ sudo chmod +x /opt/tomcat/apache-tomcat-9.0.17/bin/*.sh
+```
+
+```sh
+$ sudo vim /etc/systemd/system/tomcat.service
+[Unit]
+Description=Tomcat 9 servlet container
+After=network.target
+
+[Service]
+Type=forking
+
+User=tomcat
+Group=tomcat
+
+Environment="JAVA_HOME=/usr/lib/jvm/default-java"
+Environment="JAVA_OPTS=-Djava.security.egd=file:///dev/urandom -Djava.awt.headless=true"
+
+Environment="CATALINA_BASE=/opt/tomcat/latest"
+Environment="CATALINA_HOME=/opt/tomcat/latest"
+Environment="CATALINA_PID=/opt/tomcat/latest/temp/tomcat.pid"
+Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+
+ExecStart=/opt/tomcat/latest/bin/startup.sh
+ExecStop=/opt/tomcat/latest/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```sh
+sudo systemctl daemon-reload
+sudo systemctl start tomcat
+sudo systemctl status tomcat
+sudo systemctl stop tomcat
+sudo systemctl disable tomcat
+echo sudo ufw allow 8080/tcp
+```
+
+
 ---
 #### 3.13. Jenkins
 
@@ -344,9 +429,16 @@ sudo systemctl disable nginx
 * [Reading Pre-requisites before installation](https://linuxize.com/post/how-to-install-jenkins-on-ubuntu-18-04/)
 
 ```sh
+sudo apt install openjdk-8-jdk
+sudo apt install wget
+wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+sudo apt update
 sudo apt install jenkins
 systemctl start  jenkins
 systemctl status jenkins
+systemctl stop jenkins
+systemctl disable jenkins
 ```
 
 * Configuration Management
@@ -725,19 +817,30 @@ n/a
   * Faça wget http://localhost:80
 
 
-
-
 ---
-#### 3.16.?. Docker Composer - Oracle XE 11.2
+#### 3.16.?. Docker Composer - Oracle Database
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites before installation - Oracle 12.2 - Single Instance](https://github.com/oracle/docker-images/tree/master/OracleDatabase)
+* [Reading Pre-requisites before installation - OracleDatabase on Docker - Single Instance](https://github.com/oracle/docker-images/blob/master/OracleDatabase/SingleInstance/README.md)
+* [Reading Pre-requisites before installation - OracleDatabase - Single Instance](https://www.oracle.com/technetwork/pt/articles/database-performance/oracle-db12-2-no-docker-4427706-ptb.html)
 
 ```sh
-$ mkdir ~/docker-compose
-$ mkdir ~/docker-compose/docker-oracle
-$ cd    ~/docker-compose/docker-oracle
+$ mkdir ~/GitHome
+$ cd    ~/GitHome
+$ git clone https://github.com/oracle/docker-images.git
+$ git clone https://github.com/MaksymBilenko/docker-oracle-12c.git
+$ cd docker-oracle-12c
+$ cd ~/GitHome/docker-images/OracleDatabase/SingleInstance/dockerfiles
+$ ./buildDockerImage.sh 12.2.0.1 -s
+$ docker run --name oracle-12-2 \
+-p 1521:1521 -p 5500:5500 \
+-e ORACLE_SID=ORCL \
+-e ORACLE_PDB=ORCLPDB \
+-e ORACLE_PWD=password \
+-e ORACLE_CHARACTERSET=AMERICAN_AMERICA.AL32UTF8 \
+-v oradata:/opt/oracle/oradata \
+oracle/database:12.2.0-se
 
 $ vim docker-compose.yml
 
@@ -760,35 +863,15 @@ $ sudo docker-compose up
 
   * Subindo **docker-compose** com arquivo de configuração default `docker-compose.yml`:
 
-```sh
-$ sudo docker-compose up         # subindo imagem apenas com PostgreSQL
-```
-
-
-  * Conectando com PostgreSQL através do client em linha de comando `pgsql`:
-
-```sh
-$ sudo su - postgres
-postgres@ubuntu-server:~$ psql -h 127.0.0.1 -U postgres
-  :
-postgres=# \l
-                                 List of databases
-   Name    |  Owner   | Encoding |  Collate   |   Ctype    |
------------+----------+----------+------------+------------+
- postgres  | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
- template0 | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
- template1 | postgres | UTF8     | en_US.utf8 | en_US.utf8 |
-           |          |          |            |            |
-  :
-postgres=# \q
-```
-
-  * Conectando com PostgreSQL através da aplicação webapp **pgAdmin4**:
-
-![Demo - ](doc/images/PrintScreen-Demo-DockerCompose-PostgreSQL.png)
-
 
 ---
+#### 3.16.?. Docker Composer - Oracle Database
+
+#### a. Installation procedure
+#### b. Configuration management
+#### c. Deploy Diagram
+#### d. Demonstration
+
 
 ---
 #### 3.18. Zabbix
