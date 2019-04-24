@@ -878,6 +878,7 @@ $ sudo docker-compose up
 
 #### a. Installation procedure
 
+* [Reading](https://hub.docker.com/r/zabbix/zabbix-server-pgsql)
 * [Reading Pre-requisites before installation](https://websiteforstudents.com/how-to-install-zabbix-4-0-monitoring-system-with-apache2-mariadb-and-php-7-2-on-ubuntu-16-04-18-04-18-10/)
 
 
