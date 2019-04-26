@@ -33,7 +33,7 @@ Evaluation **Virtual Box VM** is a guide project to install, configure and manag
 * [Wordpress](#317-wordpress)
 * [Pentaho Community](#318-pentaho-community)
 
-* [Docker](#4-docker)
+* [Docker Images, Dockerfile, Compose, Command Line](#4-docker)
   * [Docker & Docker Composer - Installation](#41-docker---installation)
   * [Docker Composer](#42-docker-composer---installation)
   * [Docker Composer - MySQL e phpMyAdmin](#43-docker-composer---mysql-57--php-myadmin)
@@ -41,8 +41,10 @@ Evaluation **Virtual Box VM** is a guide project to install, configure and manag
   * [Docker Composer - Wordpress](#45-docker-composer---wordpress-mysql-57)
   * [Docker Composer - Oracle](#46-docker-composer---oracle-database)
   * [Docker - Jenkins](#47-docker-composer---jenkins)
-  * [Docker Composer - MongoDB](#47-docker-composer---jenkins)
-
+  * [Docker Composer - MongoDB](#48-docker-composer---mongodb)
+  * [Docker Composer - MongoDB](#49-docker-composer---redmine)
+  * [Docker Composer - Kafka](#410-docker-composer---kafka)
+  * [Docker Composer - Cassandra](#411-docker-composer---cassandra)
 
 ---
 ## 2. Configuration Managment
@@ -114,7 +116,9 @@ sudo pip install numpy
 sudo pip install requests
 ```
 
-* Step-by-Step installation **Jupyter Notebook** [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/como-configurar-o-jupyter-notebook-com-python-3-no-ubuntu-18-04-pt)
+* Step-by-Step installation **Jupyter Notebook** 
+
+* [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/como-configurar-o-jupyter-notebook-com-python-3-no-ubuntu-18-04-pt)
 
 ```sh
 # Install Python, Pip3 e VirtualEnv ...
@@ -470,7 +474,7 @@ systemctl disable jenkins
 
 * Configuration Management
     * Url: http://127.0.0.1:8080/
-    * Authentication: admin/admin
+    * Authentication: `admin/admin`
 
 ---
 #### 3.14. Zabbix
@@ -786,7 +790,7 @@ $ mkdir ~/docker-compose
 $ mkdir ~/docker-compose/docker-postgresql-pgadmin4
 $ cd    ~/docker-compose/docker-postgresql-pgadmin4
 
-$ vim docker-compose.yml
+$ vim docker-compose-postgresql-pgadmin4.yml
 version: '3'
 volumes:
   pg-data:
@@ -1068,7 +1072,7 @@ $ sudo docker rm jenkins
 $ sudo docker run -d --name jenkins -p 8080:8080 -p 443:8443 \
   --net jenkins-tier \
   --volume jenkins_data:/bitnami \
- bitnami/jenkins:latest
+  bitnami/jenkins:latest
 
 ```
 
@@ -1105,7 +1109,6 @@ $
 
 ![Demo - Docker Jenkins](doc/images/PrintScreen-Demo-DockerCompose-Jenkins.png)
 
----
 ---
 #### 4.8. Docker Composer - MongoDB
 
@@ -1208,7 +1211,8 @@ services:
   :
 
 $
-$ sudo docker-compose -f docker-compose-redmine.yml up -d
+$ sudo docker-compose -f docker-compose-redmine.yml up   -d
+$ sudo docker-compose -f docker-compose-redmine.yml down -d
 ```
 
 * Using Docker Command Line:
@@ -1239,3 +1243,171 @@ $ sudo docker-compose -f docker-compose-redmine.yml up -d
     * Login: `admin`
 	* Password: `admin123`
 
+---
+#### 4.10. Docker Composer - Kafka
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/r/bitnami/kafka/)
+
+* Using Docker Compose:
+
+```sh
+$ echo *** Part I - Configuration files ....
+$ mkdir ~/docker-compose
+$ mkdir ~/docker-compose/docker-kafka/
+$ cd ~/docker-compose/docker-kafka
+
+$ echo *** Part II - Configuring docker-compose.yml ...
+$ vim docker-compose-kafka.yml
+version: '2'
+
+services:
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    ports:
+      - '2181:2181'
+    volumes:
+      - 'zookeeper_data:/bitnami/zookeeper'
+  kafka:
+    image: 'bitnami/kafka:0'
+    ports:
+      - '9092:9092'
+    volumes:
+      - 'kafka_data:/bitnami/kafka'
+    environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local  :
+
+$
+$ sudo docker-compose -f docker-compose-kafka.yml up -d
+```
+
+* Using Docker Command Line:
+
+* Step 1: Create network
+
+```sh
+sudo docker network create app-tier --driver bridge
+```
+
+* Step 2: Launch the Zookeeper server instance
+
+```sh
+sudo docker run -d --name zookeeper-server \
+    --network app-tier \
+    bitnami/zookeeper:latest
+```
+
+* Step 3: Launch the Kafka server instance
+
+```sh
+$ sudo docker run -d --name kafka-server \
+    --network app-tier \
+    -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
+    bitnami/kafka:latest
+```
+
+* Step 4: Launch your Kafka client instance
+
+```sh
+sudo docker run -it --rm \
+    --network app-tier \
+    -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
+    bitnami/kafka:latest kafka-topics.sh --list  --zookeeper zookeeper-server:2181
+```
+
+
+#### b. Configuration management
+
+* url: `http://localhost:8080/
+* username: `admin`
+* password: `admin123` (inicialmente configurada `admin`)
+
+
+
+#### c. Deploy Diagram
+
+![DeployDiagram - Context - DockerCompose - Kafka](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20Kafka.png)
+
+
+#### d. Demonstration
+
+  * Subindo **docker-compose** com arquivo de configuração `docker-compose-Kafka.yml`:
+
+```sh
+$ sudo docker-compose -f docker-compose-Kafka.yml up -d
+```
+
+  * Conectando ao Kafka `http://localhost:8080/` :
+    * Login: `admin`
+	* Password: `admin123`
+
+---
+#### 4.11. Docker Composer - Cassandra
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/r/bitnami/cassandra/)
+
+* Using Docker Composer:
+
+```sh
+$ mkdir ~/docker-compose
+$ mkdir ~/docker-compose/docker-cassandra
+$ cd    ~/docker-compose/docker-cassandra
+
+$ vim docker-compose-cassandra.yml
+version: '2'
+
+services:
+  cassandra:
+    image: 'bitnami/cassandra:3'
+    ports:
+      - '7000:7000'
+      - '9042:9042'
+    volumes:
+      - 'cassandra_data:/bitnami'
+    environment:
+      - CASSANDRA_SEEDS=cassandra
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=cassandra
+volumes:
+  cassandra_data:
+    driver: local
+
+  :
+
+$
+$ sudo docker-compose -f docker-compose-cassandra.yml up   -d
+$ sudo docker-compose -f docker-compose-cassandra.yml down -d
+```
+
+
+#### b. Configuration management
+
+* cassandra seeds...: `cassandra`
+* cassandra password: `cassandra`
+* ports.............: `7000` e `9042`
+
+
+#### c. Deploy Diagram
+
+![DeployDiagram - Context - DockerCompose - Cassandra](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20Cassandra.png)
+
+
+#### d. Demonstration
+
+  * Subindo **docker-compose** com arquivo de configuração `docker-compose-cassandra.yml`:
+
+```sh
+$ sudo docker-compose -f docker-compose-cassandra.yml up   -d
+$ sudo docker-compose -f docker-compose-cassandra.yml down -d
+```
+
+  * Conectando ao Cassandra `http://localhost:8080/` :
