@@ -27,16 +27,21 @@ Evaluation **Virtual Box VM** is a guide project to install, configure and manag
 * [NGINX](#311-nginx)
 * [Tomcat](#312-tomcat)
 * [Jenkins](#313-jenkins)
-* [Docker](#315-docker)
-  * [Docker Composer](#316-docker-composer---hello-world)
-  * [Docker Composer - MySQL e phpMyAdmin](#3161-docker-composer---mysql-57--php-myadmin)
-  * [Docker Composer - PostgreSQL e pgAdmin4](#3162-docker-composer---postgresql-96-pgadmin4)
-  * [Docker Composer - Wordpress](#37-docker-composer---wordpress-mysql-57)
-* [Zabbix](#318-zabbix)
-* [NMON](#319-nmon)
-* [Kubernets](#320-kubernets)
-* [Wordpress](#321-wordpress)
-* [Pentaho Community](#322-pentaho-community)
+* [Zabbix](#314-zabbix)
+* [NMON](#315-nmon)
+* [Kubernets](#316-kubernets)
+* [Wordpress](#317-wordpress)
+* [Pentaho Community](#318-pentaho-community)
+
+* [Docker](#4-docker)
+  * [Docker & Docker Composer - Installation](#41-docker---installation)
+  * [Docker Composer](#42-docker-composer---installation)
+  * [Docker Composer - MySQL e phpMyAdmin](#43-docker-composer---mysql-57--php-myadmin)
+  * [Docker Composer - PostgreSQL e pgAdmin4](#44-docker-composer---postgresql-96-pgadmin4)
+  * [Docker Composer - Wordpress](#45-docker-composer---wordpress-mysql-57)
+  * [Docker Composer - Oracle](#46-docker-composer---oracle-database)
+  * [Docker - Jenkins](#47-docker-composer---jenkins)
+  * [Docker Composer - MongoDB](#47-docker-composer---jenkins)
 
 
 ---
@@ -468,8 +473,120 @@ systemctl disable jenkins
     * Authentication: admin/admin
 
 ---
+#### 3.14. Zabbix
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before installation](https://websiteforstudents.com/how-to-install-zabbix-4-0-monitoring-system-with-apache2-mariadb-and-php-7-2-on-ubuntu-16-04-18-04-18-10/)
+* [Reading](https://hub.docker.com/r/zabbix/zabbix-server-pgsql)
+
+
 ---
-#### 3.15. Docker
+#### 3.15. NMON
+
+#### a. Installation procedure
+* [Reading Pre-requisites before installation](http://nmon.sourceforge.net/pmwiki.php?n=Site.ScreenShots)
+
+* [Step-by-Step](http://josemarfuregattideabreusilva.blogspot.com/2012/05/)
+
+```sh
+which nmon
+```
+
+---
+#### 3.16. Kubernets
+
+#### a. Installation procedure
+
+* Reading Pre-requisites before installation:
+  * [About Kubernets](https://bit.ly/ubuntu-containerd)
+  * [Step-by-Step](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
+
+```sh
+sudo apt  install curl
+sudo snap install microk8s --channel=1.14/beta --classic
+sudo snap start   microk8s
+sudo snap stop    microk8s
+sudo snap disable microk8s
+```
+
+---
+#### 3.17. WordPress
+
+#### a. Installation procedure
+* [Reading Pre-requisites before installation](https://www.rosehosting.com/blog/how-to-install-wordpress-with-lamp-stack-on-ubuntu-18-04/)
+
+* Step-1: Install MySQL database
+
+```sh
+$ sudo mysql
+  mysql> CREATE DATABASE wordpress;
+  mysql> CREATE USER 'admin_user'@'localhost' IDENTIFIED BY 'admin_user';
+  mysql> GRANT ALL PRIVILEGES ON wordpress.* TO 'admin_user'@'localhost' IDENTIFIED BY 'admin_user';
+  mysql> FLUSH PRIVILEGES;
+  mysql> exit
+```
+
+* Step-2: Install WordPress PHP source code
+
+```sh
+$ cd /var/www/html
+$ sudo wget -c http://wordpress.org/latest.zip
+$ sudo apt install unzip
+$ sudo unzip latest.zip
+$ sudo chown -R www-data:www-data wordpress
+$ sudo rm latest.zip
+$ cd /var/www/html/wordpress
+$ sudo mv wp-config-sample.php wp-config.php
+$ sudo vim wp-config.php
+  :
+define('DB_NAME', 'wordpress');
+define('DB_USER', 'admin_user');
+define('DB_PASSWORD', 'admin_user');
+  :
+
+$ sudo vim /etc/apache2/sites-available/wordpress.com.conf
+<VirtualHost *:80>
+
+ServerAdmin admin@wordpress.com
+ServerName wordpress.com
+ServerAlias www.wordpress.com
+DocumentRoot /var/www/html/wordpress
+
+<Directory /var/www/html/wordpress>
+     Options Indexes FollowSymLinks
+     AllowOverride All
+     Require all granted
+</Directory>
+
+ErrorLog ${APACHE_LOG_DIR}/wordpress.com_error.log 
+CustomLog ${APACHE_LOG_DIR}/wordpress.com_access.log combined 
+</VirtualHost>
+
+$ cd /etc/apache2/sites-enabled
+$ sudo ln -s ../sites-available/wordpress.com.conf wordpress.com.conf
+```
+
+* Step-3: Configure WordPress Site
+  * Site Title: `WordPress`
+  * Username: `admin` - Password: `admin`
+  * Click install button
+
+ 
+#### 3.18. Pentaho Community
+
+#### a. Installation procedure
+* Reading Pre-requisites before installation
+  * [Evaluation](https://help.pentaho.com/Documentation/8.2/Setup/Evaluation)
+
+_Working in progress_
+
+
+
+---
+### 4.Docker
+
+#### 4.1. Docker - Installation
 
 #### a. Installation procedure
 
@@ -485,7 +602,7 @@ sudo systemctl enable docker
 ```
 
 ---
-#### 3.16. Docker Composer - hello-world
+#### 4.2. Docker Composer - Installation
 
 #### a. Installation procedure
 
@@ -540,7 +657,7 @@ db160e0532ff        hello-world         "/hello"            5 minutes ago       
 
 
 ---
-#### 3.16.1. Docker Composer - MySQL 5.7 & Php MyAdmin
+#### 4.3. Docker Composer - MySQL 5.7 & Php MyAdmin
 
 #### a. Installation procedure
 
@@ -654,7 +771,7 @@ mysql> show databases;
 
 
 ---
-#### 3.16.2. Docker Composer - PostgreSQL 9.6, pgAdmin4
+#### 4.4. Docker Composer - PostgreSQL 9.6, pgAdmin4
 
 #### a. Installation procedure
 
@@ -750,7 +867,7 @@ password: password
 
 
 ---
-#### 3.16.3. Docker Composer - NPX HTTP Server (simple http server)
+#### 4.5. Docker Composer - NPX HTTP Server (simple http server)
 
 #### a. Installation procedure
 
@@ -835,7 +952,9 @@ volumes:
     db_data: {}
 
 $ sudo docker-compose up
+$ sudo docker-compose down  # parar o serviço
 ```
+
 
 #### b. Configuration management
 
@@ -873,7 +992,7 @@ n/a
 
 
 ---
-#### 3.16.?. Docker Composer - Oracle Database
+#### 4.6. Docker Composer - Oracle Database
 
 #### a. Installation procedure
 
@@ -920,119 +1039,203 @@ $ sudo docker-compose up
 
 
 ---
-#### 3.16.?. Docker Composer - Oracle Database
+#### 4.7. Docker - Jenkins
 
 #### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/r/bitnami/jenkins/)
+
+* Using Docker Command Line
+
+
+```sh
+$ echo *** Part I - Configuration files ....
+$ mkdir ~/docker-cmdline
+$ mkdir ~/docker-cmdline/docker-jenkins
+$ cd ~/docker-cmdline/docker-jenkins
+
+$ echo *** Part II - Network Tier ....
+$ sudo docker network ls # create only once - first time you create, next times reuses
+$ sudo docker network create jenkins-tier
+
+$ echo *** Part III - Data Volume
+$ sudo docker volume ls # create only once - first time you create, next times reuses
+$ sudo docker volume create --name jenkins_data # Only once - first time you create, next times reuses
+
+$ echo *** Part IV - Run Docker 
+$ sudo docker ps -a
+$ sudo docker rm jenkins
+$ sudo docker run -d --name jenkins -p 8080:8080 -p 443:8443 \
+  --net jenkins-tier \
+  --volume jenkins_data:/bitnami \
+ bitnami/jenkins:latest
+
+```
+
+
 #### b. Configuration management
+
+* Jenkins URL: `http://localhost:8080/
+* Environment variables:
+  * JENKINS_USERNAME: `user`
+  * JENKINS_PASSWORD: `bitnami`
+
+
 #### c. Deploy Diagram
+
+![DeployDiagram - Context - DockerCompose - Jenkins](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20Jenkins.png)
+
+
 #### d. Demonstration
 
-
----
-#### 3.18. Zabbix
-
-#### a. Installation procedure
-
-* [Reading](https://hub.docker.com/r/zabbix/zabbix-server-pgsql)
-* [Reading Pre-requisites before installation](https://websiteforstudents.com/how-to-install-zabbix-4-0-monitoring-system-with-apache2-mariadb-and-php-7-2-on-ubuntu-16-04-18-04-18-10/)
-
-
----
-#### 3.19. NMON
-
-#### a. Installation procedure
-* [Reading Pre-requisites before installation](http://nmon.sourceforge.net/pmwiki.php?n=Site.ScreenShots)
-
-* [Step-by-Step](http://josemarfuregattideabreusilva.blogspot.com/2012/05/)
+  * Subindo **docker-compose** com arquivo de configuração `docker-compose-jenkins.yml`:
 
 ```sh
-which nmon
+$ sudo docker-compose -f docker-compose-jenkins.yml up
 ```
 
+
+  * Conectando com MySQL através do client em linha de comando `mysql`:
+
+```sh
+$ 
+```
+
+  * Conectando com MySQL através da aplicação web **phpMyAdmin**:
+
+![Demo - Docker Jenkins](doc/images/PrintScreen-Demo-DockerCompose-Jenkins.png)
+
 ---
-#### 3.20. Kubernets
+---
+#### 4.8. Docker Composer - MongoDB
 
 #### a. Installation procedure
 
-* Reading Pre-requisites before installation:
-  * [About Kubernets](https://bit.ly/ubuntu-containerd)
-  * [Step-by-Step](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
+* [Reading Pre-requisites](https://hub.docker.com/r/bitnami/mongodb/)
+
+* Using Docker Compose
 
 ```sh
-sudo apt  install curl
-sudo snap install microk8s --channel=1.14/beta --classic
-sudo snap start   microk8s
-sudo snap stop    microk8s
-sudo snap disable microk8s
-```
+$ echo *** Part I - Configuration files ....
+$ mkdir ~/docker-compose
+$ mkdir ~/docker-compose/docker-mongodb/
+$ cd ~/docker-compose/docker-mongodb
 
----
-#### 3.21. WordPress
+$ echo *** Part II - Configuring docker-compose.yml ...
+$ vim docker-compose-mongodb.yml
+version: '2'
 
-#### a. Installation procedure
-* [Reading Pre-requisites before installation](https://www.rosehosting.com/blog/how-to-install-wordpress-with-lamp-stack-on-ubuntu-18-04/)
+services:
+  mongodb:
+    image: 'bitnami/mongodb:4.0'
+    ports:
+      - "27017:27017"
+    volumes:
+      - 'mongodb_data:/bitnami'
 
-* Step-1: Install MySQL database
-
-```sh
-$ sudo mysql
-  mysql> CREATE DATABASE wordpress;
-  mysql> CREATE USER 'admin_user'@'localhost' IDENTIFIED BY 'admin_user';
-  mysql> GRANT ALL PRIVILEGES ON wordpress.* TO 'admin_user'@'localhost' IDENTIFIED BY 'admin_user';
-  mysql> FLUSH PRIVILEGES;
-  mysql> exit
-```
-
-* Step-2: Install WordPress PHP source code
-
-```sh
-$ cd /var/www/html
-$ sudo wget -c http://wordpress.org/latest.zip
-$ sudo apt install unzip
-$ sudo unzip latest.zip
-$ sudo chown -R www-data:www-data wordpress
-$ sudo rm latest.zip
-$ cd /var/www/html/wordpress
-$ sudo mv wp-config-sample.php wp-config.php
-$ sudo vim wp-config.php
-  :
-define('DB_NAME', 'wordpress');
-define('DB_USER', 'admin_user');
-define('DB_PASSWORD', 'admin_user');
+volumes:
+  mongodb_data:
+    driver: local
   :
 
-$ sudo vim /etc/apache2/sites-available/wordpress.com.conf
-<VirtualHost *:80>
-
-ServerAdmin admin@wordpress.com
-ServerName wordpress.com
-ServerAlias www.wordpress.com
-DocumentRoot /var/www/html/wordpress
-
-<Directory /var/www/html/wordpress>
-     Options Indexes FollowSymLinks
-     AllowOverride All
-     Require all granted
-</Directory>
-
-ErrorLog ${APACHE_LOG_DIR}/wordpress.com_error.log 
-CustomLog ${APACHE_LOG_DIR}/wordpress.com_access.log combined 
-</VirtualHost>
-
-$ cd /etc/apache2/sites-enabled
-$ sudo ln -s ../sites-available/wordpress.com.conf wordpress.com.conf
+$
+$ sudo docker-compose -f docker-compose-mongodb.yml up -d
 ```
 
-* Step-3: Configure WordPress Site
-  * Site Title: `WordPress`
-  * Username: `admin` - Password: `admin`
-  * Click install button
 
- 
-#### 3.22. Pentaho Community
+#### b. Configuration management
+
+* n/a
+
+
+
+#### c. Deploy Diagram
+
+![DeployDiagram - Context - DockerCompose - Jenkins](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20MongoDB.png)
+
+
+#### d. Demonstration
+
+  * Subindo **docker-compose** com arquivo de configuração `docker-compose-mongodb.yml`:
+
+```sh
+$ sudo docker-compose -f docker-compose-mongodb.yml up -d
+```
+
+  * Conectando ao MongoDB:
+
+```sh
+$ mongo --eval 'db.runCommand({ connectionStatus: 1 })'
+```
+
+
+---
+#### 4.9. Docker Composer - Redmine
 
 #### a. Installation procedure
-* Reading Pre-requisites before installation
-  * [Evaluation](https://help.pentaho.com/Documentation/8.2/Setup/Evaluation)
 
-_Working in progress_
+* [Reading Pre-requisites](https://hub.docker.com/_/redmine)
+
+* Using Docker Compose:
+
+```sh
+$ echo *** Part I - Configuration files ....
+$ mkdir ~/docker-compose
+$ mkdir ~/docker-compose/docker-redmine/
+$ cd ~/docker-compose/docker-redmine
+
+$ echo *** Part II - Configuring docker-compose.yml ...
+$ vim docker-compose-redmine.yml
+version: '3.1'
+
+services:
+
+  redmine:
+    image: redmine
+    restart: always
+    ports:
+      - 8080:3000
+    environment:
+      REDMINE_DB_MYSQL: db
+      REDMINE_DB_PASSWORD: example
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: redmine
+  :
+
+$
+$ sudo docker-compose -f docker-compose-redmine.yml up -d
+```
+
+* Using Docker Command Line:
+
+
+#### b. Configuration management
+
+* url: `http://localhost:8080/
+* username: `admin`
+* password: `admin123` (inicialmente configurada `admin`)
+
+
+
+#### c. Deploy Diagram
+
+![DeployDiagram - Context - DockerCompose - Redmine](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20Redmine.png)
+
+
+#### d. Demonstration
+
+  * Subindo **docker-compose** com arquivo de configuração `docker-compose-redmine.yml`:
+
+```sh
+$ sudo docker-compose -f docker-compose-redmine.yml up -d
+```
+
+  * Conectando ao Redmine `http://localhost:8080/` :
+    * Login: `admin`
+	* Password: `admin123`
+
