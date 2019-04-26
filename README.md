@@ -852,7 +852,10 @@ n/a
   * Suba **docker-compose** com arquivo de configuração default `docker-compose.yml`:
   * Abra a URL `http://localhost:80` e siga o passo-a-passo da instalação:
 
+* Passo 1: Defina a linguagem:
 ![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-01.png)
+
+* Passo 2: Defina título do site, usuário e senha
 ![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-02.png)
 ![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-03.png)
 ![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-04.png)
