@@ -1,42 +1,43 @@
-# eval-virtualbox-vm - Evaluation Virtual Box VM
+# eval-virtualbox-vm
+Evaluation Virtual Box VM - Ubuntu 18.04
 
 ---
 ## 1. Introduction
 
-Evaluation Virtual Box VM is a guide project to install, configure and manage a lot of softwares into a Ubuntu 18.04 VM in Virtual Box.
+Evaluation **Virtual Box VM** is a guide project to install, configure and manage a lot of softwares into a **Ubuntu 18.04** VM in Virtual Box.
 
 
 ### 1.1. Deploy Diagram
 
 ![DeployDiagram - Context - EvalVirtualboxVmUbuntuServer](doc/images/DeployDiagram%20-%20Context%20-%20EvalVirtualboxVmUbuntuServer.png)
 
+### 1.2. Deploy Installation Indexes
 
-* Índice de **Componentes**:
+* [NodeJs](#31-nodejs)
+* [Java 8 - JDK](#32-java-8-jdk)
+* [Python 3.6 - Pip3 - Jupyter Notebook](#33-python-36)
+* [Jupyter Notebook](#314-jupyter-notebook)
+* [UFW](#34-ufw)
+* [PHP 7.3](#35-php-73)
+* [MySQL](#36-mysql)
+* [PostgreSQL](#37-postgresql)
+* [MongoDB](#38-mongodb)
+* [Casandra](#39-casandra)
+* [Apache2](#310-apache2)
+* [NGINX](#311-nginx)
+* [Tomcat](#312-tomcat)
+* [Jenkins](#313-jenkins)
+* [Docker](#315-docker)
+  * [Docker Composer](#316-docker-composer---hello-world)
+  * [Docker Composer - MySQL e phpMyAdmin](#3161-docker-composer---mysql-57--php-myadmin)
+  * [Docker Composer - PostgreSQL e pgAdmin4](#3162-docker-composer---postgresql-96-pgadmin4)
+  * [Docker Composer - Wordpress](#37-docker-composer---wordpress-mysql-57)
+* [Zabbix](#318-zabbix)
+* [NMON](#319-nmon)
+* [Kubernets](#320-kubernets)
+* [Wordpress](#321-wordpress)
+* [Pentaho Community](#322-pentaho-community)
 
- [NodeJS](#31-nodejs)
- [Java 8 - JDK](#32-java-8-jdk)
- [Python 2.7 - Pip3 - Jupyter Notebook](#33-python-27)
- [Jupyter Notebook](#314-jupyter-notebook)
- [UFW](#34-ufw)
- [PHP 7.3](#35-php-73)
- [MySQL](#36-mysql)
- [PostgreSQL](#37-postgresql)
- [MongoDB](#38-mongodb)
- [Casandra](#39-casandra)
- [Apache2](#310-apache2)
- [NGINX](#311-nginx)
- [Tomcat](#312-tomcat)
- [Jenkins](#313-jenkins)
- [Docker](#315-docker)
- [Docker Composer](#316-docker-composer---hello-world)
- [Docker Composer - MySQL e phpMyAdmin](#3161-docker-composer---mysql-57--php-myadmin)
- [Docker Composer - PostgreSQL e pgAdmin4](#3162-docker-composer---postgresql-96-pgadmin4)
- [Docker Composer - Wordpress](#37-docker-composer---wordpress-mysql-57)
- [Zabbix](#318-zabbix)
- [NMON](#319-nmon)
- [Kubernets](#320-kubernets)
- [Wordpress](#321-wordpress)
- [Pentaho Community](#322-pentaho-community)
 
 ---
 ## 2. Configuration Managment
@@ -50,10 +51,12 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 
 
 ---
-#### 2.2. Network Configurations
+#### 2.3. Network Configurations
 * Host -> Guest (127.0.0.1)
 * Port(s): Apache2/NGINX(80,81,443), OpenSSH/SCP/FTP(22,21), Jenkins/Tomcat/(8080,8081), JupyterNotebook(8888), PostgreSQL(5432), MySQL(3306), Casandra(7000,7199,9042,9160), MongoDB(27017,27018,27019), pgAdmin4(16543), Rails/Redmine(3000)
 * [Passo a passo da configuração da rede do Virtual Box](doc/README_NetworkConfiguration_StepByStep.md)
+
+
 
 
 ---
@@ -64,6 +67,8 @@ Evaluation Virtual Box VM is a guide project to install, configure and manage a 
 #### a. Installation procedure
 
 ```sh
+sudo apt upgrade -y
+sudo apt update -y
 sudo apt install npm
 npm -v # 3.5.2
 ```
@@ -79,24 +84,29 @@ sudo apt install openjdk-8-jdk -y
 
 
 ---
-#### 3.3. Python 2.7, Jupyter Notebook, Numpy
+#### 3.3. Python 3.6, Jupyter Notebook, Numpy
 
 #### a. Installation procedure
 
 * Step-by-Step installation **Python**
 
 ```sh
-sudo apt upgrade
-sudo apt update
-sudo apt install python -y
-sudo apt install python3-pip
-pip3 --version
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt-get update
+sudo apt-get install python3.6 -y
+sudo apt install python-pip -y
+python
+>> import sys
+>> print(sys.version)
+>> quit()
+pip list
 ```
 
 * Step-by-Step installation **Numpy**
 
 ```sh
-sudo pip3 install numpy
+sudo pip install numpy
+sudo pip install requests
 ```
 
 * Step-by-Step installation **Jupyter Notebook** [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/como-configurar-o-jupyter-notebook-com-python-3-no-ubuntu-18-04-pt)
@@ -104,16 +114,16 @@ sudo pip3 install numpy
 ```sh
 # Install Python, Pip3 e VirtualEnv ...
 sudo apt update
-sudo apt install python3-pip python3-dev
+sudo apt install python3-pip python3-dev -y
 sudo -H pip3 install --upgrade pip
 sudo -H pip3 install virtualenv
 
 # O flag -H garante politica de seguranca configure a variavel home para o diretório do usuário
-cd ~/GitHome
+mkdir ~/GitHome ; cd ~/GitHome
 mkdir ~/GitHome/py-jupyter-env
 cd    ~/GitHome/py-jupyter-env
-virtualenv py-jupyter-env # criando o ambiente virtual chamado 'py-jupyter-env'
-source py-jupyter-env/bin/activate
+virtualenv venv # criando o ambiente virtual chamado 'py-jupyter-env'
+source venv/bin/activate
 
 # Install Jupyter no ambiente criado pelo virtualenv
 pip install jupyter
@@ -128,10 +138,9 @@ c.NotebookApp.allow_origin = '*' #allow all origins
 c.NotebookApp.ip = '0.0.0.0' # listen on all IPs
   :
 
-
 # Starting Jupyter Notebook
 cd    ~/GitHome/py-jupyter-env
-source py-jupyter-env/bin/activate
+source venv/bin/activate
 jupyter notebook
 ```
 
@@ -173,8 +182,8 @@ sudo ufw status verbose
 * [Reading Pre-requisites before installation](https://www.rosehosting.com/blog/how-to-install-php-7-3-on-ubuntu-18-04/)
 
 ```sh
-sudo apt upgrade
-sudo apt update
+sudo apt upgrade -y
+sudo apt update -y
 sudo apt install software-properties-common
 sudo apt install python-software-properties
 sudo add-apt-repository ppa:ondrej/php
@@ -182,9 +191,9 @@ sudo add-apt-repository ppa:ondrej/php
   Press [ENTER] to continue or Ctrl-c to cancel adding it. [ENTER]
   :
 
-sudo apt update
+sudo apt update -y
 sudo apt-cache search php7.3
-sudo apt install php7.3 php7.3-cli php7.3-common php7.3-opcache php7.3-curl php7.3-mbstring php7.3-mysql php7.3-zip php7.3-xml
+sudo apt install php7.3 php7.3-cli php7.3-common php7.3-opcache php7.3-curl php7.3-mbstring php7.3-mysql php7.3-zip php7.3-xml -y
 php -v  # Verificar a versao 7.3
 php --ini | grep "Loaded Configuration File"
 sudo vim /etc/php/7.3/cli/php.ini
@@ -208,7 +217,7 @@ sudo systemctl status  apache2
 #### a. Installation procedure
 
 ```sh
-sudo apt install mysql-server
+sudo apt install mysql-server -y
 sudo mysql_secure_installation # password: password
 # setup VALIDATE PASSWORD plugin? N
 # New password: password
@@ -267,7 +276,7 @@ sudo systemctl disable mysql.service
 #### a. Installation procedure
 
 ```sh
-sudo apt install postgresql postgresql-contrib
+sudo apt install postgresql postgresql-contrib -y
 sudo systemctl start  postgresql
 sudo systemctl status postgresql
 sudo -u postgres psql -c "SELECT version();"
@@ -279,6 +288,8 @@ postgres=# \l postgres
 ----------+----------+----------+-------------+-------------+------------------
  postgres | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
 (1 row)
+postgres=# \q
+postgres=# exit
 sudo systemctl stop    postgresql
 sudo systemctl disable postgresql
 ```
@@ -315,12 +326,13 @@ sudo apt-key adv --keyserver pool.sks-keyservers.net --recv-key A278B781FE4B2BDA
 * Step-by-Step Casandra installation and post installation health check
 
 ```sh
-sudo apt-get   install cassandra
+sudo apt-get   install cassandra -y
 sudo systemctl start   cassandra
 sudo systemctl status  cassandra
 nodetool status
 cqlsh 
   cqsql> SELECT cluster_name, listen_address FROM system.local;
+  cqsql> exit
 sudo systemctl stop    cassandra
 sudo systemctl disable cassandra
 ```
@@ -333,11 +345,11 @@ sudo systemctl disable cassandra
 * [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-ubuntu-18-04-quickstart)
 
 ```sh
-sudo apt-get   install apache2
+sudo apt-get   install apache2 -y
 sudo apt       install wget
 sudo systemctl start   apache2
 sudo systemctl status  apache2
-cd /tmp ; wget "http://localhost" ; cd ~
+cd /tmp ; wget "http://localhost" ; cd ~ ; cat /tmp/index.html ; rm -f /tmp/index.html
 sudo systemctl stop    apache2
 sudo systemctl disable apache2
 ```
@@ -350,13 +362,13 @@ sudo systemctl disable apache2
 * [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/como-instalar-o-nginx-no-ubuntu-18-04-pt)
 
 ```sh
-sudo apt install nginx
+sudo apt install nginx -y
 sudo ufw app list
 sudo ufw allow 'Nginx HTTP'
 sudo ufw status
 sudo systemctl start  nginx
 sudo systemctl status nginx
-cd /tmp ; wget "http://localhost" ; cd ~
+cd /tmp ; wget "http://localhost" ; cd ~ ; cat /tmp/index.html
 sudo systemctl stop    nginx
 sudo systemctl disable nginx
 ```
@@ -370,21 +382,31 @@ sudo systemctl disable nginx
 
 
 ```sh
-$ sudo apt update
-$ sudo apt install default-jdk
+$ sudo apt update -y
 $ sudo useradd -r -m -U -d /opt/tomcat -s /bin/false tomcat
 $ sudo apt install wget
 $ echo Warning: version can change
 $ wget http://www-eu.apache.org/dist/tomcat/tomcat-9/v9.0.17/bin/apache-tomcat-9.0.17.tar.gz -P /tmp
 $ sudo tar xf /tmp/apache-tomcat-9*.tar.gz -C /opt/tomcat
+$ sudo chmod a+x,a+r,a+w /opt
+$ sudo chmod -R u+r,g+r,o+r /opt/tomcat
+$ sudo chmod -R u+w,g+w,o+w /opt/tomcat
+$ sudo chmod -R u+x,g+x,o+x /opt/tomcat/apache-tomcat-9.0.17/bin
+$ sudo chmod -R g+x,o+x /opt/tomcat/apache-tomcat-9.0.17/conf
+$ sudo chmod -R g+x,o+x /opt/tomcat/apache-tomcat-9.0.17/lib
+$ sudo chmod -R g+x,o+x /opt/tomcat/apache-tomcat-9.0.17/logs
+$ sudo chmod -R g+x,o+x /opt/tomcat/apache-tomcat-9.0.17/temp
+$ sudo chmod -R g+x,o+x /opt/tomcat/apache-tomcat-9.0.17/webapps
+$ sudo chmod -R g+x,o+x /opt/tomcat/apache-tomcat-9.0.17/work
 $ sudo ln -s /opt/tomcat/apache-tomcat-9.0.17 /opt/tomcat/latest
-$ sudo chown -RH tomcat: /opt/tomcat/latest
-$ sudo sh -c 'chmod +x /opt/tomcat/latest/bin/*.sh'  # deu ruim aqui
+$ sudo chown -RH tomcat:tomcat /opt/tomcat/latest
+$ sudo sh -c 'chmod +x+r+w /opt/tomcat/latest/bin/*.sh'
 $ sudo sh -c 'chmod +x /opt/tomcat/apache-tomcat-9.0.17/bin/*.sh'
 $ sudo chmod +x /opt/tomcat/apache-tomcat-9.0.17/bin/*.sh
 ```
 
 ```sh
+$ sudo ln -s /usr/lib/jvm/java-8-openjdk-amd64/jre /usr/lib/jvm/default-java
 $ sudo vim /etc/systemd/system/tomcat.service
 [Unit]
 Description=Tomcat 9 servlet container
@@ -417,7 +439,7 @@ sudo systemctl start tomcat
 sudo systemctl status tomcat
 sudo systemctl stop tomcat
 sudo systemctl disable tomcat
-echo sudo ufw allow 8080/tcp
+sudo ufw allow 8080/tcp
 ```
 
 
@@ -454,8 +476,9 @@ systemctl disable jenkins
 * [Reading Pre-requisites before installation](https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04/)
 
 ```sh
-sudo apt-get remove docker docker-engine docker.io
-sudo apt install docker.io
+echo remove versao anterior
+sudo apt-get remove docker docker-engine docker.io -y
+sudo apt install docker.io -y
 sudo systemctl start  docker
 sudo systemctl status docker
 sudo systemctl enable docker
@@ -469,6 +492,7 @@ sudo systemctl enable docker
 * [Reading Pre-requisites before installation](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-18-04)
 
 ```sh
+$ sudo apt install curl -y
 $ cd ~
 $ sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 $ sudo chmod +x /usr/local/bin/docker-compose
@@ -488,11 +512,17 @@ Pulling my-test (hello-world:latest)...
 latest: Pulling from library/hello-world
 c04b14da8d14: Downloading [==================================================>] 
   :
+my-test_1  | Hello from Docker!
+my-test_1  | This message shows that your installation appears to be working correctly.
+  :
 
 $ sudo docker images # list all docker images pulled
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 hello-world         latest              fce289e99eb9        2 months ago        1.84kB
   :
+ubuntu_my-test_1 exited with code 0
+  :
+
 
 $ sudo docker ps # list images running ...
 CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
@@ -549,6 +579,7 @@ services:
 volumes:
   my-db:
 
+
 $ vim docker-compose-mysql-phpmyadmin.yml # ~/docker-mysql, phpmyadmin
 version: '3.3'
 volumes:
@@ -578,7 +609,6 @@ $
 $ pwd # /home/ubuntu/docker-compose/docker-mysql-phpmyadmin
 $ sudo docker-compose -f docker-compose-mysql5.7.yml up         # subindo imagem apenas com MySQL
 $ sudo docker-compose -f docker-compose-mysql-phpmyadmin.yml up # subindo imagem apenas com MySQL
-
 ```
 
 #### b. Configuration management
