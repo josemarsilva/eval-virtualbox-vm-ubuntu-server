@@ -4,7 +4,7 @@ services:
    db:
      image: mysql:5.7
      ports:
-       - "3306:3306"
+       - "3307:3306"
      volumes:
        - db_data:/var/lib/mysql
      restart: always
@@ -19,7 +19,7 @@ services:
        - db
      image: wordpress:latest
      ports:
-       - "80:80"
+       - "8000:80"
      restart: always
      environment:
        WORDPRESS_DB_HOST: db:3306
