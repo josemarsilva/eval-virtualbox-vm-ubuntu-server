@@ -853,12 +853,22 @@ n/a
   * Abra a URL `http://localhost:80` e siga o passo-a-passo da instalação:
 
 * Passo 1: Defina a linguagem:
+
 ![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-01.png)
 
 * Passo 2: Defina título do site, usuário e senha
 ![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-02.png)
+
+* Passo 3: Clique no botão que acesso o site:
+
 ![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-03.png)
+
+* Passo 4: Informe `login` e `senha` e acesse o site
+
 ![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-04.png)
+
+* Passo 5: Acesse a página principal do site 
+
 ![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-05.png)
 
 
