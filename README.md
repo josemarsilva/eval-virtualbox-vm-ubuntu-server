@@ -47,7 +47,7 @@ Evaluation **Virtual Box VM** is a guide project to install, configure and manag
 
 ### 2.2. Installing Virtual Box Guest Additions
 
-* [https://www.virtualzero.net/blog/how-to-install-virtualbox-guest-additions-in-ubuntu-server-18.04-lts]
+* https://www.virtualzero.net/blog/how-to-install-virtualbox-guest-additions-in-ubuntu-server-18.04-lts
 
 
 ---
@@ -705,7 +705,7 @@ $ sudo docker-compose up
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - DockerCompose - PostgreSQL](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20PostgreSQLpgAdmin4.png)
+![DeployDiagram - Context - DockerCompose - PostgreSQL](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20PostgreSQL%20pgAdmin4.png)
 
 
 #### d. Demonstration
@@ -740,7 +740,13 @@ postgres=# \q
 
   * Conectando com PostgreSQL através da aplicação webapp **pgAdmin4**:
 
-![Demo - ](doc/images/PrintScreen-Demo-DockerCompose-PostgreSQL.png)
+![Demo - pgAdmin4](doc/images/PrintScreen-Demo-DockerCompose-PostgreSQLpgAdmin4.png)
+
+```txt
+url.....: http://localhost:16543
+login...: josemarsilva@yahoo.com.br
+password: password
+```
 
 
 ---
@@ -844,7 +850,13 @@ n/a
 #### d. Demonstration
 
   * Suba **docker-compose** com arquivo de configuração default `docker-compose.yml`:
-  * Faça wget http://localhost:80
+  * Abra a URL `http://localhost:80` e siga o passo-a-passo da instalação:
+
+![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-01.png)
+![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-02.png)
+![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-03.png)
+![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-04.png)
+![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-05.png)
 
 
 ---
