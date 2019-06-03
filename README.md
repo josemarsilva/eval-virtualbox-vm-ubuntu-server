@@ -45,6 +45,11 @@ Evaluation **Virtual Box VM** is a guide project to install, configure and manag
   * [Docker Composer - MongoDB](#49-docker-composer---redmine)
   * [Docker Composer - Kafka](#410-docker-composer---kafka)
   * [Docker Composer - Cassandra](#411-docker-composer---cassandra)
+  * [Docker Composer - MQ-Series](#412-docker-composer---mq-series)
+  * [Docker Composer - SugarCRM](#413-docker-composer---sugarcrm)
+  * [Docker -  Bamboo Server](#414-docker---bamboo-server)
+  * [Docker - Ubuntu server](#415-docker---ubuntu-server)
+  * [Docker - Chef-server](#416-docker---chef---server)
 
 ---
 ## 2. Configuration Managment
@@ -504,14 +509,12 @@ which nmon
 
 * Reading Pre-requisites before installation:
   * [About Kubernets](https://bit.ly/ubuntu-containerd)
-  * [Step-by-Step](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
+  * [Step-by-Step Install](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
+  * [Step-by-Step Install](https://matthewpalmer.net/kubernetes-app-developer/articles/install-kubernetes-ubuntu-tutorial.html)
 
 ```sh
 sudo apt  install curl
-sudo snap install microk8s --channel=1.14/beta --classic
-sudo snap start   microk8s
-sudo snap stop    microk8s
-sudo snap disable microk8s
+
 ```
 
 ---
@@ -861,13 +864,16 @@ postgres=# \q
 
   * Conectando com PostgreSQL através da aplicação webapp **pgAdmin4**:
 
-![Demo - pgAdmin4](doc/images/PrintScreen-Demo-DockerCompose-PostgreSQLpgAdmin4.png)
+![Demo - pgAdmin4](doc/images/PrintScreen-Demo-DockerCompose-PostgreSQLpgAdmin4-01.png)
 
 ```txt
 url.....: http://localhost:16543
 login...: josemarsilva@yahoo.com.br
 password: password
 ```
+
+![Demo - pgAdmin4](doc/images/PrintScreen-Demo-DockerCompose-PostgreSQLpgAdmin4-02.png)
+
 
 
 ---
@@ -1249,6 +1255,7 @@ $ sudo docker-compose -f docker-compose-redmine.yml up -d
 #### a. Installation procedure
 
 * [Reading Pre-requisites](https://hub.docker.com/r/bitnami/kafka/)
+* [Reading Tutorial](https://medium.com/trainingcenter/apache-kafka-codifica%C3%A7%C3%A3o-na-pratica-9c6a4142a08f)
 
 * Using Docker Compose:
 
@@ -1282,53 +1289,18 @@ volumes:
   zookeeper_data:
     driver: local
   kafka_data:
-    driver: local  :
+    driver: local
+  :
 
 $
 $ sudo docker-compose -f docker-compose-kafka.yml up -d
+$ sudo docker-compose -f docker-compose-kafka.yml down
 ```
-
-* Using Docker Command Line:
-
-* Step 1: Create network
-
-```sh
-sudo docker network create app-tier --driver bridge
-```
-
-* Step 2: Launch the Zookeeper server instance
-
-```sh
-sudo docker run -d --name zookeeper-server \
-    --network app-tier \
-    bitnami/zookeeper:latest
-```
-
-* Step 3: Launch the Kafka server instance
-
-```sh
-$ sudo docker run -d --name kafka-server \
-    --network app-tier \
-    -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
-    bitnami/kafka:latest
-```
-
-* Step 4: Launch your Kafka client instance
-
-```sh
-sudo docker run -it --rm \
-    --network app-tier \
-    -e KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 \
-    bitnami/kafka:latest kafka-topics.sh --list  --zookeeper zookeeper-server:2181
-```
-
 
 #### b. Configuration management
 
-* url: `http://localhost:8080/
-* username: `admin`
-* password: `admin123` (inicialmente configurada `admin`)
-
+* zookeeper: Port=2181
+* kafka: Port=9092, 
 
 
 #### c. Deploy Diagram
@@ -1411,3 +1383,202 @@ $ sudo docker-compose -f docker-compose-cassandra.yml down -d
 ```
 
   * Conectando ao Cassandra `http://localhost:8080/` :
+
+
+---
+#### 4.12. Docker Composer - MQ-Series
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/r/ibmcom/mq/)
+* [Reading Pre-requisites - Building a sample IBM MQ queue manager image using Docker](https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_9.0.0/com.ibm.mq.con.doc/q114483_.htm)
+* [Reading Pre-requisites - Building a sample base IBM MQ queue manager image](https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_9.0.0/com.ibm.mq.con.doc/q114485_.htm)
+
+* Using Docker Dockerfile:
+
+* Step 1: Create network
+
+```sh
+mkdir mq-series
+git clone -b mq-9-lts https://github.com/ibm-messaging/mq-docker mq-docker
+git clone https://github.com/ibm-messaging/mq-container mq-container
+ip addr show
+
+```
+
+
+#### b. Configuration management
+
+* url: `http://localhost:8080/
+
+
+#### c. Deploy Diagram
+
+![DeployDiagram - Context - DockerCompose - MQ-Series](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20MQ-Series.png)
+
+
+#### d. Demonstration
+
+  * Subindo **docker-compose** com arquivo de configuração `docker-compose-MQ-Series.yml`:
+
+```sh
+$ sudo docker-compose -f docker-compose-MQ-Series.yml up -d
+```
+
+  * Conectando ao MQ-Series `????` :
+
+
+---
+#### 4.13. Docker Composer - SugarCRM
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/r/spantree/sugarcrm)
+
+* Using Docker Composer:
+
+```sh
+$ mkdir ~/docker-compose
+$ mkdir ~/docker-compose/docker-sugarcrm
+$ cd    ~/docker-compose/docker-sugarcrm
+
+$ vim docker-compose-sugarcrm.yml
+sugarcrm:
+  build: .
+  ports:
+    - "8000:80"
+  links:
+    - "db"
+  environment:
+    DB_TYPE: mysql
+    DB_MANAGER: MysqlManager
+db:
+  image: mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: YZiT4p7BXUqpdgpc
+    MYSQL_DATABASE: sugarcrm
+    MYSQL_USER: sugarcrm
+    MYSQL_PASSWORD: wTxbULZMrosNR86J
+  :
+
+$
+$ sudo docker-compose -f docker-compose-sugarcrm.yml up
+```
+
+
+#### b. Configuration management
+
+* url: http://127.0.0.1:8000/
+
+
+#### c. Deploy Diagram
+
+![DeployDiagram - Context - DockerCompose - Cassandra](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20SugarCrm.png)
+
+
+#### d. Demonstration
+
+  * Subindo **docker-compose** com arquivo de configuração `docker-compose-cassandra.yml`:
+
+```sh
+$ sudo docker-compose -f docker-compose-sugarcrm.yml up
+```
+
+  * Conectando ao Cassandra `http://localhost:8080/` :
+
+---
+#### 4.14. Docker - Bamboo Server
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/r/atlassian/bamboo-server)
+
+* Using Docker Composer:
+
+```sh
+$ mkdir ~/docker-cmdline
+$ mkdir ~/docker-cmdline/docker-bamboo-server
+$ cd    ~/docker-cmdline/docker-bamboo-server
+
+$ docker pull atlassian/bamboo-server
+
+$ sudo docker volume create --name bambooVolume
+$ sudo docker run -v bambooVolume:/var/atlassian/application-data/bamboo --name="bamboo" --init -d -p 54663:54663 -p 8085:8085 atlassian/bamboo-server
+```
+
+
+#### b. Configuration management
+
+* url: http://127.0.0.1:8000/
+
+
+#### c. Deploy Diagram
+
+![DeployDiagram - Context - DockerCompose - Cassandra](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20SugarCrm.png)
+
+
+#### d. Demonstration
+
+  * Subindo **docker-compose** com arquivo de configuração `docker-compose-cassandra.yml`:
+
+```sh
+$ sudo docker-compose -f docker-compose-sugarcrm.yml up
+```
+
+  * Conectando ao Cassandra `http://localhost:8080/` :
+
+---
+#### 4.15. Docker - Ubuntu server
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://www.youtube.com/watch?v=0cDj7citEjE&t=682s)
+
+
+* Using Docker Command Line:
+
+```sh
+sudo docker run -i -t ubuntu:18.04 /bin/bash
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
+---
+#### 4.16. Docker - Chef-server
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/r/cbuisson/chef-server/)
+
+
+* Using Docker Command Line:
+
+```sh
+docker pull cbuisson/chef-server
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
