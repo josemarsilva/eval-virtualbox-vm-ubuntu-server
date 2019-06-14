@@ -13,10 +13,35 @@ Evaluation **Virtual Box VM** is a guide project to install, configure and manag
 
 ### 1.2. Deploy Installation Indexes
 
+High priority:
+
 * [NodeJs](#31-nodejs)
+* [Python 3.6 - Pip3 - Jupyter Notebook](#33-python-36-jupyter-notebook-numpy)
+* [Jupyter Notebook](#33-python-36-jupyter-notebook-numpy)
+* [Transmission/Torrent Client](#320-transmission-cli)
+* [Docker Images, Dockerfile, Compose, Command Line](#4-docker)
+* [Docker & Docker Composer - Installation](#41-docker---installation)
+
+Normal:
+
+* [Docker Composer - MySQL e phpMyAdmin](#43-docker-composer---mysql-57--php-myadmin)
+* [Docker Composer - PostgreSQL e pgAdmin4](#44-docker-composer---postgresql-96-pgadmin4)
+* [Docker Composer - Wordpress](#45-docker-composer---wordpress-mysql-57)
+* [Docker - Jenkins](#47-docker---jenkins)
+* [Docker Composer - MongoDB](#48-docker-composer---mongodb)
+* [Docker Composer - MongoDB](#49-docker-composer---redmine)
+* [Docker Composer - Kafka](#410-docker-composer---kafka)
+* [Docker Composer - Cassandra](#411-docker-composer---cassandra)
+* [Docker Composer - MQ-Series](#412-docker-composer---mq-series)
+* [Docker Composer - SugarCRM](#413-docker-composer---sugarcrm)
+* [Docker -  Bamboo Server](#414-docker---bamboo-server)
+* [Docker - Ubuntu server](#415-docker---ubuntu-server)
+* [Docker - Chef-server](#416-docker---chef---server)
+* [Hercules](#319-hercules-mainframe-emulator)
+
+Low Priority:
+
 * [Java 8 - JDK](#32-java-8-jdk)
-* [Python 3.6 - Pip3 - Jupyter Notebook](#33-python-36)
-* [Jupyter Notebook](#314-jupyter-notebook)
 * [UFW](#34-ufw)
 * [PHP 7.3](#35-php-73)
 * [MySQL](#36-mysql)
@@ -31,25 +56,12 @@ Evaluation **Virtual Box VM** is a guide project to install, configure and manag
 * [NMON](#315-nmon)
 * [Kubernets](#316-kubernets)
 * [Wordpress](#317-wordpress)
-* [Pentaho Community](#318-pentaho-community)
 
-* [Docker Images, Dockerfile, Compose, Command Line](#4-docker)
-  * [Docker & Docker Composer - Installation](#41-docker---installation)
-  * [Docker Composer](#42-docker-composer---installation)
-  * [Docker Composer - MySQL e phpMyAdmin](#43-docker-composer---mysql-57--php-myadmin)
-  * [Docker Composer - PostgreSQL e pgAdmin4](#44-docker-composer---postgresql-96-pgadmin4)
-  * [Docker Composer - Wordpress](#45-docker-composer---wordpress-mysql-57)
-  * [Docker Composer - Oracle](#46-docker-composer---oracle-database)
-  * [Docker - Jenkins](#47-docker-composer---jenkins)
-  * [Docker Composer - MongoDB](#48-docker-composer---mongodb)
-  * [Docker Composer - MongoDB](#49-docker-composer---redmine)
-  * [Docker Composer - Kafka](#410-docker-composer---kafka)
-  * [Docker Composer - Cassandra](#411-docker-composer---cassandra)
-  * [Docker Composer - MQ-Series](#412-docker-composer---mq-series)
-  * [Docker Composer - SugarCRM](#413-docker-composer---sugarcrm)
-  * [Docker -  Bamboo Server](#414-docker---bamboo-server)
-  * [Docker - Ubuntu server](#415-docker---ubuntu-server)
-  * [Docker - Chef-server](#416-docker---chef---server)
+Very Priority:
+
+* [Pentaho Community (Work in Progress)](#318-pentaho-community)
+* [Docker Composer - Oracle (Work in Progress)](#46-docker-composer---oracle-database)
+
 
 ---
 ## 2. Configuration Managment
@@ -79,7 +91,6 @@ Evaluation **Virtual Box VM** is a guide project to install, configure and manag
 #### a. Installation procedure
 
 ```sh
-sudo apt upgrade -y
 sudo apt update -y
 sudo apt install npm
 npm -v # 3.5.2
@@ -589,9 +600,78 @@ $ sudo ln -s ../sites-available/wordpress.com.conf wordpress.com.conf
 _Working in progress_
 
 
+---
+#### 3.19. Hercules Mainframe Emulator
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites - Hercules](http://www.hercules-390.eu/)
+
+
+* Installing
+
+```sh
+sudo mkdir cd /opt
+sudo chmod 777 /opt
+cd /opt
+wget http://www.hercules-390.org/hercules-3.07.tar.gz
+tar -xvf hercules-3.07.tar.gz
+cd hercules-3.07/
+sudo ./configure
+sudo make install
+sudo chown ubuntu:ubuntu ./hercules-3.07 -R
+which hercules
+ls -la /usr/local/bin/hercules
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
+
 
 ---
-### 4.Docker
+#### 3.20. Transmission cli
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites - Transmission / Torrent client](https://www.maketecheasier.com/how-to-download-torrents-from-the-command-line-in-ubuntu/)
+
+
+* Installing
+
+```sh
+sudo apt install transmission-cli
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+```sh
+```
+
+
+---
+### 4. Docker
 
 #### 4.1. Docker - Installation
 
@@ -732,7 +812,7 @@ $
 
 $ pwd # /home/ubuntu/docker-compose/docker-mysql-phpmyadmin
 $ sudo docker-compose -f docker-compose-mysql5.7.yml up         # subindo imagem apenas com MySQL
-$ sudo docker-compose -f docker-compose-mysql-phpmyadmin.yml up # subindo imagem apenas com MySQL
+$ sudo docker-compose -f docker-compose-mysql-phpmyadmin.yml up # subindo imagem MySQL + PhpMyAdmin
 ```
 
 #### b. Configuration management
@@ -1582,3 +1662,4 @@ docker pull cbuisson/chef-server
 #### d. Demonstration
 
 * n/a
+
