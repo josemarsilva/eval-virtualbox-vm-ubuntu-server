@@ -1,5 +1,5 @@
-# eval-virtualbox-vm
-Evaluation Virtual Box VM - Ubuntu 18.04
+# README eval-virtualbox-vm
+README - Evaluation Virtual Box VM - Ubuntu 18.04
 
 ---
 ## 1. Introduction
@@ -13,35 +13,35 @@ Evaluation **Virtual Box VM** is a guide project to install, configure and manag
 
 ### 1.2. Deploy Installation Indexes
 
-High priority:
+**High priority**:
 
 * [NodeJs](#31-nodejs)
 * [Python 3.6 - Pip3 - Jupyter Notebook](#33-python-36-jupyter-notebook-numpy)
 * [Jupyter Notebook](#33-python-36-jupyter-notebook-numpy)
-* [Transmission/Torrent Client](#320-transmission-cli)
+* [Java 8 - JDK](#32-java-8-jdk)
 * [Docker Images, Dockerfile, Compose, Command Line](#4-docker)
 * [Docker & Docker Composer - Installation](#41-docker---installation)
 
-Normal:
+__Normal__:
 
-* [Docker Composer - MySQL e phpMyAdmin](#43-docker-composer---mysql-57--php-myadmin)
-* [Docker Composer - PostgreSQL e pgAdmin4](#44-docker-composer---postgresql-96-pgadmin4)
-* [Docker Composer - Wordpress](#45-docker-composer---wordpress-mysql-57)
 * [Docker - Jenkins](#47-docker---jenkins)
+* [Docker Composer - PostgreSQL e pgAdmin4](#44-docker-composer---postgresql-96-pgadmin4)
+* [Docker Composer - MySQL e phpMyAdmin](#43-docker-composer---mysql-57--php-myadmin)
+* [Docker Composer - Wordpress](#45-docker-composer---wordpress-mysql-57)
 * [Docker Composer - MongoDB](#48-docker-composer---mongodb)
 * [Docker Composer - MongoDB](#49-docker-composer---redmine)
 * [Docker Composer - Kafka](#410-docker-composer---kafka)
 * [Docker Composer - Cassandra](#411-docker-composer---cassandra)
 * [Docker Composer - MQ-Series](#412-docker-composer---mq-series)
 * [Docker Composer - SugarCRM](#413-docker-composer---sugarcrm)
-* [Docker -  Bamboo Server](#414-docker---bamboo-server)
+* [Docker - Bamboo Server](#414-docker---bamboo-server)
 * [Docker - Ubuntu server](#415-docker---ubuntu-server)
 * [Docker - Chef-server](#416-docker---chef---server)
 * [Hercules](#319-hercules-mainframe-emulator)
+* [Transmission-cli/Torrent Client](#320-transmission-cli)
 
 Low Priority:
 
-* [Java 8 - JDK](#32-java-8-jdk)
 * [UFW](#34-ufw)
 * [PHP 7.3](#35-php-73)
 * [MySQL](#36-mysql)
@@ -77,7 +77,26 @@ Very Priority:
 ---
 #### 2.3. Network Configurations
 * Host -> Guest (127.0.0.1)
-* Port(s): Apache2/NGINX(80,81,443), OpenSSH/SCP/FTP(22,21), Jenkins/Tomcat/(8080,8081), JupyterNotebook(8888), PostgreSQL(5432), MySQL(3306), Casandra(7000,7199,9042,9160), MongoDB(27017,27018,27019), pgAdmin4(16543), Rails/Redmine(3000)
+* Port(s) redirected:
+
+Nome da aplicação | PortaHospedeiro:PortaConvidado
+HTTP              | 81:80, 8000, 8080, 8081, 8082, 8083, 8084
+Bamboo            | 8085
+Casandra          | 7000, 7199, 9042, 9160 
+FTP               | 21
+Hercules          | 3270, 992, 23, 3505, 8038
+Jupyter Notebook  | 8888
+Mongo DB          | 27017, 27018, 27019
+MySQL             | 3306, 3307
+PostgreSQL        | 5432
+Rails             | 3000
+SSH               | 22
+SSL/HTTPS         | 443
+SonarQube         | 9000
+Nexus             | 8081
+pgAdmin4          | 16543
+
+
 * [Passo a passo da configuração da rede do Virtual Box](doc/README_NetworkConfiguration_StepByStep.md)
 
 
@@ -481,16 +500,45 @@ sudo apt install wget
 wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
 sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 sudo apt update
-sudo apt install jenkins
-systemctl start  jenkins
-systemctl status jenkins
-systemctl stop jenkins
-systemctl disable jenkins
+sudo apt install jenkins -y
+sudo systemctl start  jenkins
+sudo systemctl status jenkins
+sudo systemctl disable jenkins
 ```
 
+
 * Configuration Management
-    * Url: http://127.0.0.1:8080/
-    * Authentication: `admin/admin`
+
+  * Open Jenkins url in your browser: [http://localhost:8080/] ànd copy initial administration password configuration
+
+```sh
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+
+  * Paste initial administration password configuration into browser
+
+![Install-Jenkins-Ubuntu-01](doc/images/Install-Jenkins-Ubuntu-01.png)
+
+  * Install suggestted plugins
+
+![Install-Jenkins-Ubuntu-02](doc/images/Install-Jenkins-Ubuntu-02.png)
+
+![Install-Jenkins-Ubuntu-03](doc/images/Install-Jenkins-Ubuntu-03.png)
+
+  * Configure admin user
+ 
+![Install-Jenkins-Ubuntu-04](doc/images/Install-Jenkins-Ubuntu-04.png)
+
+  * Configure Jenkins URL
+
+![Install-Jenkins-Ubuntu-05](doc/images/Install-Jenkins-Ubuntu-05.png)
+
+  * Benvindo ao Jenkins
+
+![Install-Jenkins-Ubuntu-06](doc/images/Install-Jenkins-Ubuntu-06.png)
+
+![Install-Jenkins-Ubuntu-07](doc/images/Install-Jenkins-Ubuntu-07.png)
+
 
 ---
 #### 3.14. Zabbix
@@ -525,7 +573,6 @@ which nmon
 
 ```sh
 sudo apt  install curl
-
 ```
 
 ---
@@ -651,7 +698,7 @@ ls -la /usr/local/bin/hercules
 * Installing
 
 ```sh
-sudo apt install transmission-cli
+sudo apt install transmission-cli -y
 ```
 
 
@@ -678,15 +725,100 @@ sudo apt install transmission-cli
 #### a. Installation procedure
 
 * [Reading Pre-requisites before installation](https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04/)
+* [Reading detailed instructions](https://www.youtube.com/watch?v=0cDj7citEjE&t=1000s)
 
 ```sh
-echo remove versao anterior
+echo remove versao anterior se existir
 sudo apt-get remove docker docker-engine docker.io -y
 sudo apt install docker.io -y
 sudo systemctl start  docker
 sudo systemctl status docker
-sudo systemctl enable docker
+sudo usermod -aG docker $USER
+sudo docker run hello-world
 ```
+
+#### b. Configuration management
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* Demo#1: Baixando uma imagem do Ubuntu 18.04 e executando o comando `bash`. Em seguida vamos verificar se tem somente 1 processo `ps -ef` mostra apenas 1 processo executando. Repare que o prompt está diferente, porque o nome da máquina é um hash.
+
+```sh
+sudo docker run -i -t ubuntu:18.04 /bin/bash 
+root@4ab2cb982b18:/# ps -ef
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 05:33 pts/0    00:00:00 /bin/bash
+root       223     1  0 05:37 pts/0    00:00:00 ps -ef
+```
+
+* Demo#2: Agora vamos sair do container, sem encerrar sua execucao. Faça ^P + Q
+
+```sh
+root@4ab2cb982b18:/# ^P + ^Q
+```
+
+* Demo#3: Agora vamos voltar para o container com `attach`
+
+```sh
+$ sudo docker ps
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+4ab2cb982b18        ubuntu:18.04        "/bin/bash"         6 minutes ago       Up 6 minutes                            cocky_haslett
+$ sudo docker attach 4ab2cb982b18
+$ root@4ab2cb982b18:/# ps -ef
+$ root@4ab2cb982b18:/# exit
+```
+
+* Demo#4: Vamos subir um servidor http Nginx na porta 8080
+
+```sh
+$ sudo docker run -i -t -p 8080:80 ubuntu:18.04 /bin/bash
+root@8ebd5f89af89:/# apt-get update
+root@913149b97159:/# apt-get install nginx
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following additional packages will be installed:
+  :
+The following NEW packages will be installed:
+  :
+Do you want to continue? [Y/n] Y
+  :
+root@8ebd5f89af89:/# ps -ef # somente o processo /bin/bash
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 16:53 pts/0    00:00:00 /bin/bash
+root       764     1  0 16:56 pts/0    00:00:00 ps -ef
+root@8ebd5f89af89:/# /etc/init.d/nginx start
+ * Starting nginx nginx 
+root@8ebd5f89af89:/# /etc/init.d/nginx start
+```
+
+* Consulte http://localhost:81/
+
+
+* Demo #5: Agora baixe um sistema operacional Linux Alpine
+
+```sh
+$ docker pull alpine
+```
+
+* Demo #6: Vamos listar as imagens que baixamos
+
+```sh
+$ docker images
+```
+
+* Demo #7: Vamos criar uma imagem (copia com commit) do ubuntu com NGINX
+
+```sh
+$ sudo docker commit <container-id> josemarsilva/nginx-ubuntu:1.0
+```
+
 
 ---
 #### 4.2. Docker Composer - Installation
@@ -699,7 +831,7 @@ sudo systemctl enable docker
 $ sudo apt install curl -y
 $ cd ~
 $ sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-$ sudo chmod +x /usr/local/bin/docker-compose
+$ sudo chmod 755 /usr/local/bin/docker-compose
 $ docker-compose --version # docker-compose version 1.21.2, build a133471
 
 # Edit 
@@ -740,7 +872,21 @@ db160e0532ff        hello-world         "/hello"            5 minutes ago       
 ```
 
 #### b. Configuration management
-  * n/a
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* Demo#1:
+
+```sh
+$ 
+```
+
 
 
 ---
@@ -1152,23 +1298,38 @@ $ echo *** Part III - Data Volume
 $ sudo docker volume ls # create only once - first time you create, next times reuses
 $ sudo docker volume create --name jenkins_data # Only once - first time you create, next times reuses
 
-$ echo *** Part IV - Run Docker 
+$ echo *** Part IV - Run Docker ...
 $ sudo docker ps -a
-$ sudo docker rm jenkins
-$ sudo docker run -d --name jenkins -p 8080:8080 -p 443:8443 \
-  --net jenkins-tier \
-  --volume jenkins_data:/bitnami \
-  bitnami/jenkins:latest
-
+$ sudo docker rm jenkins # You can ignore first time error message Error: No such container: jenkins
+$ sudo docker run -d --name jenkins -p 8080:8080 -p 443:8443 --net jenkins-tier --volume jenkins_data:/bitnami bitnami/jenkins:latest
 ```
 
 
 #### b. Configuration management
 
-* Jenkins URL: `http://localhost:8080/
-* Environment variables:
+* acesse o Jenkins pela primeira vez pelo browser 
+  * Jenkins URL: `http://localhost:8080/
+
+* faça login com as credenciais abaixo:
   * JENKINS_USERNAME: `user`
   * JENKINS_PASSWORD: `bitnami`
+
+![Install-Jenkins-DockerBitnami-01.png](doc/images/Install-Jenkins-DockerBitnami-01.png)
+
+* instale os plugins sugeridos
+
+![Install-Jenkins-DockerBitnami-02.png](doc/images/Install-Jenkins-DockerBitnami-02.png)
+
+![Install-Jenkins-DockerBitnami-03.png](doc/images/Install-Jenkins-DockerBitnami-03.png)
+
+* Reinicie o Jenkins e faça novamente o login com usuário `user` e senha `bitnami`
+
+![Install-Jenkins-DockerBitnami-04.png](doc/images/Install-Jenkins-DockerBitnami-04.png)
+
+* Pronto! Benvindo ao Jenkins
+
+![Install-Jenkins-DockerBitnami-05.png](doc/images/Install-Jenkins-DockerBitnami-05.png)
+
 
 
 #### c. Deploy Diagram
@@ -1647,6 +1808,63 @@ sudo docker run -i -t ubuntu:18.04 /bin/bash
 
 ```sh
 docker pull cbuisson/chef-server
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
+
+---
+#### 4.17. Docker - Nexus
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/_/sonarqube/)
+
+
+* Using Docker Command Line:
+
+```sh
+docker run -d -p 8081:8081 --name nexus sonatype/nexus3
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
+---
+#### 4.18. Docker - SonarQube
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/_/sonarqube/)
+
+
+* Using Docker Command Line:
+
+```sh
+sudo docker run -d --name sonarqube -p 9000:9000 sonarqube
 ```
 
 
