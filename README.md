@@ -1830,13 +1830,14 @@ docker pull cbuisson/chef-server
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites](https://hub.docker.com/_/sonarqube/)
+* [Reading Pre-requisites](https://hub.docker.com/r/sonatype/nexus3)
 
 
 * Using Docker Command Line:
 
 ```sh
-docker run -d -p 8081:8081 --name nexus sonatype/nexus3
+sudo docker pull sonatype/nexus3
+sudo docker run -d -p 8081:8081 --name nexus sonatype/nexus3
 ```
 
 
@@ -1864,6 +1865,7 @@ docker run -d -p 8081:8081 --name nexus sonatype/nexus3
 * Using Docker Command Line:
 
 ```sh
+sudo docker pull sonarqube
 sudo docker run -d --name sonarqube -p 9000:9000 sonarqube
 ```
 
@@ -1880,4 +1882,92 @@ sudo docker run -d --name sonarqube -p 9000:9000 sonarqube
 #### d. Demonstration
 
 * n/a
+
+
+---
+#### 4.19. Docker - WebSphere - 8.5
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/r/ibmcom/websphere-traditional)
+
+
+* Using Docker Command Line:
+
+```sh
+docker pull ibmcom/websphere-traditional:8.5.5.14-profile
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
+
+---
+#### 4.20. Docker - Hercules
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/r/hermajordoctor/hercules)
+
+
+* Using Docker Command Line:
+
+```sh
+docker pull hermajordoctor/hercules
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
+
+---
+#### 4.21. Docker - Bamboo Server
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/r/atlassian/bamboo-server)
+
+
+* Using Docker Command Line:
+
+```sh
+docker pull atlassian/bamboo-server
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
 
