@@ -29,14 +29,14 @@ __Normal__:
 * [Docker Composer - MySQL e phpMyAdmin](#43-docker-composer---mysql-57--php-myadmin)
 * [Docker Composer - Wordpress](#45-docker-composer---wordpress-mysql-57)
 * [Docker Composer - MongoDB](#48-docker-composer---mongodb)
-* [Docker Composer - MongoDB](#49-docker-composer---redmine)
+* [Docker Composer - R](#49-docker-composer---redmine)
 * [Docker Composer - Kafka](#410-docker-composer---kafka)
 * [Docker Composer - Cassandra](#411-docker-composer---cassandra)
 * [Docker Composer - MQ-Series](#412-docker-composer---mq-series)
 * [Docker Composer - SugarCRM](#413-docker-composer---sugarcrm)
 * [Docker - Bamboo Server](#414-docker---bamboo-server)
 * [Docker - Ubuntu server](#415-docker---ubuntu-server)
-* [Docker - Chef-server](#416-docker---chef---server)
+* [Docker - Chef-server](#416-docker---chef-server)
 * [Hercules](#319-hercules-mainframe-emulator)
 * [Transmission-cli/Torrent Client](#320-transmission-cli)
 
@@ -84,7 +84,7 @@ HTTP              | 81:80, 8000, 8080, 8081, 8082, 8083, 8084
 Bamboo            | 8085
 Casandra          | 7000, 7199, 9042, 9160 
 FTP               | 21
-Hercules          | 3270, 992, 23, 3505, 8038
+Hercules          | 3270, 8038, 992, 23, 3505 
 Jupyter Notebook  | 8888
 Mongo DB          | 27017, 27018, 27019
 MySQL             | 3306, 3307
@@ -1843,7 +1843,12 @@ sudo docker run -d -p 8081:8081 --name nexus sonatype/nexus3
 
 #### b. Configuration management
 
-* n/a
+* Persistent data
+
+```sh
+docker volume create --name nexus-data
+docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus3
+```
 
 
 #### c. Deploy Diagram
@@ -1925,6 +1930,7 @@ docker pull ibmcom/websphere-traditional:8.5.5.14-profile
 
 ```sh
 docker pull hermajordoctor/hercules
+docker run -p 3270:3270 -p 8081:8081 hermajordoctor/hercules
 ```
 
 
