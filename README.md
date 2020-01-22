@@ -1734,14 +1734,14 @@ $ sudo docker-compose -f docker-compose-sugarcrm.yml up
 
 * [Reading Pre-requisites](https://hub.docker.com/r/atlassian/bamboo-server)
 
-* Using Docker Composer:
+* Using Docker Command Line:
 
 ```sh
 $ mkdir ~/docker-cmdline
 $ mkdir ~/docker-cmdline/docker-bamboo-server
 $ cd    ~/docker-cmdline/docker-bamboo-server
 
-$ docker pull atlassian/bamboo-server
+$ sudo docker pull atlassian/bamboo-server
 
 $ sudo docker volume create --name bambooVolume
 $ sudo docker run -v bambooVolume:/var/atlassian/application-data/bamboo --name="bamboo" --init -d -p 54663:54663 -p 8085:8085 atlassian/bamboo-server
@@ -1750,23 +1750,31 @@ $ sudo docker run -v bambooVolume:/var/atlassian/application-data/bamboo --name=
 
 #### b. Configuration management
 
-* url: http://127.0.0.1:8000/
+* url: http://127.0.0.1:8085/
 
+* [Siga o passo-a-passo da instalação das licenças](doc/README_InstallBambooLicense_StepByStep.md)
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - DockerCompose - Cassandra](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20SugarCrm.png)
+![DeployDiagram - Context - Docker Command Line - Bamboo](doc/images/DeployDiagram%20-%20Context%20-%20DockerCmdLine%20-%20Bamboo.png)
 
 
 #### d. Demonstration
 
-  * Subindo **docker-compose** com arquivo de configuração `docker-compose-cassandra.yml`:
+  * Subindo o container `bamboo`:
 
 ```sh
-$ sudo docker-compose -f docker-compose-sugarcrm.yml up
+$ sudo docker ps -a
+CONTAINER ID        IMAGE                     COMMAND             CREATED             STATUS              PORTS                                              NAMES
+5ec6d3ad8ea0        atlassian/bamboo-server   "/entrypoint.sh"    15 minutes ago      Up 3 minutes        0.0.0.0:8085->8085/tcp, 0.0.0.0:54663->54663/tcp   bamboo
 ```
 
-  * Conectando ao Cassandra `http://localhost:8080/` :
+```sh
+$ sudo docker start bamboo
+```
+
+  * Conectando ao Bamboo Server `http://localhost:8085/`
+
 
 ---
 #### 4.15. Docker - Ubuntu server
@@ -1949,31 +1957,48 @@ docker run -p 3270:3270 -p 8081:8081 hermajordoctor/hercules
 
 
 ---
-#### 4.21. Docker - Bamboo Server
+#### 4.21. Docker - Jira Core
 
 #### a. Installation procedure
 
-* [Reading Pre-requisites](https://hub.docker.com/r/atlassian/bamboo-server)
-
+* [Reading Pre-requisites](https://hub.docker.com/r/atlassian/jira-core/)
 
 * Using Docker Command Line:
 
 ```sh
-docker pull atlassian/bamboo-server
+$ mkdir ~/docker-cmdline
+$ mkdir ~/docker-cmdline/docker-jira-core
+$ cd    ~/docker-cmdline/docker-jira-core
+
+$ sudo docker volume create --name jiraVolume
+$ sudo docker run -v jiraVolume:/var/atlassian/application-data/jira --name="jira" -d -p 8080:8080 atlassian/jira-software
 ```
 
 
 #### b. Configuration management
 
-* n/a
+* url: http://127.0.0.1:8080/
 
 
 #### c. Deploy Diagram
 
-* n/a
+![DeployDiagram - Context - Docker Command Line - Jira Core](doc/images/DeployDiagram%20-%20Context%20-%20DockerCmdLine%20-%20JiraCore.png)
+
 
 #### d. Demonstration
 
-* n/a
+  * Subindo o container `jira`:
 
+```sh
+$ sudo docker ps -a
+CONTAINER ID        IMAGE                     COMMAND             CREATED             STATUS              PORTS                                              NAMES
 
+```
+
+```sh
+$ sudo docker start jira
+```
+
+  * Conectando ao Bamboo Server `http://localhost:8085/` :
+
+---
