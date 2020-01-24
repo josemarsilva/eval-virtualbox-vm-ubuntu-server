@@ -1748,12 +1748,12 @@ $ sudo docker volume create --name bambooVolume
 $ sudo docker run -v bambooVolume:/var/atlassian/application-data/bamboo --name="bamboo" --init -d -p 54663:54663 -p 8085:8085 atlassian/bamboo-server
 ```
 
-
 #### b. Configuration management
 
 * url: http://127.0.0.1:8085/
 
 * [Siga o passo-a-passo da instalação das licenças](doc/README_InstallBambooLicense_StepByStep.md)
+
 
 #### c. Deploy Diagram
 
@@ -1980,6 +1980,8 @@ $ sudo docker run -v jiraVolume:/var/atlassian/application-data/jira --name="jir
 
 * url: http://127.0.0.1:8080/
 
+* [Siga o passo-a-passo da instalação das licenças](doc/README_InstallJiraCoreLicense_StepByStep.md)
+
 
 #### c. Deploy Diagram
 
@@ -1993,13 +1995,13 @@ $ sudo docker run -v jiraVolume:/var/atlassian/application-data/jira --name="jir
 ```sh
 $ sudo docker ps -a
 CONTAINER ID        IMAGE                     COMMAND             CREATED             STATUS              PORTS                                              NAMES
-
+936e1e0b5cf7        atlassian/jira-software   "/tini -- /entrypoin…"   2 minutes ago       Up About a minute   0.0.0.0:8080->8080/tcp                             jira
 ```
 
 ```sh
 $ sudo docker start jira
 ```
 
-  * Conectando ao Bamboo Server `http://localhost:8085/` :
+  * Conectando ao Bamboo Server `http://localhost:8080/` :
 
 ---
