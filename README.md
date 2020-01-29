@@ -36,6 +36,7 @@ __Normal__:
 * [Docker Composer - SugarCRM](#413-docker-composer---sugarcrm)
 * [Docker - Bamboo Server](#414-docker---bamboo-server)
 * [Docker - Jira Core](#421-docker---jira-core)
+* [Docker - Confluence](#422-docker---confluence)
 * [Docker - Ubuntu server](#415-docker---ubuntu-server)
 * [Docker - Chef-server](#416-docker---chef-server)
 * [Hercules](#319-hercules-mainframe-emulator)
@@ -1738,10 +1739,6 @@ $ sudo docker-compose -f docker-compose-sugarcrm.yml up
 * Using Docker Command Line:
 
 ```sh
-$ mkdir ~/docker-cmdline
-$ mkdir ~/docker-cmdline/docker-bamboo-server
-$ cd    ~/docker-cmdline/docker-bamboo-server
-
 $ sudo docker pull atlassian/bamboo-server
 
 $ sudo docker volume create --name bambooVolume
@@ -1967,10 +1964,6 @@ docker run -p 3270:3270 -p 8081:8081 hermajordoctor/hercules
 * Using Docker Command Line:
 
 ```sh
-$ mkdir ~/docker-cmdline
-$ mkdir ~/docker-cmdline/docker-jira-core
-$ cd    ~/docker-cmdline/docker-jira-core
-
 $ sudo docker volume create --name jiraVolume
 $ sudo docker run -v jiraVolume:/var/atlassian/application-data/jira --name="jira" -d -p 8080:8080 atlassian/jira-software
 ```
@@ -1981,6 +1974,50 @@ $ sudo docker run -v jiraVolume:/var/atlassian/application-data/jira --name="jir
 * url: http://127.0.0.1:8080/
 
 * [Siga o passo-a-passo da instalação das licenças](doc/README_InstallJiraCoreLicense_StepByStep.md)
+
+
+#### c. Deploy Diagram
+
+![DeployDiagram - Context - Docker Command Line - Jira Core](doc/images/DeployDiagram%20-%20Context%20-%20DockerCmdLine%20-%20JiraCore.png)
+
+
+#### d. Demonstration
+
+  * Subindo o container `jira`:
+
+```sh
+$ sudo docker ps -a
+CONTAINER ID        IMAGE                     COMMAND             CREATED             STATUS              PORTS                                              NAMES
+936e1e0b5cf7        atlassian/jira-software   "/tini -- /entrypoin…"   2 minutes ago       Up About a minute   0.0.0.0:8080->8080/tcp                             jira
+```
+
+```sh
+$ sudo docker start jira
+```
+
+  * Conectando ao Bamboo Server `http://localhost:8080/` :
+
+---
+#### 4.22. Docker - Confluence
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites](https://hub.docker.com/r/atlassian/confluence-server/)
+
+* Using Docker Command Line:
+
+```sh
+$ sudo docker pull atlassian/confluence-server
+
+$ docker run -v /data/your-confluence-home:/var/atlassian/application-data/confluence --name="confluence" -d -p 8090:8090 -p 8091:8091 atlassian/confluence-server
+```
+
+
+#### b. Configuration management
+
+* url: http://127.0.0.1:8091/
+
+* [Siga o passo-a-passo da instalação das licenças](doc/README_InstallConfluenceLicense_StepByStep.md)
 
 
 #### c. Deploy Diagram
