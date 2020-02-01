@@ -782,7 +782,7 @@ procedure division.
     stop run.
 ```
 
-* Compilando programa `cobol-hello-world.cbl` e gerando executável `hello-exe`
+* Compilando programa `cobol-hello-world.cbl` e gerando executável `cobol-hello-world.exe`
 
 ```sh
 $ cobc -free -x -o cobol-hello-world.exe cobol-hello-world.cbl
