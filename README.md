@@ -41,6 +41,7 @@ __Normal__:
 * [Docker - Chef-server](#416-docker---chef-server)
 * [Hercules](#319-hercules-mainframe-emulator)
 * [Transmission-cli/Torrent Client](#320-transmission-cli)
+* [Open Cobol](#321-transmission-cli)
 
 Low Priority:
 
@@ -717,6 +718,91 @@ sudo apt install transmission-cli -y
 
 ```sh
 ```
+
+
+---
+#### 3.21. Compilador Cobol Free Linux
+
+#### a. Installation procedure
+
+* [Compilador Cobol Free Linux Ubuntu](https://www.edivaldobrito.com.br/como-instalar-um-compilador-cobol-e-executar-um-programa-cobol-no-ubuntu/)
+* [Instalando Cobol Free no Linux](https://medium.com/@sousandrosilveira/instalando-cobol-no-linux-e72c1df13589)
+
+
+* Installing
+
+1. Update SO Ubuntu
+  
+```sh
+sudo apt-get update
+```
+
+2. Instalar Compilador Cobol
+
+```sh
+sudo apt-get install open-cobol
+```
+
+3. Checando instalação
+
+```sh
+$ sudo whereis cobc
+cobc: /usr/bin/cobc /usr/share/man/man1/cobc.1.gz
+
+$ sudo which cobc
+/usr/bin/cobc
+
+$ cobc -V
+cobc (OpenCOBOL) 1.1.0
+Copyright (C) 2001-2009 Keisuke Nishida / Roger While
+Built    Aug 04 2016 15:56:22
+Packaged Feb 06 2009 10:30:55 CET
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* Construindo um programa `cobol-hello-world.cbl`
+
+```sh
+$ vi cobol-hello-world.cbl
+identification division.
+program-id. cobol-hello-world.
+procedure division.
+    display 'hello, Cobol World!'.
+    stop run.
+```
+
+* Compilando programa `cobol-hello-world.cbl` e gerando executável `hello-exe`
+
+```sh
+$ cobc -free -x -o cobol-hello-world.exe cobol-hello-world.cbl
+```
+
+* Verificando o resultado da compilação
+
+```sh
+$ ls -la cobol-hello*
+-rw-rw-r-- 1 ubuntu ubuntu   126 Feb  1 14:55 cobol-hello-world.cbl
+-rwxrwxr-x 1 ubuntu ubuntu 13200 Feb  1 14:55 cobol-hello-world.exe
+```
+
+* Verificando o resultado da execução do programa
+
+```sh
+$ ./cobol-hello-world.exe
+hello, Cobol World!
+```
+
 
 
 ---
