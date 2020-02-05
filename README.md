@@ -42,6 +42,9 @@ __Normal__:
 * [Hercules](#319-hercules-mainframe-emulator)
 * [Transmission-cli/Torrent Client](#320-transmission-cli)
 * [Open Cobol](#321-compilador-cobol-free-linux)
+* [Maven for Linux](#322-maven-for-linux)
+* [Atlassian Bamboo for Linux Ubuntu](#323-atlassian-bamboo-for-linux-ubuntu)
+* [Atlassian Jira Software Jira Core for Linux Ubuntu](#324-atlassian-jira-software-for-linux-ubuntu)
 
 Low Priority:
 
@@ -803,6 +806,193 @@ $ ./cobol-hello-world.exe
 hello, Cobol World!
 ```
 
+
+---
+#### 3.22. Maven for Linux
+
+#### a. Installation procedure
+
+1. Download package Maven Binary
+  
+```sh
+$ cd ~
+$ wget https://www-eu.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz
+$ ls -la apache-maven*
+-rw-rw-r-- 1 ubuntu ubuntu 9506321 Nov 19 21:50 apache-maven-3.6.3-bin.tar.gz
+```
+
+2. Desempacotar binarios no home de aplicações opcionais  `/opt/`
+
+```sh
+$ cd /opt
+$ sudo tar -xvf ~/apache-maven-3.6.3-bin.tar.gz
+$ ls -lar /opt/apache-maven
+
+```
+
+3. Adicionar o caminho do Maven ao path
+
+```sh
+$ export PATH=$PATH:/opt/apache-maven-3.6.3/bin
+$ echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/opt/apache-maven-3.6.3/bin
+```
+
+
+---
+#### 3.23. Atlassian Bamboo for Linux Ubuntu
+
+#### a. Installation procedure
+
+1. [Download binary step-by-step](doc/README_DownloadBamboo_StepByStep.md)
+  
+2. Install Bamboo - from (tar.gz) - Linux Ubuntu
+  
+```sh
+$ mkdir /opt
+$ cd    /opt
+$ tar -xvf ~/atlassian-bamboo-6.10.4.tar.gz
+$ mkdir /opt/atlassian-bamboo-data
+```
+
+
+3. Configurar o Bamboo Data Directory
+
+```sh
+$ cd /opt/atlassian-bamboo-6.10.4
+$ find . -name bamboo-init.properties
+./atlassian-bamboo/WEB-INF/classes/bamboo-init.properties
+$ sudo vim  ./atlassian-bamboo/WEB-INF/classes/bamboo-init.properties
+# Do not modify this file unless instructed. It is here to store the location of the JIRA home directory only and is typically written to by the installer.
+jira.home =/opt/atlassian-jira-software-8.7.0-standalone
+```
+
+
+4. Iniciar o serviço do Bamboo
+
+```sh
+$ cd /opt/atlassian-bamboo-6.10.4/bin
+$ ls  *.sh
+catalina.sh  setclasspath.sh  shutdown.sh      startup.sh      tool-wrapper.sh
+digest.sh    setenv.sh        start-bamboo.sh  stop-bamboo.sh  version.sh
+$ sudo ./start-bamboo.sh
+```
+
+
+5. [Install Bamboo License step-by-step](doc/README_InstallBambooLicense_StepByStep.md)
+
+
+6. Finalizar o serviço do Bamboo
+
+```sh
+$ cd /opt/atlassian-bamboo-6.10.4/bin
+$ ls  *.sh
+catalina.sh  setclasspath.sh  shutdown.sh      startup.sh      tool-wrapper.sh
+digest.sh    setenv.sh        start-bamboo.sh  stop-bamboo.sh  version.sh
+$ sudo ./shutdown.sh -c
+```
+
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
+
+---
+#### 3.24. Atlassian Jira Software e Jira Core for Linux Ubuntu
+
+#### a. Installation procedure
+
+1. [Download binary step-by-step](doc/README_DownloadJiraSoftwareJiraCore_StepByStep.md)
+  
+2. Install Jira Software e Jira Core - from (tar.gz) - Linux Ubuntu
+  
+```sh
+$ mkdir /opt
+$ cd    /opt
+$ sudo tar -xvf ~/atlassian-jira-software-8.7.0.tar.gz
+$ sudo mkdir /opt/atlassian-jira-software-home
+$ cd    /opt
+$ sudo mkdir /opt/atlassian-jira-core-home
+$ sudo tar -xvf ~/atlassian-jira-core-8.7.0.tar.gz
+```
+
+3. Configurar o Jira Home
+
+```sh
+$ sudo mkdir -p /var/atlassian/application-data/jira
+$ sudo chmod 777 /var/atlassian/application-data/jira
+$ cd /opt/atlassian-jira-software-8.7.0-standalone/
+$ find . -name jira-application.properties
+./atlassian-jira/WEB-INF/classes/jira-application.properties
+$ sudo vim  ./atlassian-jira/WEB-INF/classes/jira-application.properties
+# Do not modify this file unless instructed. It is here to store the location of the JIRA home directory only and is typically written to by the installer.
+jira.home =/opt/atlassian-jira-software-home
+
+$ cd /opt/atlassian-jira-core-8.7.0-standalone/
+$ find . -name jira-application.properties
+./atlassian-jira/WEB-INF/classes/jira-application.properties
+$ sudo vim  ./atlassian-jira/WEB-INF/classes/jira-application.properties
+# Do not modify this file unless instructed. It is here to store the location of the JIRA home directory only and is typically written to by the installer.
+jira.home =/opt/atlassian-jira-core-home
+
+$ 
+```
+
+
+4. Iniciar o serviço do Jira Software e Jira Core
+
+```sh
+$ cd /opt/atlassian-jira-software-8.7.0-standalone/bin
+$ ls  *.sh
+catalina.sh    digest.sh              setenv.sh         stop-jira.sh
+check-java.sh  display-help.sh        set-gc-params.sh  tool-wrapper.sh
+config.sh      install_fontconfig.sh  shutdown.sh       user.sh
+configtest.sh  setclasspath.sh        start-jira.sh     version.sh
+daemon.sh      setenv32.sh            startup.sh
+$ sudo ./start-jira.sh -fg
+```
+
+
+5. [Install Jira Software e Jira Core License step-by-step](doc/README_InstallJiraCoreLicense_StepByStep.md.md)
+
+
+6. Finalizar o serviço do Bamboo
+
+```sh
+$ cd /opt/atlassian-jira-software-8.7.0-standalone/bin
+$ ls  *.sh
+catalina.sh    digest.sh              setenv.sh         stop-jira.sh
+check-java.sh  display-help.sh        set-gc-params.sh  tool-wrapper.sh
+config.sh      install_fontconfig.sh  shutdown.sh       user.sh
+configtest.sh  setclasspath.sh        start-jira.sh     version.sh
+daemon.sh      setenv32.sh            startup.sh
+$ sudo ./shutdown.sh
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
 
 
 ---
