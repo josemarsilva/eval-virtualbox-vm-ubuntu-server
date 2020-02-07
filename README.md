@@ -45,6 +45,7 @@ __Normal__:
 * [Maven for Linux](#322-maven-for-linux)
 * [Atlassian Bamboo for Linux Ubuntu](#323-atlassian-bamboo-for-linux-ubuntu)
 * [Atlassian Jira Software Jira Core for Linux Ubuntu](#324-atlassian-jira-software-for-linux-ubuntu)
+* [Atlassian Bitbucket for Linux Ubuntu](#325-atlassian-bitbucket-for-linux-ubuntu)
 
 Low Priority:
 
@@ -871,6 +872,7 @@ jira.home =/opt/atlassian-jira-software-8.7.0-standalone
 4. Iniciar o serviço do Bamboo
 
 ```sh
+$ sudo chown -R ubuntu:ubuntu /opt/atlassian-bamboo-6.10.4/bin
 $ cd /opt/atlassian-bamboo-6.10.4/bin
 $ ls  *.sh
 catalina.sh  setclasspath.sh  shutdown.sh      startup.sh      tool-wrapper.sh
@@ -879,10 +881,30 @@ $ sudo ./start-bamboo.sh
 ```
 
 
-5. [Install Bamboo License step-by-step](doc/README_InstallBambooLicense_StepByStep.md)
+5. Criar Scrit de `start` e `stop` do serviço do Bamboo
+
+```sh
+$ vim start-bamboo.sh
+#!/bin/bash
+
+cd /opt/atlassian-bamboo-6.10.4/bin
+
+./start-bamboo.sh
+```
+
+```sh
+$ vim stop-bamboo.sh
+#!/bin/bash
+
+cd /opt/atlassian-bamboo-6.10.4/bin
+
+./stop-bamboo.sh
+```
+
+6. [Install Bamboo License step-by-step](doc/README_InstallBambooLicense_StepByStep.md)
 
 
-6. Finalizar o serviço do Bamboo
+7. Finalizar o serviço do Bamboo
 
 ```sh
 $ cd /opt/atlassian-bamboo-6.10.4/bin
@@ -927,7 +949,7 @@ $ sudo mkdir /opt/atlassian-jira-core-home
 $ sudo tar -xvf ~/atlassian-jira-core-8.7.0.tar.gz
 ```
 
-3. Configurar o Jira Home
+3. Configurar o Jira Home (Software e Core)
 
 ```sh
 $ sudo mkdir -p /var/atlassian/application-data/jira
@@ -950,9 +972,31 @@ $
 ```
 
 
-4. Iniciar o serviço do Jira Software e Jira Core
+4. Criar Scrit de `start` e `stop` do serviço do Jira (Software e Core)
 
 ```sh
+vim start-jira-software.sh
+#!/bin/bash
+
+cd /opt/atlassian-jira-software-8.7.0-standalone/bin
+
+./start-jira.sh
+```
+
+```sh
+vim stop-jira-software.sh
+#!/bin/bash
+
+cd /opt/atlassian-jira-software-8.7.0-standalone/bin
+
+./stop-jira.sh
+```
+
+
+5. Iniciar o serviço do Jira Software e Jira Core
+
+```sh
+$ sudo chown -R ubuntu:ubuntu /opt/atlassian-bamboo-6.10.4/bin
 $ cd /opt/atlassian-jira-software-8.7.0-standalone/bin
 $ ls  *.sh
 catalina.sh    digest.sh              setenv.sh         stop-jira.sh
@@ -979,6 +1023,108 @@ configtest.sh  setclasspath.sh        start-jira.sh     version.sh
 daemon.sh      setenv32.sh            startup.sh
 $ sudo ./shutdown.sh
 ```
+
+
+#### b. Configuration management
+
+* n/a
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
+
+---
+#### 3.25. Atlassian Bitbucket
+
+#### a. Installation procedure
+
+1. [Download binary step-by-step](doc/README_DownloadBitbucket_StepByStep.md)
+  
+2. Install Bitbucket - from (tar.gz) - Linux Ubuntu
+  
+```sh
+$ mkdir /opt
+$ cd    /opt
+$ tar -xvf ~/atlassian-bitbucket-6.10.0.tar.gz
+$ mkdir /opt/atlassian-bitbucket-data
+```
+
+
+3. Configurar o Bitbucket Data Directory
+
+```sh
+$ cd /opt/atlassian-bitbucket-6.10.0
+$ find . -name build.properties
+./app/WEB-INF/classes/build.properties
+$ vim  ./app/WEB-INF/classes/build.properties
+```
+
+
+4. Iniciar o serviço do Bamboo
+
+```sh
+$ sudo chown -R ubuntu:ubuntu /opt/atlassian-bitbucket-6.10.0
+$ cd /opt/atlassian-bitbucket-6.10.0/bin
+$ ls  *.sh
+install_linux_service.sh  set-jre-home.sh     stop-bitbucket.sh
+set-bitbucket-home.sh     start-bitbucket.sh  _stop-search.sh
+set-bitbucket-user.sh     _start-search.sh    _stop-webapp.sh
+set-jmx-opts.sh           _start-webapp.sh
+$ export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+$ export JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+$ export BITBUCKET_HOME=/opt/atlassian-bitbucket-data
+$ ./start-bitbucket.sh
+```
+
+
+5. Criar Scrit de `start` e `stop` do serviço do Bamboo
+
+```sh
+$ vim /opt/start-bitbucket.sh
+#!/bin/bash
+
+cd /opt/atlassian-bitbucket-6.10.0/bin
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export BITBUCKET_HOME=/opt/atlassian-bitbucket-data
+
+./start-bitbucket.sh
+```
+
+```sh
+$ vim /opt/stop-bitbucket.sh
+#!/bin/bash
+
+cd /opt/atlassian-bitbucket-6.10.0/bin
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export BITBUCKET_HOME=/opt/atlassian-bitbucket-data
+
+./stop-bitbucket.sh
+```
+
+
+6. [Install Bamboo License step-by-step](doc/README_InstallBambooLicense_StepByStep.md)
+
+
+7. Finalizar o serviço do Bamboo
+
+```sh
+$ cd /opt/atlassian-bamboo-6.10.4/bin
+$ ls  *.sh
+catalina.sh  setclasspath.sh  shutdown.sh      startup.sh      tool-wrapper.sh
+digest.sh    setenv.sh        start-bamboo.sh  stop-bamboo.sh  version.sh
+$ sudo ./shutdown.sh -c
+```
+
 
 
 #### b. Configuration management
