@@ -44,7 +44,7 @@ __Normal__:
 * [Open Cobol](#321-compilador-cobol-free-linux)
 * [Maven for Linux](#322-maven-for-linux)
 * [Atlassian Bamboo for Linux Ubuntu](#323-atlassian-bamboo-for-linux-ubuntu)
-* [Atlassian Jira Software Jira Core for Linux Ubuntu](#324-atlassian-jira-software-for-linux-ubuntu)
+* [Atlassian Jira Software Jira Core for Linux Ubuntu](#324-atlassian-jira-software-e-jira-core-for-linux-ubuntu)
 * [Atlassian Bitbucket for Linux Ubuntu](#325-atlassian-bitbucket-for-linux-ubuntu)
 
 Low Priority:
@@ -1058,7 +1058,7 @@ $ ./shutdown.sh
 
 
 ---
-#### 3.25. Atlassian Bitbucket
+#### 3.25. Atlassian Bitbucket for Linux Ubuntu
 
 #### a. Installation procedure
 
