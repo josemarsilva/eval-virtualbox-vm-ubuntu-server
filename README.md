@@ -862,10 +862,10 @@ $ mkdir /opt/atlassian-bamboo-data
 ```sh
 $ cd /opt/atlassian-bamboo-6.10.4
 $ find . -name bamboo-init.properties
-./atlassian-bamboo/WEB-INF/classes/bamboo-init.properties
-$ sudo vim  ./atlassian-bamboo/WEB-INF/classes/bamboo-init.properties
-# Do not modify this file unless instructed. It is here to store the location of the JIRA home directory only and is typically written to by the installer.
-jira.home =/opt/atlassian-jira-software-8.7.0-standalone
+./atlassian-bamboo-6.10.4/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties
+$ vim  ./atlassian-bamboo-6.10.4/WEB-INF/classes/bamboo-init.properties
+## You can specify your bamboo.home property here or in your system environment variables.
+bamboo.home=/opt/atlassian-bamboo-data
 ```
 
 
@@ -877,14 +877,14 @@ $ cd /opt/atlassian-bamboo-6.10.4/bin
 $ ls  *.sh
 catalina.sh  setclasspath.sh  shutdown.sh      startup.sh      tool-wrapper.sh
 digest.sh    setenv.sh        start-bamboo.sh  stop-bamboo.sh  version.sh
-$ sudo ./start-bamboo.sh
+$ ./start-bamboo.sh
 ```
 
 
 5. Criar Scrit de `start` e `stop` do serviço do Bamboo
 
 ```sh
-$ vim start-bamboo.sh
+$ vim /opt/start-bamboo.sh
 #!/bin/bash
 
 cd /opt/atlassian-bamboo-6.10.4/bin
@@ -893,13 +893,22 @@ cd /opt/atlassian-bamboo-6.10.4/bin
 ```
 
 ```sh
-$ vim stop-bamboo.sh
+$ chmod 777 /opt/start-bamboo.sh
+```
+
+```sh
+$ vim /opt/stop-bamboo.sh
 #!/bin/bash
 
 cd /opt/atlassian-bamboo-6.10.4/bin
 
 ./stop-bamboo.sh
 ```
+
+```sh
+$ chmod 777 /opt/stop-bamboo.sh
+```
+
 
 6. [Install Bamboo License step-by-step](doc/README_InstallBambooLicense_StepByStep.md)
 
@@ -942,40 +951,40 @@ $ sudo ./shutdown.sh -c
 ```sh
 $ mkdir /opt
 $ cd    /opt
-$ sudo tar -xvf ~/atlassian-jira-software-8.7.0.tar.gz
-$ sudo mkdir /opt/atlassian-jira-software-home
+$ tar -xvf ~/atlassian-jira-software-8.7.0.tar.gz
+$ mkdir /opt/atlassian-jira-software-home
 $ cd    /opt
-$ sudo mkdir /opt/atlassian-jira-core-home
-$ sudo tar -xvf ~/atlassian-jira-core-8.7.0.tar.gz
+$ mkdir /opt/atlassian-jira-core-home
+$ tar -xvf ~/atlassian-jira-core-8.7.0.tar.gz
 ```
 
 3. Configurar o Jira Home (Software e Core)
 
 ```sh
-$ sudo mkdir -p /var/atlassian/application-data/jira
-$ sudo chmod 777 /var/atlassian/application-data/jira
+$ mkdir -p /var/atlassian/application-data/jira
+$ chmod 777 /var/atlassian/application-data/jira
 $ cd /opt/atlassian-jira-software-8.7.0-standalone/
 $ find . -name jira-application.properties
 ./atlassian-jira/WEB-INF/classes/jira-application.properties
-$ sudo vim  ./atlassian-jira/WEB-INF/classes/jira-application.properties
+$ vim  ./atlassian-jira/WEB-INF/classes/jira-application.properties
 # Do not modify this file unless instructed. It is here to store the location of the JIRA home directory only and is typically written to by the installer.
 jira.home =/opt/atlassian-jira-software-home
+```
 
+```sh
 $ cd /opt/atlassian-jira-core-8.7.0-standalone/
 $ find . -name jira-application.properties
 ./atlassian-jira/WEB-INF/classes/jira-application.properties
-$ sudo vim  ./atlassian-jira/WEB-INF/classes/jira-application.properties
+$ vim ./atlassian-jira/WEB-INF/classes/jira-application.properties
 # Do not modify this file unless instructed. It is here to store the location of the JIRA home directory only and is typically written to by the installer.
 jira.home =/opt/atlassian-jira-core-home
-
-$ 
 ```
 
 
 4. Criar Scrit de `start` e `stop` do serviço do Jira (Software e Core)
 
 ```sh
-vim start-jira-software.sh
+$ vim /opt/start-jira-software.sh
 #!/bin/bash
 
 cd /opt/atlassian-jira-software-8.7.0-standalone/bin
@@ -984,13 +993,22 @@ cd /opt/atlassian-jira-software-8.7.0-standalone/bin
 ```
 
 ```sh
-vim stop-jira-software.sh
+$ chmod 777 /opt/start-jira-software.sh
+```
+
+```sh
+$ vim /opt/stop-jira-software.sh
 #!/bin/bash
 
 cd /opt/atlassian-jira-software-8.7.0-standalone/bin
 
 ./stop-jira.sh
 ```
+
+```sh
+$ chmod 777 /opt/stop-jira-software.sh
+```
+
 
 
 5. Iniciar o serviço do Jira Software e Jira Core
@@ -1004,14 +1022,14 @@ check-java.sh  display-help.sh        set-gc-params.sh  tool-wrapper.sh
 config.sh      install_fontconfig.sh  shutdown.sh       user.sh
 configtest.sh  setclasspath.sh        start-jira.sh     version.sh
 daemon.sh      setenv32.sh            startup.sh
-$ sudo ./start-jira.sh -fg
+$ ./start-jira.sh
 ```
 
 
-5. [Install Jira Software e Jira Core License step-by-step](doc/README_InstallJiraCoreLicense_StepByStep.md.md)
+5. [Install Jira Software e Jira Core License step-by-step](doc/README_InstallJiraCoreLicense_StepByStep.md)
 
 
-6. Finalizar o serviço do Bamboo
+6. Finalizar o serviço do Jira Software Core
 
 ```sh
 $ cd /opt/atlassian-jira-software-8.7.0-standalone/bin
@@ -1021,7 +1039,7 @@ check-java.sh  display-help.sh        set-gc-params.sh  tool-wrapper.sh
 config.sh      install_fontconfig.sh  shutdown.sh       user.sh
 configtest.sh  setclasspath.sh        start-jira.sh     version.sh
 daemon.sh      setenv32.sh            startup.sh
-$ sudo ./shutdown.sh
+$ ./shutdown.sh
 ```
 
 
@@ -1062,14 +1080,13 @@ $ mkdir /opt/atlassian-bitbucket-data
 $ cd /opt/atlassian-bitbucket-6.10.0
 $ find . -name build.properties
 ./app/WEB-INF/classes/build.properties
-$ vim  ./app/WEB-INF/classes/build.properties
+$ vim ./app/WEB-INF/classes/build.properties
 ```
 
 
 4. Iniciar o serviço do Bamboo
 
 ```sh
-$ sudo chown -R ubuntu:ubuntu /opt/atlassian-bitbucket-6.10.0
 $ cd /opt/atlassian-bitbucket-6.10.0/bin
 $ ls  *.sh
 install_linux_service.sh  set-jre-home.sh     stop-bitbucket.sh
@@ -1099,6 +1116,10 @@ export BITBUCKET_HOME=/opt/atlassian-bitbucket-data
 ```
 
 ```sh
+$ chmod 777 /opt/start-bitbucket.sh
+```
+
+```sh
 $ vim /opt/stop-bitbucket.sh
 #!/bin/bash
 
@@ -1111,8 +1132,12 @@ export BITBUCKET_HOME=/opt/atlassian-bitbucket-data
 ./stop-bitbucket.sh
 ```
 
+```sh
+$ chmod 777 /opt/stop-bitbucket.sh
+```
 
-6. [Install Bamboo License step-by-step](doc/README_InstallBambooLicense_StepByStep.md)
+
+6. [Install Bitbucket License step-by-step](doc/README_InstallBitbucketLicense_StepByStep.md)
 
 
 7. Finalizar o serviço do Bamboo
