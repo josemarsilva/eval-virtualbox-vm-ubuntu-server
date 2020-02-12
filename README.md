@@ -27,7 +27,7 @@ __Normal__:
 * [Docker - Jenkins](#47-docker---jenkins)
 * [Docker Composer - PostgreSQL e pgAdmin4](#44-docker-composer---postgresql-96-pgadmin4)
 * [Docker Composer - MySQL e phpMyAdmin](#43-docker-composer---mysql-57--php-myadmin)
-* [Docker Composer - Wordpress](#45-docker-composer---wordpress-mysql-57)
+* [Docker Composer - Wordpress](#317-wordpress)
 * [Docker Composer - MongoDB](#48-docker-composer---mongodb)
 * [Docker Composer - R](#49-docker-composer---redmine)
 * [Docker Composer - Kafka](#410-docker-composer---kafka)
@@ -107,6 +107,67 @@ pgAdmin4          | 16543
 * [Passo a passo da configuração da rede do Virtual Box](doc/README_NetworkConfiguration_StepByStep.md)
 
 
+---
+#### 2.4. Configure default Time Zone
+
+* Executar configuracao de Time Zone
+
+```sh
+$ sudo dpkg-reconfigure tzdata
+```
+
+* Select Geographic area: `America`
+  * Select Time zone: `São Paulo`
+
+```sh
+Package configuration
+
+  ┌─────────────────────────┤ Configuring tzdata ├──────────────────────────┐
+  │ Please select the geographic area in which you live. Subsequent         │
+  │ configuration questions will narrow this down by presenting a list of   │
+  │ cities, representing the time zones in which they are located.          │
+  │                                                                         │
+  │ Geographic area:                                                        │
+  │                                                                         │
+  │                          Africa                 ↑                       │
+  │                          America                ▮                       │
+  │                          Antarctica             ▒                       │
+  │                          Australia              ▒                       │
+  │                          Arctic Ocean           ▒                       │
+  │                          Asia                   ▒                       │
+  │                          Atlantic Ocean         ▒                       │
+  │                          Europe                 ↓                       │
+  │                                                                         │
+  │                                                                         │
+  │                   <Ok>                       <Cancel>                   │
+  │                                                                         │
+  └─────────────────────────────────────────────────────────────────────────┘
+```
+
+```sh
+Package configuration
+
+     ┌───────────────────────┤ Configuring tzdata ├───────────────────────┐
+     │ Please select the city or region corresponding to your time zone.  │
+     │                                                                    │
+     │ Time zone:                                                         │
+     │                                                                    │
+     │                    Recife                       ↑                  │
+     │                    Regina                       ▒                  │
+     │                    Resolute                     ▒                  │
+     │                    Rio Branco                   ▒                  │
+     │                    Santa Isabel                 ▒                  │
+     │                    Santarém                     ▒                  │
+     │                    Santiago                     ▒                  │
+     │                    Santo Domingo                ▮                  │
+     │                    São Paulo                    ▒                  │
+     │                    Scoresbysund                 ↓                  │
+     │                                                                    │
+     │                                                                    │
+     │                 <Ok>                     <Cancel>                  │
+     │                                                                    │
+     └────────────────────────────────────────────────────────────────────┘
+```
 
 
 ---
@@ -422,6 +483,20 @@ sudo systemctl status nginx
 cd /tmp ; wget "http://localhost" ; cd ~ ; cat /tmp/index.html
 sudo systemctl stop    nginx
 sudo systemctl disable nginx
+```
+
+#### b. Configuring
+
+```sh
+$ sudo mkdir -p /var/www/virtualbox/html
+$ sudo chown -R $USER:$USER /var/www/virtualbox/html
+$ sudo chmod -R 755 /var/www/virtualbox
+$ mkdir -p /opt/devops-labs-share/environment
+$ mkdir -p /opt/devops-labs-share/package-release
+$ ln -s /opt/devops-labs-share /var/www/virtualbox/html/devops-labs-share
+$ sudo vim /etc/nginx/sites-available/virtualbox
+$ sudo ln -s /etc/nginx/sites-available/virtualbox /etc/nginx/sites-enabled/
+$ sudo nginx -t
 ```
 
 ---
@@ -2425,7 +2500,7 @@ $ sudo docker run -v jiraVolume:/var/atlassian/application-data/jira --name="jir
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - Docker Command Line - Jira Core](doc/images/DeployDiagram%20-%20Context%20-%20DockerCmdLine%20-%20JiraCore.png)
+* n/a
 
 
 #### d. Demonstration
