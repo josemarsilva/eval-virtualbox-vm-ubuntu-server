@@ -2247,8 +2247,7 @@ Password: passw0rd
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - DockerCompose - MQ-Series](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20MQ-Series.png)
-
+* n/a
 
 #### d. Demonstration
 
