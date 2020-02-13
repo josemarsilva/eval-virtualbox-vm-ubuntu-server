@@ -32,7 +32,7 @@ __Normal__:
 * [Docker Composer - R](#49-docker-composer---redmine)
 * [Docker Composer - Kafka](#410-docker-composer---kafka)
 * [Docker Composer - Cassandra](#411-docker-composer---cassandra)
-* [Docker Composer - MQ-Series](#412-docker-composer---mq-series)
+* [Docker Composer - MQ-Series](#412-docker---mq-series)
 * [Docker Composer - SugarCRM](#413-docker-composer---sugarcrm)
 * [Docker - Bamboo Server](#414-docker---bamboo-server)
 * [Docker - Jira Core](#421-docker---jira-core)
@@ -2151,7 +2151,7 @@ $ sudo docker-compose -f docker-compose-cassandra.yml down -d
 
 
 ---
-#### 4.12. Docker Composer - MQ-Series
+#### 4.12. Docker - MQ-Series
 
 #### a. Installation procedure
 
