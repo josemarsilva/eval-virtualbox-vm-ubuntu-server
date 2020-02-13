@@ -2158,23 +2158,91 @@ $ sudo docker-compose -f docker-compose-cassandra.yml down -d
 * [Reading Pre-requisites](https://hub.docker.com/r/ibmcom/mq/)
 * [Reading Pre-requisites - Building a sample IBM MQ queue manager image using Docker](https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_9.0.0/com.ibm.mq.con.doc/q114483_.htm)
 * [Reading Pre-requisites - Building a sample base IBM MQ queue manager image](https://www.ibm.com/support/knowledgecenter/en/SSFKSJ_9.0.0/com.ibm.mq.con.doc/q114485_.htm)
+* [IBM MQ JMS samples - Messaging developer patterns (Put/Get, Pub/Sub, Request/Response)](https://github.com/ibm-messaging/mq-docker#overview)
 
-* Using Docker Dockerfile:
-
-* Step 1: Create network
+* Download Docker image
 
 ```sh
-mkdir mq-series
-git clone -b mq-9-lts https://github.com/ibm-messaging/mq-docker mq-docker
-git clone https://github.com/ibm-messaging/mq-container mq-container
-ip addr show
-
+$ sudo docker pull ibmcom/mq
 ```
 
+* Run Docker Image with defaults configuration
+
+```sh
+$ sudo docker run \
+  --env LICENSE=accept \
+  --env MQ_QMGR_NAME=QM1 \
+  --publish 1414:1414 \
+  --publish 9443:9443 \
+  --detach \
+  ibmcom/mq
+```
+
+* Create Docker Volumes
+
+```sh
+$ sudo docker volume create qm1data
+```
+
+* Run Docker Image with Volumes
+
+```sh
+$ sudo docker run \
+  --env LICENSE=accept \
+  --env MQ_QMGR_NAME=QM1 \
+  --publish 1414:1414 \
+  --publish 9443:9443 \
+  --detach \
+  --volume qm1data:/mnt/mqm \
+  ibmcom/mq
+```
+
+* Executando comandos dentro da instância Docker 
+
+```sh
+$ CONTAINER_ID=`sudo docker ps | grep ibmcom/mq | cut -d ' ' -f 1`
+$ echo CONTAINER_ID = $CONTAINER_ID
+$ sudo docker exec \
+  --tty \
+  --interactive \
+  ${CONTAINER_ID} \
+  dspmq
+```
 
 #### b. Configuration management
 
-* url: `http://localhost:8080/
+* url: `https://127.0.0.1:9443/ibmmq/console`
+
+
+* [MQ Developer Defaults](https://github.com/ibm-messaging/mq-docker#mq-developer-defaults)
+
+```sh
+Userid: admin Groups: mqm Password: passw0rd
+Userid: app Groups: mqclient Password:
+Queues: 
+  DEV.QUEUE.1 
+  DEV.QUEUE.2 
+  DEV.QUEUE.3 
+  DEV.DEAD.LETTER.QUEUE - Set as the Queue Manager's Dead Letter Queue.
+Channels:
+  DEV.ADMIN.SVRCONN - Set to only allow the admin user to connect into it and a Userid + Password must be supplied.
+  DEV.APP.SVRCONN - Does not allow Administrator users to connect.
+Listener:
+  DEV.LISTENER.TCP - Listening on Port 1414.
+Topic:
+  DEV.BASE.TOPIC - With a topic string of dev/.
+Authentication information
+  DEV.AUTHINFO - Set to use OS as the user repository and adopt supplied users for authorization checks
+Authority records
+  Users in mqclient group have been given access connect to all Queues and topics starting with DEV.** and have put get pub and sub permissions.
+```
+
+* [Web Console - Configuration](https://github.com/ibm-messaging/mq-docker#web-console)
+
+```sh
+User: admin
+Password: passw0rd
+```
 
 
 #### c. Deploy Diagram
@@ -2184,13 +2252,20 @@ ip addr show
 
 #### d. Demonstration
 
-  * Subindo **docker-compose** com arquivo de configuração `docker-compose-MQ-Series.yml`:
+* url: `https://127.0.0.1:9443/ibmmq/console`
 
 ```sh
-$ sudo docker-compose -f docker-compose-MQ-Series.yml up -d
++-----------------------------------------+
+| IBM MQ Console - Login                  |
+|                                         |
+|      Nome do usuário: [ admin    ]      |
+|      Senha:           [ passw0rd ]      |
++-----------------------------------------+
 ```
 
-  * Conectando ao MQ-Series `????` :
+* Console
+
+![printscreen-ibmmq-console-01.png](doc/images/printscreen-ibmmq-console-01.png)
 
 
 ---
