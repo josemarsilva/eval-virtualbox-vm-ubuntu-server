@@ -2312,8 +2312,7 @@ $ sudo docker-compose -f docker-compose-sugarcrm.yml up
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - DockerCompose - Cassandra](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20SugarCrm.png)
-
+* n/a
 
 #### d. Demonstration
 
@@ -2350,8 +2349,7 @@ $ sudo docker run -v bambooVolume:/var/atlassian/application-data/bamboo --name=
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - Docker Command Line - Bamboo](doc/images/DeployDiagram%20-%20Context%20-%20DockerCmdLine%20-%20Bamboo.png)
-
+* n/a
 
 #### d. Demonstration
 
@@ -2619,8 +2617,7 @@ $ ! docker run -v /data/your-confluence-home:/var/atlassian/application-data/con
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - Docker Command Line - Jira Core](doc/images/DeployDiagram%20-%20Context%20-%20DockerCmdLine%20-%20JiraCore.png)
-
+* n/a
 
 #### d. Demonstration
 
