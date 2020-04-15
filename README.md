@@ -46,6 +46,7 @@ __Normal__:
 * [Atlassian Bamboo for Linux Ubuntu](#323-atlassian-bamboo-for-linux-ubuntu)
 * [Atlassian Jira Software Jira Core for Linux Ubuntu](#324-atlassian-jira-software-e-jira-core-for-linux-ubuntu)
 * [Atlassian Bitbucket for Linux Ubuntu](#325-atlassian-bitbucket-for-linux-ubuntu)
+* [Atlassian Bamboo agent for Windows](#326-atlassian-bamboo-agent-for-windows)
 
 Low Priority:
 
@@ -1239,6 +1240,85 @@ $ sudo ./shutdown.sh -c
 #### d. Demonstration
 
 * n/a
+
+
+---
+#### 3.26. Atlassian Bamboo Agent for Windows
+
+#### a. Installation procedure
+
+1. Download binary from your bamboo server
+
+* Login into your Bamboo Server `http://127.0.0.1:8085/` 
+* Go to _top menu_ option `Bamboo :: Agents` or `http://127.0.0.1:8085/admin/administer.action`
+* Go to _left menu_ option `Bamboo :: Build Source >> Agents`
+* Go to _left tab_ option `Install Remote Agent`
+* Click on link `Download Remote Agent Jar`
+
+2. Create a runner (.bat)
+
+* Edit run-bamboo-agent.bat
+
+```bat
+java -jar atlassian-bamboo-agent-installer-6.10.4.jar http://127.0.0.1:8085/agentServer/
+```
+  
+3. Startup Bamboo Agent 
+
+```bat
+C:\...\> run-bamboo-agent.bat
+```
+
+4. Approve *Bamboo Agent* on *Bamboo Server*
+
+* You should see on Bamboo Agent console something like ...
+
+```console
+INFO   | jvm 1    | 2020/03/26 20:37:58 | *
+INFO   | jvm 1    | 2020/03/26 20:37:58 | * This agent requires manual approval.
+INFO   | jvm 1    | 2020/03/26 20:37:58 | * UUID: 3204f17a-7654-46b2-8aee-f4108fb002aa
+INFO   | jvm 1    | 2020/03/26 20:37:58 | * Message from the server is:
+INFO   | jvm 1    | 2020/03/26 20:37:58 | * Approve this agent at 'http://127.0.0.1:8085/admin/agent/viewAgents.action?focusUuid=3204f17a-7654-46b2-8aee-f4108fb002aa&selectedTab=Agent+authentication'. Check that the IP is correct.
+INFO   | jvm 1    | 2020/03/26 20:37:58 | * Next authentication attempt in 60 seconds...
+```
+
+* Go back to _top menu_ option `Bamboo :: Agents` or `http://127.0.0.1:8085/admin/administer.action`
+* Go to _left menu_ option `Bamboo :: Build Source >> Agents`
+* Go to session *Remote agents* On the _bottom of page_ 
+* Click on _tab_ *Agent Authentication* you will see something like ...
+
+```ansi
+    IP address  Agent unique ID     status   Operations
+[x] X.X.X.X     <big-number-here>   Waiting  Approve access
+```
+
+* Click on link *Approve access* ...
+* You should see on Bamboo Agent console something like ...
+
+```console
+INFO   | jvm 1    | 2020/03/26 20:40:18 | 2020-03-26 20:40:18,855 INFO [AgentRunnerThread] [AgentRegistrationBean] Current agent remote definition: YOUR-MACHINE-NAME Remote agent on host YOUR-MACHINE-NAME
+INFO   | jvm 1    | 2020/03/26 20:40:19 | 2020-03-26 20:40:19,353 INFO [AgentRunnerThread] [PerforceManager] Could not find system variable. If you wish to use perforce please set the location as a capability.
+INFO   | jvm 1    | 2020/03/26 20:40:22 | 2020-03-26 20:40:22,038 INFO [AgentRunnerThread] [AgentRegistrationBean] Registering agent on the server,
+```
+
+#### b. Configuration management
+
+* Firewall Port: 54663, 8085
+
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
+#### e. References
+
+* [Atlassian](https://confluence.atlassian.com/bamboo0514/bamboo-remote-agent-installation-guide-868986225.html)
+* [Youtube Video - Bamboo Remote Agent Installation](https://www.youtube.com/watch?v=wBXULew_AiI)
+* [Youtube Video - Bamboo Remote Agent Installation - Tutorial](https://www.youtube.com/watch?v=oSPM9qY5YOU)
 
 
 ---
