@@ -409,6 +409,74 @@ sudo systemctl stop    postgresql
 sudo systemctl disable postgresql
 ```
 
+#### b. Configuration managment
+
+* Step-01: Stop PostgreSQL Service
+
+```sh
+$ sudo systemctl stop postgresql
+```
+
+* Step-02: Configure `./postgresql.conf` to accept remote TCP/IP connections from all hosts
+
+```sh
+$ sudo find / -name "postgresql.conf"
+/etc/postgresql/10/main/postgresql.conf
+$ sudo cp /etc/postgresql/10/main/postgresql.conf /etc/postgresql/10/main/postgresql.conf.bkp-2020-06-10
+$ sudo vim /etc/postgresql/10/main/postgresql.conf
+  :
+  listen_addresses = '*' # Listen connections from all hosts
+  :
+$ sudo su - postgres
+```
+
+* Step-03: Configure `./pg_hba.conf` to accept remote TCP/IP connections from all hosts with MD5 authentication
+
+```sh
+$ sudo find / -name "pg_hba.conf"
+/etc/postgresql/10/main/pg_hba.conf
+$ sudo cp /etc/postgresql/10/main/pg_hba.conf /etc/postgresql/10/main/pg_hba.conf.bkp.2020-06-11
+$ sudo vim /etc/postgresql/10/main/pg_hba.conf
+  :
+  # IPv4 local connections:
+  host    all             all             0.0.0.0/0            md5
+  :
+$ sudo su - postgres
+```
+
+* Step-04: Start PostgreSQL Service
+
+```sh
+$ sudo systemctl start postgresql
+```
+
+* Step-05: Create another administrative super user (don't use `postgres`)
+
+```sh
+$ sudo su - postgres
+postgres@ubuntu:~$ psql
+psql (10.12 (Ubuntu 10.12-0ubuntu0.18.04.1))
+Type "help" for help.
+
+postgres=# CREATE USER admin WITH PASSWORD 'admin' CREATEDB;
+CREATE ROLE
+postgres=# \q
+postgres@ubuntu:~$ exit
+logout
+```
+
+* Step-06: Teste remote connectionStatus
+
+```sh
+psql -h 127.0.0.1 -d postgres -U admin
+Password for user admin:
+psql (10.12 (Ubuntu 10.12-0ubuntu0.18.04.1))
+SSL connection (protocol: TLSv1.2, cipher: ECDHE-RSA-AES256-GCM-SHA384, bits: 256, compression: off)
+Type "help" for help.
+
+postgres=> \q
+$
+```
 
 ---
 #### 3.8. MongoDB
@@ -1029,11 +1097,11 @@ $ sudo ./shutdown.sh -c
 ```sh
 $ mkdir /opt
 $ cd    /opt
-$ tar -xvf ~/atlassian-jira-software-8.7.0.tar.gz
+$ tar -xvf ~/atlassian-jira-software-8.9.0.tar.gz
 $ mkdir /opt/atlassian-jira-software-home
 $ cd    /opt
 $ mkdir /opt/atlassian-jira-core-home
-$ tar -xvf ~/atlassian-jira-core-8.7.0.tar.gz
+$ tar -xvf ~/atlassian-jira-core-8.9.0.tar.gz
 ```
 
 3. Configurar o Home do Jira
@@ -1043,7 +1111,7 @@ $ tar -xvf ~/atlassian-jira-core-8.7.0.tar.gz
 ```sh
 $ mkdir -p /var/atlassian/application-data/jira
 $ chmod 777 /var/atlassian/application-data/jira
-$ cd /opt/atlassian-jira-software-8.7.0-standalone/
+$ cd /opt/atlassian-jira-software-8.9.0-standalone/
 $ find . -name jira-application.properties
 ./atlassian-jira/WEB-INF/classes/jira-application.properties
 $ vim  ./atlassian-jira/WEB-INF/classes/jira-application.properties
@@ -1054,7 +1122,7 @@ jira.home =/opt/atlassian-jira-software-home
 3.1.  Configurar o Home do Jira CORE
 
 ```sh
-$ cd /opt/atlassian-jira-core-8.7.0-standalone/
+$ cd /opt/atlassian-jira-core-8.9.0-standalone/
 $ find . -name jira-application.properties
 ./atlassian-jira/WEB-INF/classes/jira-application.properties
 $ vim ./atlassian-jira/WEB-INF/classes/jira-application.properties
@@ -1071,7 +1139,7 @@ jira.home =/opt/atlassian-jira-core-home
 $ vim /opt/start-jira.sh
 #!/bin/bash
 
-cd /opt/atlassian-jira-software-8.7.0-standalone/bin
+cd /opt/atlassian-jira-software-8.9.0-standalone/bin
 
 ./start-jira.sh
 ```
@@ -1084,7 +1152,7 @@ $ chmod 777 /opt/start-jira.sh
 $ vim /opt/stop-jira-software.sh
 #!/bin/bash
 
-cd /opt/atlassian-jira-software-8.7.0-standalone/bin
+cd /opt/atlassian-jira-software-8.9.0-standalone/bin
 
 ./stop-jira.sh
 ```
@@ -1103,8 +1171,8 @@ $ chmod 777 /opt/stop-jira-software.sh
 5.1. Iniciar o serviço do Jira SOFTWARE
 
 ```sh
-$ sudo chown -R ubuntu:ubuntu /opt/atlassian-jira-software-8.7.0-standalone/bin
-$ cd /opt/atlassian-jira-software-8.7.0-standalone/bin
+$ sudo chown -R ubuntu:ubuntu /opt/atlassian-jira-software-8.9.0-standalone/bin
+$ cd /opt/atlassian-jira-software-8.9.0-standalone/bin
 $ ls  *.sh
 catalina.sh    digest.sh              setenv.sh         stop-jira.sh
 check-java.sh  display-help.sh        set-gc-params.sh  tool-wrapper.sh
@@ -1127,7 +1195,7 @@ $ ./start-jira.sh
 7.1. Finalizar o serviço do Jira SOFTWARE
 
 ```sh
-$ cd /opt/atlassian-jira-software-8.7.0-standalone/bin
+$ cd /opt/atlassian-jira-software-8.9.0-standalone/bin
 $ ls  *.sh
 catalina.sh    digest.sh              setenv.sh         stop-jira.sh
 check-java.sh  display-help.sh        set-gc-params.sh  tool-wrapper.sh
@@ -1154,6 +1222,40 @@ $ ./shutdown.sh
 #### d. Demonstration
 
 * n/a
+
+#### e. Advanced topics
+
+##### e.1. Customizing Jira Software instalation
+
+* Step-01: Create PostgreSQL database as Jira Repository
+
+```sh
+$ sudo -u postgres psql
+postgres=# CREATE USER jiradbuser WITH PASSWORD 'jiradbuser';
+CREATE ROLE
+postgres=# CREATE DATABASE jiradb WITH ENCODING 'UNICODE' LC_COLLATE 'C' LC_CTYPE 'C' TEMPLATE template0;
+CREATE DATABASE
+postgres=# GRANT ALL PRIVILEGES ON DATABASE jiradb TO jiradbuser;
+GRANT
+```
+
+* Step-02: Test Created User
+
+```sh
+$ psql -h 127.0.0.1 -d jiradb -U jiradbuser
+Password for user jiradbuser:
+psql (10.12 (Ubuntu 10.12-0ubuntu0.18.04.1))
+SSL connection (protocol: TLSv1.2, cipher: ECDHE-RSA-AES256-GCM-SHA384, bits: 256, compression: off)
+Type "help" for help.
+
+jiradb=> \z
+                            Access privileges
+ Schema | Name | Type | Access privileges | Column privileges | Policies
+--------+------+------+-------------------+-------------------+----------
+(0 rows)
+
+jiradb=> \q
+```
 
 
 ---
