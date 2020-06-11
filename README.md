@@ -45,6 +45,7 @@ __Normal__:
 * [Maven for Linux](#322-maven-for-linux)
 * [Atlassian Bamboo for Linux Ubuntu](#323-atlassian-bamboo-for-linux-ubuntu)
 * [Atlassian Jira Software Jira Core for Linux Ubuntu](#324-atlassian-jira-software-e-jira-core-for-linux-ubuntu)
+  * [Jira Plugins](#327-jira-plugins]
 * [Atlassian Bitbucket for Linux Ubuntu](#325-atlassian-bitbucket-for-linux-ubuntu)
 * [Atlassian Bamboo agent for Windows](#326-atlassian-bamboo-agent-for-windows)
 
@@ -87,23 +88,24 @@ Very Priority:
 * Host -> Guest (127.0.0.1)
 * Port(s) redirected:
 
-Nome da aplicação | PortaHospedeiro:PortaConvidado
-HTTP              | 81:80, 8000, 8080, 8081, 8082, 8083, 8084
-Bamboo            | 8085
-Casandra          | 7000, 7199, 9042, 9160 
-FTP               | 21
-Hercules          | 3270, 8038, 992, 23, 3505 
-Jupyter Notebook  | 8888
-Mongo DB          | 27017, 27018, 27019
-MySQL             | 3306, 3307
-PostgreSQL        | 5432
-Rails             | 3000
-SSH               | 22
-SSL/HTTPS         | 443
-SonarQube         | 9000
-Nexus             | 8081
-pgAdmin4          | 16543
-
+```cmd
+Application        HostPort:GuestPort
+------------------ --------------------------------------------
+HTTP               81:80, 8000, 8080, 8081, 8082, 8083, 8084
+SSH                22
+SSL/HTTPS          443
+FTP                21
+Bamboo             8085
+Casandra           7000, 7199, 9042, 9160 
+Hercules           3270, 8038, 992, 23, 3505 
+Jupyter Notebook   8888
+Mongo DB           27017, 27018, 27019
+MySQL              3306, 3307
+PostgreSQL         5432
+Rails              3000
+SonarQube          9000
+pgAdmin4           16543
+```
 
 * [Passo a passo da configuração da rede do Virtual Box](doc/README_NetworkConfiguration_StepByStep.md)
 
@@ -1034,7 +1036,9 @@ $ mkdir /opt/atlassian-jira-core-home
 $ tar -xvf ~/atlassian-jira-core-8.7.0.tar.gz
 ```
 
-3. Configurar o Jira Home (Software e Core)
+3. Configurar o Home do Jira
+
+3.1.  Configurar o Home do Jira SOFTWARE
 
 ```sh
 $ mkdir -p /var/atlassian/application-data/jira
@@ -1046,6 +1050,8 @@ $ vim  ./atlassian-jira/WEB-INF/classes/jira-application.properties
 # Do not modify this file unless instructed. It is here to store the location of the JIRA home directory only and is typically written to by the installer.
 jira.home =/opt/atlassian-jira-software-home
 ```
+
+3.1.  Configurar o Home do Jira CORE
 
 ```sh
 $ cd /opt/atlassian-jira-core-8.7.0-standalone/
@@ -1059,8 +1065,10 @@ jira.home =/opt/atlassian-jira-core-home
 
 4. Criar Scrit de `start` e `stop` do serviço do Jira (Software e Core)
 
+4.1. Criar Scrit de `start` e `stop` do serviço do Jira SOFTWARE
+
 ```sh
-$ vim /opt/start-jira-software.sh
+$ vim /opt/start-jira.sh
 #!/bin/bash
 
 cd /opt/atlassian-jira-software-8.7.0-standalone/bin
@@ -1069,7 +1077,7 @@ cd /opt/atlassian-jira-software-8.7.0-standalone/bin
 ```
 
 ```sh
-$ chmod 777 /opt/start-jira-software.sh
+$ chmod 777 /opt/start-jira.sh
 ```
 
 ```sh
@@ -1085,12 +1093,17 @@ cd /opt/atlassian-jira-software-8.7.0-standalone/bin
 $ chmod 777 /opt/stop-jira-software.sh
 ```
 
+4.2. Criar Scrit de `start` e `stop` do serviço do Jira Core
+
+* Idêntico ao Jira SOFTWARE mudando apenas o diretório
 
 
 5. Iniciar o serviço do Jira Software e Jira Core
 
+5.1. Iniciar o serviço do Jira SOFTWARE
+
 ```sh
-$ sudo chown -R ubuntu:ubuntu /opt/atlassian-bamboo-6.10.4/bin
+$ sudo chown -R ubuntu:ubuntu /opt/atlassian-jira-software-8.7.0-standalone/bin
 $ cd /opt/atlassian-jira-software-8.7.0-standalone/bin
 $ ls  *.sh
 catalina.sh    digest.sh              setenv.sh         stop-jira.sh
@@ -1101,11 +1114,17 @@ daemon.sh      setenv32.sh            startup.sh
 $ ./start-jira.sh
 ```
 
+5.2. Iniciar o serviço do Jira CORE
 
-5. [Install Jira Software e Jira Core License step-by-step](doc/README_InstallJiraCoreLicense_StepByStep.md)
+* Idêntico ao Jira SOFTWARE mudando apenas o diretório
 
 
-6. Finalizar o serviço do Jira Software Core
+6. [Install Jira Software e Jira Core License step-by-step](doc/README_InstallJiraCoreLicense_StepByStep.md)
+
+
+7. Finalizar o serviço do Jira Software Core
+
+7.1. Finalizar o serviço do Jira SOFTWARE
 
 ```sh
 $ cd /opt/atlassian-jira-software-8.7.0-standalone/bin
@@ -1118,10 +1137,14 @@ daemon.sh      setenv32.sh            startup.sh
 $ ./shutdown.sh
 ```
 
+7.2. Finalizar o serviço do Jira CORE
+
+* Idêntico ao Jira SOFTWARE mudando apenas o diretório
+
 
 #### b. Configuration management
 
-* n/a
+* Jira default IP / Port are:  `127.0.0.1:8080` ou `localhost:8080`
 
 
 #### c. Deploy Diagram
@@ -1230,7 +1253,7 @@ $ sudo ./shutdown.sh -c
 
 #### b. Configuration management
 
-* n/a
+* Jira default IP / Port are:  `127.0.0.1:8085` ou `localhost:8085`
 
 
 #### c. Deploy Diagram
@@ -1319,6 +1342,32 @@ INFO   | jvm 1    | 2020/03/26 20:40:22 | 2020-03-26 20:40:22,038 INFO [AgentRun
 * [Atlassian](https://confluence.atlassian.com/bamboo0514/bamboo-remote-agent-installation-guide-868986225.html)
 * [Youtube Video - Bamboo Remote Agent Installation](https://www.youtube.com/watch?v=wBXULew_AiI)
 * [Youtube Video - Bamboo Remote Agent Installation - Tutorial](https://www.youtube.com/watch?v=oSPM9qY5YOU)
+
+
+---
+#### 3.27. Jira Plugins
+
+List of Jira Plugins and 
+
+#### a. Installation procedure
+
+* n/a
+
+#### b. Configuration management
+
+* n/a
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
+#### e. References
+
+* n/a
 
 
 ---
