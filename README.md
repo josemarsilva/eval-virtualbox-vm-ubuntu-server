@@ -45,7 +45,6 @@ __Normal__:
 * [Maven for Linux](#322-maven-for-linux)
 * [Atlassian Bamboo for Linux Ubuntu](#323-atlassian-bamboo-for-linux-ubuntu)
 * [Atlassian Jira Software Jira Core for Linux Ubuntu](#324-atlassian-jira-software-e-jira-core-for-linux-ubuntu)
-  * [Jira Plugins](#327-jira-plugins]
 * [Atlassian Bitbucket for Linux Ubuntu](#325-atlassian-bitbucket-for-linux-ubuntu)
 * [Atlassian Bamboo agent for Windows](#326-atlassian-bamboo-agent-for-windows)
 
@@ -91,20 +90,21 @@ Very Priority:
 ```cmd
 Application        HostPort:GuestPort
 ------------------ --------------------------------------------
-HTTP               81:80, 8000, 8080, 8081, 8082, 8083, 8084
+HTTP/WebApp        81:80, 8000, 8080, 8081, 8082, 8083, 8084
 SSH                22
 SSL/HTTPS          443
 FTP                21
 Bamboo             8085
+Bitbucket          8089
 Casandra           7000, 7199, 9042, 9160 
 Hercules           3270, 8038, 992, 23, 3505 
 Jupyter Notebook   8888
 Mongo DB           27017, 27018, 27019
 MySQL              3306, 3307
 PostgreSQL         5432
-Rails              3000
-SonarQube          9000
 pgAdmin4           16543
+Rails/Django/etc   3000
+SonarQube          9000
 ```
 
 * [Passo a passo da configuração da rede do Virtual Box](doc/README_NetworkConfiguration_StepByStep.md)
@@ -1285,7 +1285,7 @@ $ vim ./app/WEB-INF/classes/build.properties
 ```
 
 
-4. Iniciar o serviço do Bamboo
+4. Iniciar o serviço do Bitbucket
 
 ```sh
 $ cd /opt/atlassian-bitbucket-6.10.0/bin
@@ -1301,7 +1301,7 @@ $ ./start-bitbucket.sh
 ```
 
 
-5. Criar Scrit de `start` e `stop` do serviço do Bamboo
+5. Criar Scrit de `start` e `stop` do serviço do Bitbucket
 
 ```sh
 $ vim /opt/start-bitbucket.sh
@@ -1341,10 +1341,10 @@ $ chmod 777 /opt/stop-bitbucket.sh
 6. [Install Bitbucket License step-by-step](doc/README_InstallBitbucketLicense_StepByStep.md)
 
 
-7. Finalizar o serviço do Bamboo
+7. Finalizar o serviço do Bitbucket
 
 ```sh
-$ cd /opt/atlassian-bamboo-6.10.4/bin
+$ cd /opt/atlassian-bitbucket-6.10.4/bin
 $ ls  *.sh
 catalina.sh  setclasspath.sh  shutdown.sh      startup.sh      tool-wrapper.sh
 digest.sh    setenv.sh        start-bamboo.sh  stop-bamboo.sh  version.sh
@@ -1355,7 +1355,7 @@ $ sudo ./shutdown.sh -c
 
 #### b. Configuration management
 
-* Jira default IP / Port are:  `127.0.0.1:8085` ou `localhost:8085`
+* Jira default IP / Port are:  `127.0.0.1:8089` ou `localhost:8089`
 
 
 #### c. Deploy Diagram
@@ -1444,32 +1444,6 @@ INFO   | jvm 1    | 2020/03/26 20:40:22 | 2020-03-26 20:40:22,038 INFO [AgentRun
 * [Atlassian](https://confluence.atlassian.com/bamboo0514/bamboo-remote-agent-installation-guide-868986225.html)
 * [Youtube Video - Bamboo Remote Agent Installation](https://www.youtube.com/watch?v=wBXULew_AiI)
 * [Youtube Video - Bamboo Remote Agent Installation - Tutorial](https://www.youtube.com/watch?v=oSPM9qY5YOU)
-
-
----
-#### 3.27. Jira Plugins
-
-List of Jira Plugins and 
-
-#### a. Installation procedure
-
-* n/a
-
-#### b. Configuration management
-
-* n/a
-
-#### c. Deploy Diagram
-
-* n/a
-
-#### d. Demonstration
-
-* n/a
-
-#### e. References
-
-* n/a
 
 
 ---
