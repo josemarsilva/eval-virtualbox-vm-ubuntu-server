@@ -66,7 +66,7 @@ Low Priority:
 * [Wordpress](#317-wordpress)
 * [Docker Composer - SugarCRM](#413-docker-composer---sugarcrm)
 * [Docker - DB2](#424-docker---db2)
-* [Dolibarr ERP / CRM](#328-dolibar-erp-crm)
+* [Dolibarr ERP / CRM](#328-dolibarr-erp--crm)
 
 Very Priority:
 
@@ -1635,6 +1635,21 @@ $ sudo systemctl restart apache2.service
 | Database:                                                                    |
 |   Login:    [dolibarruser]                                                   |
 |   Password: [dolibarruser]                                                   |
+|                                                                [ Next Step ] |
++------------------------------------------------------------------------------+
+```
+
+```browser
++------------------------------------------------------------------------------+
+| ...                                                                          |
++------------------------------------------------------------------------------+
+|                                         ERP/CRM                              |
+|                                 Dolibarr                                     |
+| :                                                                            |
+| Dolibarr Admin Login:                                                        |
+|   Login:           [dolibarruser]                                            |
+|   Password:        [dolibarruser]                                            |
+|   Retype Password: [dolibarruser]                                            |
 |                                                                [ Next Step ] |
 +------------------------------------------------------------------------------+
 ```
