@@ -64,6 +64,9 @@ Low Priority:
 * [NMON](#315-nmon)
 * [Kubernets](#316-kubernets)
 * [Wordpress](#317-wordpress)
+* [Docker Composer - SugarCRM](#413-docker-composer---sugarcrm)
+* [Docker - DB2](#424-docker---db2)
+* [Dolibarr ERP / CRM](#328-dolibar-erp-crm)
 
 Very Priority:
 
@@ -1447,6 +1450,197 @@ INFO   | jvm 1    | 2020/03/26 20:40:22 | 2020-03-26 20:40:22,038 INFO [AgentRun
 
 
 ---
+#### 3.27. MariaDB
+
+#### a. Installation procedure
+
+* Step 1: Install MariaDB Server on Ubuntu 18.04
+
+```sh
+$ sudo apt update
+$ sudo apt-get install mariadb-server mariadb-client
+```
+
+* Step 2: Configure MariaDB Server to automatically start up with system
+
+```sh
+$ sudo systemctl stop mariadb.service
+$ sudo systemctl start mariadb.service
+$ sudo systemctl enable mariadb.service
+```
+
+* Step 3: Configure MariaDB Security
+
+```sh
+$ sudo mysql_secure_installation
+Set root password? [Y/n] Y
+New password: root
+Re-enter new password: root
+Remove anonymous users? [Y/n] Y
+Disallow root login remotely? [Y/n] n
+Remove test database and access to it? [Y/n] n
+Reload privilege tables now? [Y/n] Y
+Thanks for using MariaDB!
+```
+
+* Step 4: Test MariaDB internal connection
+
+```sh
+$ sudo mysql -u root -p
+Enter password: root
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
++--------------------+
+3 rows in set (0.00 sec)
+```
+
+
+
+---
+#### 3.28. Dolibarr ERP / CRM
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before installation](https://websiteforstudents.com/install-dolibarr-erp-crm-on-ubuntu-16-04-17-10-18-04-with-apache2-mariadb-and-php-7-1-support/)
+
+* Step 1: [Install Apache2 HTTP Server on Ubuntu 18.04](#310-apache2)
+
+* Step 2: [Install MariaDB on Ubuntu 18.04](#327-mariadb)
+
+* Step 3: Install PHP 7.1 Release Modules
+
+```sh
+$ sudo apt-get install software-properties-common
+$ sudo add-apt-repository ppa:ondrej/php
+$ sudo apt update
+$ sudo apt install php7.1 libapache2-mod-php7.1 php7.1-common php7.1-curl php7.1-intl php7.1-mbstring php7.1-mcrypt php7.1-json php7.1-xmlrpc php7.1-soap php7.1-mysql php7.1-gd php7.1-xml php7.1-cli php7.1-zip
+```
+
+* Step 4: Configure php.ini for Apache2 HTTP Server
+
+```sh
+$ sudo vim /etc/php/7.1/apache2/php.ini
+  :
+file_uploads = On
+allow_url_fopen = On
+memory_limit = 512M
+upload_max_filesize = 100M
+max_execution_time = 360
+date.timezone = America/Chicago
+  :
+$
+$ sudo systemctl restart apache2.service
+$ sudo vim /var/www/html/phpinfo.php
+  :
+<?php phpinfo( ); ?>
+  :
+```
+
+* Step 5: Test PHP instalation
+
+```browser
++------------------------------------------------------------------------------+
+| http://localhost/phpinfo.php                                                 |
++------------------------------------------------------------------------------+
+|PHP Version 7.1.33-24+ubuntu18.04.1+deb.sury.org+1                            |
+|  :                                                                           |
++------------------------------------------------------------------------------+
+```
+
+* Step 6: Create Dolibarr Database
+
+```sh
+$ sudo mysql -u root -p
+Enter password: root
+MariaDB [(none)]> CREATE DATABASE dolibarr;
+MariaDB [(none)]> CREATE USER 'dolibarruser'@'localhost' IDENTIFIED BY 'dolibarruser';
+MariaDB [(none)]> GRANT ALL ON dolibarr.* TO 'dolibarruser'@'localhost' IDENTIFIED BY 'dolibarruser' WITH GRANT OPTION;
+MariaDB [(none)]> FLUSH PRIVILEGES;
+MariaDB [(none)]> exit
+```
+
+* Step 7: Download Dolibarr Latest Release
+
+```sh
+$ cd /tmp && wget https://sourceforge.net/projects/dolibarr/files/Dolibarr%20ERP-CRM/12.0.3/dolibarr-12.0.3.tgz
+$ tar -xvf dolibarr-12.0.3.tgz
+$ sudo mv dolibarr-12.0.3 /var/www/html/dolibarr
+$ sudo chown -R www-data:www-data /var/www/html/dolibarr/
+```
+
+* Step 8: Configure Apache2 for Dolibarr
+
+```sh
+$ sudo vim /etc/apache2/sites-available/dolibarr.conf
+  :
+<VirtualHost *:80>
+     ServerAdmin admin@example.com
+     DocumentRoot /var/www/html/dolibarr/htdocs
+     ServerName example.com
+     ServerAlias www.example.com
+     <Directory /var/www/html/dolibarr/htdocs/>
+        Options +FollowSymlinks
+        AllowOverride All
+        Require all granted
+     </Directory>
+     ErrorLog ${APACHE_LOG_DIR}/error.log
+     CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+  :
+$ sudo a2ensite dolibarr.conf
+$ sudo a2enmod rewrite
+```
+
+* Step 9: Restart Apache2 and test Dolibarr
+
+```sh
+$ sudo systemctl restart apache2.service
+```
+
+```browser
++------------------------------------------------------------------------------+
+| http://localhost/dolibarr/htdocs/install/                                    |
++------------------------------------------------------------------------------+
+|                                         ERP/CRM                              |
+|                                 Dolibarr                                     |
+| Default language: [ English (United States) ]                                |
+|                                                                [ Next Step ] |
++------------------------------------------------------------------------------+
+```
+
+```browser
++------------------------------------------------------------------------------+
+| ...                                                                          |
++------------------------------------------------------------------------------+
+|                                         ERP/CRM                              |
+|                                 Dolibarr                                     |
+| Fresh Install                                                      [ Start ] |
++------------------------------------------------------------------------------+
+```
+
+```browser
++------------------------------------------------------------------------------+
+| ...                                                                          |
++------------------------------------------------------------------------------+
+|                                         ERP/CRM                              |
+|                                 Dolibarr                                     |
+| :                                                                            |
+| WebServer:                                                                   |
+| :                                                                            |
+| Database:                                                                    |
+|   Login:    [dolibarruser]                                                   |
+|   Password: [dolibarruser]                                                   |
+|                                                                [ Next Step ] |
++------------------------------------------------------------------------------+
+```
+
+
+---
 ### 4. Docker
 
 #### 4.1. Docker - Installation
@@ -1872,89 +2066,6 @@ n/a
 
   * Suba **docker-compose** com arquivo de configuração default `docker-compose.yml`:
   * Faça wget http://localhost:8080
-
-
----
-#### 3.16.4. Docker Composer - WordPress, MySQL 5.7
-
-#### a. Installation procedure
-
-* [Reading Pre-requisites before installation](https://docs.docker.com/compose/wordpress/)
-
-```sh
-$ mkdir ~/docker-compose/docker-wordpress-mysql
-$ cd    ~/docker-compose/docker-wordpress-mysql
-$ vim docker-compose.yml
-version: '3.3'
-
-services:
-   db:
-     image: mysql:5.7
-     ports:
-       - "3306:3306"
-     volumes:
-       - db_data:/var/lib/mysql
-     restart: always
-     environment:
-       MYSQL_ROOT_PASSWORD: password
-       MYSQL_DATABASE: wordpress
-       MYSQL_USER: wordpress
-       MYSQL_PASSWORD: wordpress
-
-   wordpress:
-     depends_on:
-       - db
-     image: wordpress:latest
-     ports:
-       - "80:80"
-     restart: always
-     environment:
-       WORDPRESS_DB_HOST: db:3306
-       WORDPRESS_DB_USER: wordpress
-       WORDPRESS_DB_PASSWORD: wordpress
-       WORDPRESS_DB_NAME: wordpress
-volumes:
-    db_data: {}
-
-$ sudo docker-compose up
-$ sudo docker-compose down  # parar o serviço
-```
-
-
-#### b. Configuration management
-
-* docker-compose.yml:
-  * WordPress - port: 80; Username: wordpress
-  * MySQL - port: 3306; user: wordpress; password: wordpress; volume: db_data
-
-#### c. Deploy Diagram
-
-n/a
-
-#### d. Demonstration
-
-  * Suba **docker-compose** com arquivo de configuração default `docker-compose.yml`:
-  * Abra a URL `http://localhost:80` e siga o passo-a-passo da instalação:
-
-* Passo 1: Defina a linguagem:
-
-![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-01.png)
-
-* Passo 2: Defina título do site, usuário e senha
-![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-02.png)
-
-* Passo 3: Clique no botão que acesso o site:
-
-![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-03.png)
-
-* Passo 4: Informe `login` e `senha` e acesse o site
-
-![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-04.png)
-
-* Passo 5: Acesse a página principal do site 
-
-![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-05.png)
-
 
 ---
 #### 4.6. Docker Composer - Oracle Database
@@ -2841,3 +2952,112 @@ $ sudo docker start jira
   * Conectando ao Bamboo Server `http://localhost:8080/` :
 
 ---
+#### 4.23. Docker Composer - WordPress, MySQL 5.7
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before installation](https://docs.docker.com/compose/wordpress/)
+
+```sh
+$ mkdir ~/docker-compose/docker-wordpress-mysql
+$ cd    ~/docker-compose/docker-wordpress-mysql
+$ vim docker-compose.yml
+version: '3.3'
+
+services:
+   db:
+     image: mysql:5.7
+     ports:
+       - "3306:3306"
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: password
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress:
+     depends_on:
+       - db
+     image: wordpress:latest
+     ports:
+       - "80:80"
+     restart: always
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+       WORDPRESS_DB_NAME: wordpress
+volumes:
+    db_data: {}
+
+$ sudo docker-compose up
+$ sudo docker-compose down  # parar o serviço
+```
+
+
+#### b. Configuration management
+
+* docker-compose.yml:
+  * WordPress - port: 80; Username: wordpress
+  * MySQL - port: 3306; user: wordpress; password: wordpress; volume: db_data
+
+#### c. Deploy Diagram
+
+n/a
+
+#### d. Demonstration
+
+  * Suba **docker-compose** com arquivo de configuração default `docker-compose.yml`:
+  * Abra a URL `http://localhost:80` e siga o passo-a-passo da instalação:
+
+* Passo 1: Defina a linguagem:
+
+![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-01.png)
+
+* Passo 2: Defina título do site, usuário e senha
+![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-02.png)
+
+* Passo 3: Clique no botão que acesso o site:
+
+![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-03.png)
+
+* Passo 4: Informe `login` e `senha` e acesse o site
+
+![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-04.png)
+
+* Passo 5: Acesse a página principal do site 
+
+![Demo - WordPress - passo 1](doc/images/PrintScreen-Demo-DockerCompose-WordPress-05.png)
+
+
+---
+#### 4.24. Docker - DB2
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before installation](https://hub.docker.com/r/ibmcom/db2)
+
+```sh
+$ mkdir /opt/githome
+$ cd    /opt/githome
+$ sudo docker pull ibmcom/db2
+```
+
+
+#### b. Configuration management
+
+n/a
+
+#### c. Deploy Diagram
+
+n/a
+
+#### d. Demonstration
+
+n/a
+
+---
+
