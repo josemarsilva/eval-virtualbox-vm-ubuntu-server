@@ -1654,6 +1654,19 @@ $ sudo systemctl restart apache2.service
 +------------------------------------------------------------------------------+
 ```
 
+#### b. Configuration management
+
+* Dolibarr default IP / Port are: 127.0.0.1:80 ou localhost:80
+* Dolibarr Url: `http://localhost:80/dolibarr`
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
 
 ---
 ### 4. Docker
