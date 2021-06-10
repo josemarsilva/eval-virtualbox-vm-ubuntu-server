@@ -830,8 +830,8 @@ minikube start
   * https://docs.docker.com/toolbox/toolbox_install_windows/
 
 * Step-00: Check pre-requisites before start
-  * Virtualização Habilitada
-  * Oracle Virtual Box instalado
+  * Virtualização da BIOS do hardware habilitada (VT-X ou AMD-v)
+  * Virtualização do Windows habilitada e Virtualizador instalado: Opção escolhida **Oracle Virtual Box**
 
 ```cmd
 C:\> systeminfo
@@ -848,11 +848,11 @@ C:\>
 ```cmd
 C:\Users\josemarsilva> CD %USERPROFILE%\Downloads
 C:\Users\josemarsilva\downloads> start https://github.com/kubernetes/minikube/releases/download/v1.20.0/minikube-installer.exe
-C:\Users\josemarsilva> dir /b minikube-installer.exe
-C:\Users\josemarsilva> minikube-installer.exe
-                       +---------------------------------------+
-                       | Please select a language: [ English ] |
-                       +---------------------------------------+
+C:\Users\josemarsilva\downloads> dir /b minikube-installer.exe
+C:\Users\josemarsilva\downloads> minikube-installer.exe
+    +---------------------------------------+
+    | Please select a language: [ English ] |
+    +---------------------------------------+
 ```
 
 * Step-02: Start, Stop, Configure Driver for Oracle Virtual Box
@@ -871,15 +871,61 @@ C:\Users\josemarsilva> minikube start
 * Downloading Kubernetes v1.20.2 preload ...
     > preloaded-images-k8s-v10-v1...: 3.98 MiB / 491.71 MiB  0.81% 736.40 KiB p
 
-C:\Users\josemarsilva> minikube delete
+C:\Users\josemarsilva\downloads> minikube delete
 
 ```
 
-* Step-01: Download `kubectl` for Windows
+* Step-03: Download and install `kubectl` for Windows
 
 ```cmd
-C:\Users\josemarsilva> curl -o kubectl.exe https://storage.googleapis.com/kubernetes-release/release/v1.19.1/bin/windows/amd64/kubectl.exe
+C:\Users\josemarsilva> CD %USERPROFILE%\Downloads
+C:\Users\josemarsilva\Downloads> curl -o kubectl.exe https://storage.googleapis.com/kubernetes-release/release/v1.19.1/bin/windows/amd64/kubectl.exe
+C:\Users\josemarsilva\Downloads> MD C:\Apps
+C:\Users\josemarsilva\Downloads> MD C:\Apps\kubectl
+C:\Users\josemarsilva\Downloads> COPY /Y kubectl.exe C:\Apps\kubectl\kubectl.exe
+C:\Users\josemarsilva\Downloads> DEL /Q kubectl.exe
+C:\Users\josemarsilva\Downloads> SET PATH=%PATH%;C:\Apps\kubectl
+C:\Users\josemarsilva\Downloads> kubectl --help
+kubectl controls the Kubernetes cluster manager.
+
+ Find more information at: https://kubernetes.io/docs/reference/kubectl/overview/
+
+Basic Commands (Beginner):
+  :
+Basic Commands (Intermediate):
+  :
+Deploy Commands:
+  :
+Cluster Management Commands:
+  :
+Troubleshooting and Debugging Commands:
+  :
+Advanced Commands:
+  :
+Settings Commands:
+  :
+Other Commands:
+  :
+
+Usage:
+  kubectl [flags] [options]
 ```
+
+* Step-04: Adicione o sub-diretório de instalação do `kubectl` ao PATH do Windows de forma definitiva
+  * Inicie o painel de controle `C:\user\josemarsilva> start control`
+  * Em `Windows::Painel de Controle` clique no botão do ícone `Sistema`
+  * Em `Windows::Painel de Controle >> Sistema` clique no link lateral direito `Configurações avançadas do sistema`
+  * Em `Windows::Painel de Controle >> Sistema >> Configurações avançadas do sistema` clique no botão `Variáveis de Ambiente`
+  * Em `Windows::Painel de Controle >> Sistema >> Configurações avançadas do sistema >> Variáveis de ambiente` localize na lista `Variávies de sistema` a variável `Path`. Com um clique duplo edite a variável e acrescente o caminho onde foi instalado o Kubectl `C:\Apps\kubectl`
+  * Verifique se o `kubectl` está funcionando corretamente. Abra o `Prompt de Commando do Windows`:
+
+```cmd
+C:\Users\josemarsilva\Downloads> kubectl --help
+kubectl controls the Kubernetes cluster manager.
+   :
+```
+
+
 
 #### b. Configuration management
 
