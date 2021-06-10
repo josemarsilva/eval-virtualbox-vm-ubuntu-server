@@ -62,7 +62,7 @@ Low Priority:
 * [Jenkins](#313-jenkins)
 * [Zabbix](#314-zabbix)
 * [NMON](#315-nmon)
-* [Kubernets](#316-kubernets)
+* [Kubernetes - miniKube](#316-kubernetes-minikube)
 * [Wordpress](#317-wordpress)
 * [Docker Composer - SugarCRM](#413-docker-composer---sugarcrm)
 * [Docker - DB2](#424-docker---db2)
@@ -91,23 +91,23 @@ Very Priority:
 * Port(s) redirected:
 
 ```cmd
-Application        HostPort:GuestPort
------------------- --------------------------------------------
-HTTP/WebApp        81:80, 8000, 8080, 8081, 8082, 8083, 8084
-SSH                22
-SSL/HTTPS          443
-FTP                21
-Bamboo             8085
-Bitbucket          8089
-Casandra           7000, 7199, 9042, 9160 
-Hercules           3270, 8038, 992, 23, 3505 
-Jupyter Notebook   8888
-Mongo DB           27017, 27018, 27019
-MySQL              3306, 3307
-PostgreSQL         5432
-pgAdmin4           16543
-Rails/Django/etc   3000
-SonarQube          9000
+Application         IP Hospedeiro PortaHospedeiro:PortaConvidado
+--------------------------------- --------------------------------------------
+HTTP/WebApp         127.0.0.1     80:80, 81:80, 8000, 8080, 8081, 8082, 8083
+SSH                 127.0.0.1     22
+SSL/HTTPS           127.0.0.1     443
+FTP                 127.0.0.1     21
+Bamboo              127.0.0.1     8085
+Bitbucket           127.0.0.1     8089
+Casandra            127.0.0.1     7000, 7199, 9042, 9160 
+Hercules            127.0.0.1     3270, 8038, 992, 23, 3505 
+Jupyter             127.0.0.1     8888
+MongoDB             127.0.0.1     27017, 27018, 27019
+MySQL               127.0.0.1     3306, 3307
+PostgreSQL          127.0.0.1     5432
+pgAdmin4            127.0.0.1     16543
+NodeJs/Rails/Django 127.0.0.1     3000, 3001, 3002, 3003
+SonarQube           127.0.0.1     9000
 ```
 
 * [Passo a passo da configuração da rede do Virtual Box](doc/README_NetworkConfiguration_StepByStep.md)
@@ -718,18 +718,345 @@ which nmon
 ```
 
 ---
-#### 3.16. Kubernets
+#### 3.16. Kubernetes minikube
 
 #### a. Installation procedure
 
+#### a.1. Linux Ubuntu 20.04
+
 * Reading Pre-requisites before installation:
-  * [About Kubernets](https://bit.ly/ubuntu-containerd)
-  * [Step-by-Step Install](https://linuxconfig.org/how-to-install-kubernetes-on-ubuntu-18-04-bionic-beaver-linux)
-  * [Step-by-Step Install](https://matthewpalmer.net/kubernetes-app-developer/articles/install-kubernetes-ubuntu-tutorial.html)
+  * https://phoenixnap.com/kb/install-minikube-on-ubuntu
+  * https://kubernetes.io/docs/setup/
+  * https://www.youtube.com/watch?v=Cn3G9Bg0F4c
+  
+
+* Step-00: Check pre-requisites before start
 
 ```sh
-sudo apt  install curl
+df -h /  # you must have about 20 MB free disk space
+nproc    # you must have at least 2 CPU's 
 ```
+
+* Step-01: Install minikube dependencies
+
+```sh
+sudo apt-get update -y
+sudo apt-get install curl apt-transport-https -y
+sudo apt install virtualbox virtualbox-ext-pack -y
+   +--------------------| Configuring virtualbox-ext-pack |--------------------+
+   |                                                                           |
+   | Oracle Corporation requests VirtualBox users to acknowledge and accept    |
+   | the "VirtualBox Personal Use and Evaluation License" (PUEL). Please ...   |
+   |                                                                           |
+   |                                <Ok>                                       |
+   +---------------------------------------------------------------------------+
+# accept "OK"
+   +--------------------| Configuring virtualbox-ext-pack |--------------------+
+   | Do you accept the terms of the VirtualBox PUEL license?                   |
+   |         [ Yes ] [ No ]                                                    |
+   +---------------------------------------------------------------------------+
+# accept "Yes"
+```
+
+* Step-02: Install minikube
+
+```sh
+wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo mv minikube-linux-amd64 /usr/local/bin/minikube
+sudo chmod 755 /usr/local/bin/minikube
+minikube version
+    minikube version: v1.20.0
+    commit: c61663e942ec43b20e8e70839dcca52e44cd85ae
+```
+
+* Step-03: Install kubectl
+
+```sh
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+kubectl version -o json
+    {
+      "clientVersion": {
+        "major": "1",
+        "minor": "21",
+        "gitVersion": "v1.21.1",
+        "gitCommit": "5e58841cce77d4bc13713ad2b91fa0d961e69192",
+        "gitTreeState": "clean",
+        "buildDate": "2021-05-12T14:18:45Z",
+        "goVersion": "go1.16.4",
+        "compiler": "gc",
+        "platform": "linux/amd64"
+      },
+      "serverVersion": {
+        "major": "1",
+        "minor": "20",
+        "gitVersion": "v1.20.2",
+        "gitCommit": "faecb196815e248d3ecfb03c680a4507229c2a56",
+        "gitTreeState": "clean",
+        "buildDate": "2021-01-13T13:20:00Z",
+        "goVersion": "go1.15.5",
+        "compiler": "gc",
+        "platform": "linux/amd64"
+      }
+    }
+# ignore message because service was not started "The connection to the server localhost:8080 was refused - did you specify the right host or port?"
+```
+
+* Step-04: Start minikube 
+
+```sh
+minikube start
+    ubuntu@ubuntu:~$ minikube start
+    * minikube v1.20.0 on Ubuntu 20.04
+    * Automatically selected the virtualbox driver. Other choices: none, ssh
+    * Downloading VM boot image ...
+    * Starting control plane node minikube in cluster minikube
+    * Downloading Kubernetes v1.20.2 preload ...
+    * Starting control plane node minikube in cluster minikube
+    * Pulling base image ...
+    * Creating docker container (CPUs=2, Memory=2200MB) ...
+    * Preparing Kubernetes v1.20.2 on Docker 20.10.6 ...
+    * Verifying Kubernetes components...
+    * Enabled addons: storage-provisioner, default-storageclass
+    * Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+```
+
+#### a.2. Windows 10
+
+* Reading Pre-requisites before installation:
+  * https://github.com/badtuxx/DescomplicandoKubernetes/blob/main/day-1/DescomplicandoKubernetes-Day1.md#instala%C3%A7%C3%A3o-no-windows-1
+  * https://technology.amis.nl/platform/installing-minikube-and-kubernetes-on-windows-10/
+  * https://docs.docker.com/toolbox/toolbox_install_windows/
+
+* Step-00: Check pre-requisites before start
+  * Virtualização Habilitada
+  * Oracle Virtual Box instalado
+
+```cmd
+C:\> systeminfo
+        :
+      Requisitos do Hyper-V:                     Extensão de Modo de Monitor VM: Sim
+                                                 Virtualização Habilitada no Firmware: Sim
+                                                 Conversão de Endereços de Segundo Nível: Sim
+                                                 Prevenção de Execução de Dados Disponível: Sim
+C:\>       
+```
+
+* Step-01: Download and install `minikube` for Windows
+
+```cmd
+C:\Users\josemarsilva> CD %USERPROFILE%\Downloads
+C:\Users\josemarsilva\downloads> start https://github.com/kubernetes/minikube/releases/download/v1.20.0/minikube-installer.exe
+C:\Users\josemarsilva> dir /b minikube-installer.exe
+C:\Users\josemarsilva> minikube-installer.exe
+                       +---------------------------------------+
+                       | Please select a language: [ English ] |
+                       +---------------------------------------+
+```
+
+* Step-02: Start, Stop, Configure Driver for Oracle Virtual Box
+
+```cmd
+C:\Users\josemarsilva> minikube config set driver virtualbox
+! These changes will take effect upon a minikube delete and then a minikube start
+
+C:\Users\josemarsilva> minikube start
+* minikube v1.20.0 on Microsoft Windows 10 Pro 10.0.19042 Build 19042
+* Using the virtualbox driver based on user configuration
+* Downloading VM boot image ...
+    > minikube-v1.20.0.iso.sha256: 65 B / 65 B [-------------] 100.00% ? p/s 0s
+    > minikube-v1.20.0.iso: 245.40 MiB / 245.40 MiB [ 100.00% 3.60 MiB p/s 1m8s
+* Starting control plane node minikube in cluster minikube
+* Downloading Kubernetes v1.20.2 preload ...
+    > preloaded-images-k8s-v10-v1...: 3.98 MiB / 491.71 MiB  0.81% 736.40 KiB p
+
+C:\Users\josemarsilva> minikube delete
+
+```
+
+* Step-01: Download `kubectl` for Windows
+
+```cmd
+C:\Users\josemarsilva> curl -o kubectl.exe https://storage.googleapis.com/kubernetes-release/release/v1.19.1/bin/windows/amd64/kubectl.exe
+```
+
+#### b. Configuration management
+
+*  Step-01: View Configuration, cluster-info, nodes, pods, ssh 
+
+
+```sh
+kubectl config view
+  :
+apiVersion: v1
+clusters:
+contexts:
+current-context: minikube
+kind: Config
+preferences: {}
+users:
+  :
+
+kubectl cluster-info
+    Kubernetes control plane is running at https://192.168.49.2:8443
+    KubeDNS is running at https://192.168.49.2:8443/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+    To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+kubectl get nodes
+    NAME       STATUS   ROLES                  AGE   VERSION
+    minikube   Ready    control-plane,master   22m   v1.20.2
+
+kubectl get pod
+    No resources found in default namespace.
+
+minikube ssh
+    Last login: Wed Jun  9 23:08:01 2021 from 192.168.49.1
+    docker@minikube:~$ id
+    uid=1000(docker) gid=999(docker) groups=999(docker),27(sudo),110(podman)
+    docker@minikube:~$ exit
+    logout
+```
+
+
+#### c. Deploy
+
+* Stop, status, start, delete node cluster, list addons, dashboard
+
+```sh
+minikube stop
+    * Stopping node "minikube"  ...
+    * Powering off "minikube" via SSH ...
+    * 1 nodes stopped.
+
+minikube status
+    minikube
+    type: Control Plane
+    host: Stopped
+    kubelet: Stopped
+    apiserver: Stopped
+    kubeconfig: Stopped
+
+minikube delete
+    * Deleting "minikube" in docker ...
+    * Deleting container "minikube" ...
+    * Removing /home/ubuntu/.minikube/machines/minikube ...
+    * Removed all traces of the "minikube" cluster.
+
+minikube addons list
+|-----------------------------|----------|--------------|
+|         ADDON NAME          | PROFILE  |    STATUS    |
+|-----------------------------|----------|--------------|
+| ambassador                  | minikube | disabled     |
+| auto-pause                  | minikube | disabled     |
+| csi-hostpath-driver         | minikube | disabled     |
+| dashboard                   | minikube | disabled     |
+| default-storageclass        | minikube | enabled ✅   |
+| efk                         | minikube | disabled     |
+| freshpod                    | minikube | disabled     |
+| gcp-auth                    | minikube | disabled     |
+| gvisor                      | minikube | disabled     |
+| helm-tiller                 | minikube | disabled     |
+| ingress                     | minikube | disabled     |
+| ingress-dns                 | minikube | disabled     |
+| istio                       | minikube | disabled     |
+| istio-provisioner           | minikube | disabled     |
+| kubevirt                    | minikube | disabled     |
+| logviewer                   | minikube | disabled     |
+| metallb                     | minikube | disabled     |
+| metrics-server              | minikube | disabled     |
+| nvidia-driver-installer     | minikube | disabled     |
+| nvidia-gpu-device-plugin    | minikube | disabled     |
+| olm                         | minikube | disabled     |
+| pod-security-policy         | minikube | disabled     |
+| registry                    | minikube | disabled     |
+| registry-aliases            | minikube | disabled     |
+| registry-creds              | minikube | disabled     |
+| storage-provisioner         | minikube | enabled ✅   |
+| storage-provisioner-gluster | minikube | disabled     |
+| volumesnapshots             | minikube | disabled     |
+|-----------------------------|----------|--------------|
+
+minikube dashboard
+* Enabling dashboard ...
+  - Using image kubernetesui/dashboard:v2.1.0
+  - Using image kubernetesui/metrics-scraper:v1.0.4
+* Verifying dashboard health ...
+* Launching proxy ...
+* Verifying proxy health ...
+* Opening http://127.0.0.1:42767/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/ in your default browser...
+  http://127.0.0.1:42767/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
+```
+
+#### d. Demonstration
+
+* https://kubernetes.io/docs/tutorials/hello-minikube/
+
+* Create deployment, deployments, events, create service, 
+
+```sh
+kubectl create deployment hello-minikube --image=k8s.gcr.io/echoserver:1.10
+deployment.apps/hello-minikube created
+
+kubectl get deployments
+    NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+    hello-minikube   1/1     1            1           3m23s
+
+kubectl get pods
+    NAME                              READY   STATUS    RESTARTS   AGE
+    hello-minikube-5d9b964bfb-ssgjj   1/1     Running   0          4m34s
+
+kubectl get events
+    LAST SEEN   TYPE     REASON                    OBJECT                                 MESSAGE
+    5m1s        Normal   Scheduled                 pod/hello-minikube-5d9b964bfb-ssgjj    Successfully assigned default/hello-minikube-5d9b964bfb-ssgjj to minikube
+    5m          Normal   Pulling                   pod/hello-minikube-5d9b964bfb-ssgjj    Pulling image "k8s.gcr.io/echoserver:1.10"
+    4m2s        Normal   Pulled                    pod/hello-minikube-5d9b964bfb-ssgjj    Successfully pulled image "k8s.gcr.io/echoserver:1.10" in 57.379134224s
+    4m2s        Normal   Created                   pod/hello-minikube-5d9b964bfb-ssgjj    Created container echoserver
+    4m2s        Normal   Started                   pod/hello-minikube-5d9b964bfb-ssgjj    Started container echoserver
+    5m1s        Normal   SuccessfulCreate          replicaset/hello-minikube-5d9b964bfb   Created pod: hello-minikube-5d9b964bfb-ssgjj
+    5m1s        Normal   ScalingReplicaSet         deployment/hello-minikube              Scaled up replica set hello-minikube-5d9b964bfb to 1
+    30m         Normal   NodeHasSufficientMemory   node/minikube                          Node minikube status is now: NodeHasSufficientMemory
+    30m         Normal   NodeHasNoDiskPressure     node/minikube                          Node minikube status is now: NodeHasNoDiskPressure
+    30m         Normal   NodeHasSufficientPID      node/minikube                          Node minikube status is now: NodeHasSufficientPID
+    30m         Normal   Starting                  node/minikube                          Starting kubelet.
+    30m         Normal   NodeHasSufficientMemory   node/minikube                          Node minikube status is now: NodeHasSufficientMemory
+    30m         Normal   NodeHasNoDiskPressure     node/minikube                          Node minikube status is now: NodeHasNoDiskPressure
+    30m         Normal   NodeHasSufficientPID      node/minikube                          Node minikube status is now: NodeHasSufficientPID
+    30m         Normal   NodeNotReady              node/minikube                          Node minikube status is now: NodeNotReady
+    30m         Normal   NodeAllocatableEnforced   node/minikube                          Updated Node Allocatable limit across pods
+    29m         Normal   NodeReady                 node/minikube                          Node minikube status is now: NodeReady
+    29m         Normal   RegisteredNode            node/minikube                          Node minikube event: Registered Node minikube in Controller
+    29m         Normal   Starting                  node/minikube                          Starting kube-proxy.
+
+
+kubectl expose deployment hello-minikube --type=LoadBalancer --port=8080
+    service/hello-minikube exposed
+
+kubectl get services
+    NAME             TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+    hello-minikube   LoadBalancer   10.106.12.231   <pending>     8080:30258/TCP   59s
+    kubernetes       ClusterIP      10.96.0.1       <none>        443/TCP          35m
+
+minikube service hello-minikube
+    |-----------|----------------|-------------|---------------------------|
+    | NAMESPACE |      NAME      | TARGET PORT |            URL            |
+    |-----------|----------------|-------------|---------------------------|
+    | default   | hello-minikube |        8080 | http://192.168.49.2:30258 |
+    |-----------|----------------|-------------|---------------------------|
+    * Opening service default/hello-minikube in default browser...
+      http://192.168.49.2:30258
+
+
+```
+
+* Delete service, delete deployment, stop minikube
+
+```sh
+kubectl delete service hello-node
+kubectl delete deployment hello-node
+minikube stop
+```
+
 
 ---
 #### 3.17. WordPress
@@ -1678,8 +2005,9 @@ $ sudo systemctl restart apache2.service
 * [Reading Pre-requisites before installation](https://phoenixnap.com/kb/how-to-install-docker-on-ubuntu-18-04/)
 * [Reading detailed instructions](https://www.youtube.com/watch?v=0cDj7citEjE&t=1000s)
 
+* Ubuntu 18.04
+
 ```sh
-echo remove versao anterior se existir
 sudo apt-get remove docker docker-engine docker.io -y
 sudo apt install docker.io -y
 sudo systemctl start  docker
@@ -1687,6 +2015,21 @@ sudo systemctl status docker
 sudo usermod -aG docker $USER
 sudo docker run hello-world
 ```
+
+* Ubuntu 20.04
+
+```sh
+sudo apt-get remove docker docker-engine docker.io containerd runc -y
+sudo apt-get install apt-transport-https ca-certificates curl gnupg lsb-release -y
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io -y
+sudo docker run hello-world
+sudo usermod -aG docker $USER
+sudo systemctl enable docker
+```
+
 
 #### b. Configuration management
 * n/a
