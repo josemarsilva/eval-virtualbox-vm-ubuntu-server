@@ -832,6 +832,11 @@ minikube start
 * Step-00: Check pre-requisites before start
   * Virtualização da BIOS do hardware habilitada (VT-X ou AMD-v)
   * Virtualização do Windows habilitada e Virtualizador instalado: Opção escolhida **Oracle Virtual Box**
+  * Configurar os Recursos do Windows (Features):
+    * Conteineres
+	* Hyper-V
+	* Plataforma de máquina virtual
+	
 
 ```cmd
 C:\> systeminfo
@@ -840,7 +845,16 @@ C:\> systeminfo
                                                  Virtualização Habilitada no Firmware: Sim
                                                  Conversão de Endereços de Segundo Nível: Sim
                                                  Prevenção de Execução de Dados Disponível: Sim
-C:\>       
+C:\> OptionalFeatures.exe       
+     +------------------------------------+
+     | Recursos do Windows                |
+     |          :                         |
+     | [X] Conteineres                    |
+     | [X] Hyper-V                        |
+     | [X] Plataforma de máquina virtual  |
+     |          :                         |
+     +------------------------------------+
+
 ```
 
 * Step-01: Download and install `minikube` for Windows
@@ -858,21 +872,25 @@ C:\Users\josemarsilva\downloads> minikube-installer.exe
 * Step-02: Start, Stop, Configure Driver for Oracle Virtual Box
 
 ```cmd
-C:\Users\josemarsilva> minikube config set driver virtualbox
+C:\Users\josemarsilva> minikube config set driver docker
 ! These changes will take effect upon a minikube delete and then a minikube start
 
 C:\Users\josemarsilva> minikube start
 * minikube v1.20.0 on Microsoft Windows 10 Pro 10.0.19042 Build 19042
-* Using the virtualbox driver based on user configuration
-* Downloading VM boot image ...
-    > minikube-v1.20.0.iso.sha256: 65 B / 65 B [-------------] 100.00% ? p/s 0s
-    > minikube-v1.20.0.iso: 245.40 MiB / 245.40 MiB [ 100.00% 3.60 MiB p/s 1m8s
+* Using the docker driver based on user configuration
 * Starting control plane node minikube in cluster minikube
-* Downloading Kubernetes v1.20.2 preload ...
-    > preloaded-images-k8s-v10-v1...: 3.98 MiB / 491.71 MiB  0.81% 736.40 KiB p
-
-C:\Users\josemarsilva\downloads> minikube delete
-
+* Pulling base image ...
+    > gcr.io/k8s-minikube/kicbase...: 358.10 MiB / 358.10 MiB  100.00% 1.03 MiB
+    > gcr.io/k8s-minikube/kicbase...: 358.10 MiB / 358.10 MiB  100.00% 1.51 MiB
+* Creating docker container (CPUs=2, Memory=4000MB) 
+* Preparing Kubernetes v1.20.2 on Docker 20.10.6 ...
+  - Generating certificates and keys ...
+  - Booting up control plane ...
+  - Configuring RBAC rules ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: storage-provisioner, default-storageclass
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 ```
 
 * Step-03: Download and install `kubectl` for Windows
@@ -967,7 +985,7 @@ minikube ssh
 
 #### c. Deploy
 
-* Stop, status, start, delete node cluster, list addons, dashboard
+* Stop, status, start, delete node cluster, list addons, dashboard (Windows 10)
 
 ```sh
 minikube stop
@@ -988,6 +1006,22 @@ minikube delete
     * Deleting container "minikube" ...
     * Removing /home/ubuntu/.minikube/machines/minikube ...
     * Removed all traces of the "minikube" cluster.
+
+minikube start
+* minikube v1.20.0 on Microsoft Windows 10 Pro 10.0.19042 Build 19042
+* Using the docker driver based on user configuration
+* Starting control plane node minikube in cluster minikube
+* Pulling base image ...
+* Creating docker container (CPUs=2, Memory=4000MB) ...
+* Preparing Kubernetes v1.20.2 on Docker 20.10.6 ...
+  - Generating certificates and keys ...
+  - Booting up control plane ...
+  - Configuring RBAC rules ...
+* Verifying Kubernetes components...
+  - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+* Enabled addons: storage-provisioner, default-storageclass
+* Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+
 
 minikube addons list
 |-----------------------------|----------|--------------|
@@ -1091,8 +1125,6 @@ minikube service hello-minikube
     |-----------|----------------|-------------|---------------------------|
     * Opening service default/hello-minikube in default browser...
       http://192.168.49.2:30258
-
-
 ```
 
 * Delete service, delete deployment, stop minikube
