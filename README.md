@@ -822,10 +822,10 @@ minikube start
     * Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
 ```
 
-#### a.2. Windows 10
+#### a.2. Windows 10 - Minikube with VirtualBox
 
 * Reading Pre-requisites before installation:
-  * https://github.com/badtuxx/DescomplicandoKubernetes/blob/main/day-1/DescomplicandoKubernetes-Day1.md#instala%C3%A7%C3%A3o-no-windows-1
+  * https://livro.descomplicandokubernetes.com.br/
   * https://technology.amis.nl/platform/installing-minikube-and-kubernetes-on-windows-10/
   * https://docs.docker.com/toolbox/toolbox_install_windows/
 
@@ -845,7 +845,7 @@ C:\> systeminfo
                                                  Virtualização Habilitada no Firmware: Sim
                                                  Conversão de Endereços de Segundo Nível: Sim
                                                  Prevenção de Execução de Dados Disponível: Sim
-C:\> OptionalFeatures.exe       
+C:\> OptionalFeatures.exe
      +------------------------------------+
      | Recursos do Windows                |
      |          :                         |
@@ -942,8 +942,6 @@ C:\Users\josemarsilva\Downloads> kubectl --help
 kubectl controls the Kubernetes cluster manager.
    :
 ```
-
-
 
 #### b. Configuration management
 
@@ -1068,6 +1066,10 @@ minikube dashboard
   http://127.0.0.1:42767/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
 ```
 
+![Minikube - Dashboard](doc/images/printscreen-minikube-windows-01.png)
+
+
+
 #### d. Demonstration
 
 * https://kubernetes.io/docs/tutorials/hello-minikube/
@@ -1127,11 +1129,14 @@ minikube service hello-minikube
       http://192.168.49.2:30258
 ```
 
+
+
+
 * Delete service, delete deployment, stop minikube
 
 ```sh
-kubectl delete service hello-node
-kubectl delete deployment hello-node
+kubectl delete service hello-minikube
+kubectl delete deployment hello-minikube
 minikube stop
 ```
 
@@ -2071,6 +2076,499 @@ $ sudo systemctl restart apache2.service
 #### d. Demonstration
 
 * n/a
+
+
+---
+#### 3.28 Kubernetes - Kind
+
+#### a. Installation procedure
+
+#### a.1. Windows 10 - Kind (Kubernetes in Docker)
+
+* Reading Pre-requisites before installation:
+  * https://livro.descomplicandokubernetes.com.br/
+  * https://kind.sigs.k8s.io/
+  * https://www.youtube.com/watch?v=1lx91nhzNe0
+  * https://kind.sigs.k8s.io/docs/user/quick-start/
+  * https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx
+  
+* Step#01: Download binary
+
+```cmd
+CD %USERPROFILE%\Downloads
+curl.exe -Lo kind-windows-amd64.exe https://kind.sigs.k8s.io/dl/v0.11.1/kind-windows-amd64
+```
+
+* Step#02: Install Kind binary on Windows PATH
+
+```cmd
+CD %USERPROFILE%\Downloads
+MD C:\Apps
+MD C:\Apps\Kind
+COPY /Y kind-windows-amd64.exe C:\Apps\Kind\kind.exe
+DEL /Q kind-windows-amd64.exe
+SET PATH=%PATH%;C:\Apps\Kind
+```
+
+* Step#03: Kind Help Command line
+
+```cmd
+kind --help
+
+Usage:
+  kind [command]
+
+Available Commands:
+  build       Build one of [node-image]
+  completion  Output shell completion code for the specified shell (bash, zsh or fish)
+  create      Creates one of [cluster]
+  delete      Deletes one of [cluster]
+  export      Exports one of [kubeconfig, logs]
+  get         Gets one of [clusters, nodes, kubeconfig]
+  help        Help about any command
+  load        Loads images into nodes
+  version     Prints the kind CLI version
+
+Flags:
+  -h, --help              help for kind
+      --loglevel string   DEPRECATED: see -v instead
+  -q, --quiet             silence all stderr output
+  -v, --verbosity int32   info log verbosity
+      --version           version for kind
+
+Use "kind [command] --help" for more information about a command.
+```
+
+
+#### b. Configuration management
+
+n/a
+
+#### c. Deploy
+
+* Step#01: Create cluster
+
+```cmd
+kind create cluster
+Creating cluster "kind" ...
+ • Ensuring node image (kindest/node:v1.21.1) 🖼  ...
+ ✓ Ensuring node image (kindest/node:v1.21.1) 🖼
+ • Preparing nodes 📦   ...
+ ✓ Preparing nodes 📦
+ • Writing configuration 📜  ...
+ ✓ Writing configuration 📜
+ • Starting control-plane 🕹️  ...
+ ✓ Starting control-plane 🕹️
+ • Installing CNI 🔌  ...
+ ✓ Installing CNI 🔌
+ • Installing StorageClass 💾  ...
+ ✓ Installing StorageClass 💾
+Set kubectl context to "kind-kind"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-kind
+
+Thanks for using kind! 😊
+```
+
+#### d. Demonstration
+
+* Step#01: Create and Delete Cluster com nome personalizado
+
+```cmd
+> kind create cluster --name customkindname
+Creating cluster "customkindname" ...
+	:
+```
+
+```cmd
+> kind get clusters
+customkindname
+kind
+```
+
+```cmd
+> kind delete cluster --name customkindname
+Deleting cluster "customkindname" ...
+```
+
+* Step#02: Get nodes
+
+```cmd
+> kind get nodes
+kind-control-plane
+
+```
+
+* Step#03: Refazer o Create Cluster baseado em arquivo de configuração (.yml) com 2 workers
+
+```cmd
+> type kind-cluster-config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+- role: worker
+```
+
+```cmd
+> kind get clusters
+kind
+```
+
+```cmd
+> kind delete cluster
+Deleting cluster "kind" ...
+```
+
+```cmd
+> kind create cluster --config kind-cluster-config.yaml
+Creating cluster "kind" ...
+	:
+Set kubectl context to "kind-kind"
+	:
+kubectl cluster-info --context kind-kind
+	:
+Not sure what to do next? 😅  Check out https://kind.sigs.k8s.io/docs/user/quick-start/
+```
+
+* Step#04: Consultar o cluster com os nodes criado no Kind e os contextos pelo Kubectl
+
+```cmd
+> kind get nodes
+kind-worker2
+kind-worker
+kind-control-plane
+```
+
+```cmd
+> kubectl config get-contexts
+CURRENT   NAME                                                 CLUSTER                                              AUTHINFO                                             NAMESPACE
+          docker-desktop                                       docker-desktop                                       docker-desktop
+          gke_amiable-webbing-315621_us-central1-a_cluster-1   gke_amiable-webbing-315621_us-central1-a_cluster-1   gke_amiable-webbing-315621_us-central1-a_cluster-1
+*         kind-kind                                            kind-kind                                            kind-kind
+```
+
+```cmd
+> kubectl config use-context kind-kind
+CURRENT   NAME                                                 CLUSTER                                              AUTHINFO                                             NAMESPACE
+          docker-desktop                                       docker-desktop                                       docker-desktop
+          gke_amiable-webbing-315621_us-central1-a_cluster-1   gke_amiable-webbing-315621_us-central1-a_cluster-1   gke_amiable-webbing-315621_us-central1-a_cluster-1
+*         kind-kind                                            kind-kind                                            kind-kind
+```
+
+
+* Step#05: Create cluster HA (multi-master: 3 control-plane e 3 workers)
+
+```cmd
+> type kind-cluster-ha-config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: control-plane
+- role: control-plane
+- role: worker
+- role: worker
+- role: worker
+```
+
+```cmd
+> kind create cluster --name kind-ha --config kind-cluster-ha-config.yaml
+Creating cluster "kind-ha" ...
+	:
+Set kubectl context to "kind-kind-ha"
+	:
+kubectl cluster-info --context kind-kind-ha
+	:
+```
+
+```cmd
+> kind get clusters
+kind
+kind-ha
+```
+
+```cmd
+> kubectl config get-contexts
+CURRENT   NAME                                                 CLUSTER                                              AUTHINFO                                             NAMESPACE
+          docker-desktop                                       docker-desktop                                       docker-desktop
+          gke_amiable-webbing-315621_us-central1-a_cluster-1   gke_amiable-webbing-315621_us-central1-a_cluster-1   gke_amiable-webbing-315621_us-central1-a_cluster-1
+          kind-kind                                            kind-kind                                            kind-kind
+*         kind-kind-ha                                         kind-kind-ha                                         kind-kind-ha
+```
+
+```cmd
+> kubectl get nodes
+NAME                     STATUS   ROLES                  AGE   VERSION
+kind-ha-control-plane    Ready    control-plane,master   37m   v1.21.1
+kind-ha-control-plane2   Ready    control-plane,master   35m   v1.21.1
+kind-ha-control-plane3   Ready    control-plane,master   34m   v1.21.1
+kind-ha-worker           Ready    <none>                 34m   v1.21.1
+kind-ha-worker2          Ready    <none>                 34m   v1.21.1
+kind-ha-worker3          Ready    <none>                 34m   v1.21.1
+```
+
+* Step#06: Create cluster with Ingress Controller (single-master: 1 control-plane e 2 workers + Ingress Controller)
+
+```cmd
+> kind delete cluster --name kind
+Deleting cluster "kind" ...
+```
+
+```cmd
+> kind delete cluster --name kind-ha
+```
+
+```cmd
+> type kind-cluster-ingress-config.yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP
+- role: worker
+- role: worker
+- role: worker
+```
+
+```cmd
+> kind create cluster --name kind-ingress --config kind-cluster-ingress-config.yaml
+Creating cluster "kind-ingress" ...
+	:
+```
+
+```cmd
+> kind get clusters
+kind-ingress
+```
+
+```cmd
+> kubectl config get-contexts
+CURRENT   NAME                                                 CLUSTER                                              AUTHINFO                                             NAMESPACE
+          docker-desktop                                       docker-desktop                                       docker-desktop
+          gke_amiable-webbing-315621_us-central1-a_cluster-1   gke_amiable-webbing-315621_us-central1-a_cluster-1   gke_amiable-webbing-315621_us-central1-a_cluster-1
+*         kind-kind-ingress                                    kind-kind-ingress                                    kind-kind-ingress
+```
+
+* Step#07: Create Pod NGINX for Ingress Controller
+
+```cmd
+> kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+namespace/ingress-nginx created
+serviceaccount/ingress-nginx created
+configmap/ingress-nginx-controller created
+clusterrole.rbac.authorization.k8s.io/ingress-nginx created
+clusterrolebinding.rbac.authorization.k8s.io/ingress-nginx created
+role.rbac.authorization.k8s.io/ingress-nginx created
+rolebinding.rbac.authorization.k8s.io/ingress-nginx created
+service/ingress-nginx-controller-admission created
+service/ingress-nginx-controller created
+deployment.apps/ingress-nginx-controller created
+ingressclass.networking.k8s.io/nginx created
+validatingwebhookconfiguration.admissionregistration.k8s.io/ingress-nginx-admission created
+serviceaccount/ingress-nginx-admission created
+clusterrole.rbac.authorization.k8s.io/ingress-nginx-admission created
+clusterrolebinding.rbac.authorization.k8s.io/ingress-nginx-admission created
+role.rbac.authorization.k8s.io/ingress-nginx-admission created
+rolebinding.rbac.authorization.k8s.io/ingress-nginx-admission created
+job.batch/ingress-nginx-admission-create created
+job.batch/ingress-nginx-admission-patch created
+```
+
+```cmd
+> kubectl get namespaces
+default              Active   61m
+ingress-nginx        Active   97s
+kube-node-lease      Active   61m
+kube-public          Active   61m
+kube-system          Active   61m
+local-path-storage   Active   61m
+```
+
+```cmd
+> kubectl get pods -n ingress-nginx
+NAME                                       READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-sdbrt       0/1     Completed   0          4m40s
+ingress-nginx-admission-patch-67w9s        0/1     Completed   1          4m40s
+ingress-nginx-controller-b7b74c7b7-fl4rd   1/1     Running     0          4m41s
+```
+
+```cmd
+> curl http://localhost/
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+```
+
+
+* Step#08: Create Pod http-echo for Ingress Controller
+
+```cmd
+> type kubectl-pod-http-echo-kind-ingress-config.yaml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: foo-app
+  labels:
+    app: foo
+spec:
+  containers:
+  - name: foo-app
+    image: hashicorp/http-echo:0.2.3
+    args:
+    - "-text=foo"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: foo-service
+spec:
+  selector:
+    app: foo
+  ports:
+  # Default port used by the image
+  - port: 5678
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: bar-app
+  labels:
+    app: bar
+spec:
+  containers:
+  - name: bar-app
+    image: hashicorp/http-echo:0.2.3
+    args:
+    - "-text=bar"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: bar-service
+spec:
+  selector:
+    app: bar
+  ports:
+  # Default port used by the image
+  - port: 5678
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - pathType: Prefix
+        path: "/foo"
+        backend:
+          service:
+            name: foo-service
+            port:
+              number: 5678
+      - pathType: Prefix
+        path: "/bar"
+        backend:
+          service:
+            name: bar-service
+            port:
+              number: 5678
+---
+```
+
+```cmd
+> kubectl create -f kubectl-pod-http-echo-kind-ingress-config.yaml
+pod/foo-app created
+service/foo-service created
+pod/bar-app created
+service/bar-service created
+ingress.networking.k8s.io/example-ingress created
+```
+
+```cmd
+> kubectl get pods
+NAME      READY   STATUS    RESTARTS   AGE
+bar-app   1/1     Running   0          2m27s
+foo-app   1/1     Running   0          2m27s
+```
+
+* Step#09: Testando disponibilidade do NGINX nos path's: `/`, `/foo` e `/bar`
+
+```cmd
+> curl localhost
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx</center>
+</body>
+</html>
+```
+
+```cmd
+> curl localhost/foo
+foo
+```
+
+```cmd
+> curl localhost/bar
+bar
+```
+
+* Step#10: Delete Cluster
+
+```cmd
+> kubectl delete -f kubectl-pod-http-echo-kind-ingress-config.yaml
+```
+
+```cmd
+> kubectl get pods
+No resources found in default namespace.
+```
+
+```cmd
+> kubectl get namespaces
+NAME                 STATUS   AGE
+default              Active   50m
+ingress-nginx        Active   48m
+kube-node-lease      Active   50m
+kube-public          Active   50m
+kube-system          Active   50m
+local-path-storage   Active   50m
+```
+
+```cmd
+> kubectl get pods -n ingress-nginx
+NAME                                       READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-jxb4z       0/1     Completed   0          48m
+ingress-nginx-admission-patch-46rhr        0/1     Completed   0          48m
+ingress-nginx-controller-b7b74c7b7-46m8z   1/1     Running     0          48m
+```
+
+
+```cmd
+> kind delete cluster --name kind-ingress
+```
 
 
 ---
