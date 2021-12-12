@@ -21,6 +21,7 @@ Evaluation **Virtual Box VM** is a guide project to install, configure and manag
 * [Java 8 - JDK](#32-java-8-jdk)
 * [Docker Images, Dockerfile, Compose, Command Line](#4-docker)
 * [Docker & Docker Composer - Installation](#41-docker---installation)
+* [Kubernetes - Kind](#328-kubernetes---kind)
 
 __Normal__:
 
@@ -68,7 +69,7 @@ Low Priority:
 * [Docker - DB2](#424-docker---db2)
 * [Dolibarr ERP / CRM](#328-dolibarr-erp--crm)
 
-Very Priority:
+Lowest Priority:
 
 * [Pentaho Community (Work in Progress)](#318-pentaho-community)
 * [Docker Composer - Oracle (Work in Progress)](#46-docker-composer---oracle-database)
@@ -2142,7 +2143,7 @@ Use "kind [command] --help" for more information about a command.
 
 #### b. Configuration management
 
-n/a
+* n/a
 
 #### c. Deploy
 
@@ -3007,7 +3008,7 @@ $ sudo docker-compose up
 
 #### c. Deploy Diagram
 
-n/a
+* n/a
 
 #### d. Demonstration
 
@@ -3121,8 +3122,7 @@ $ sudo docker run -d --name jenkins -p 8080:8080 -p 443:8443 --net jenkins-tier 
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - DockerCompose - Jenkins](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20Jenkins.png)
-
+* n/a
 
 #### d. Demonstration
 
@@ -3188,8 +3188,7 @@ $ sudo docker-compose -f docker-compose-mongodb.yml up -d
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - DockerCompose - Jenkins](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20MongoDB.png)
-
+* n/a
 
 #### d. Demonstration
 
@@ -3262,8 +3261,7 @@ $ sudo docker-compose -f docker-compose-redmine.yml down -d
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - DockerCompose - Redmine](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20Redmine.png)
-
+* n/a
 
 #### d. Demonstration
 
@@ -3333,8 +3331,7 @@ $ sudo docker-compose -f docker-compose-kafka.yml down
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - DockerCompose - Kafka](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20Kafka.png)
-
+* n/a
 
 #### d. Demonstration
 
@@ -3398,8 +3395,7 @@ $ sudo docker-compose -f docker-compose-cassandra.yml down -d
 
 #### c. Deploy Diagram
 
-![DeployDiagram - Context - DockerCompose - Cassandra](doc/images/DeployDiagram%20-%20Context%20-%20DockerCompose%20-%20Cassandra.png)
-
+* n/a
 
 #### d. Demonstration
 
@@ -3953,7 +3949,7 @@ $ sudo docker-compose down  # parar o serviço
 
 #### c. Deploy Diagram
 
-n/a
+* n/a
 
 #### d. Demonstration
 
@@ -3996,15 +3992,45 @@ $ sudo docker pull ibmcom/db2
 
 #### b. Configuration management
 
-n/a
+* n/a
 
 #### c. Deploy Diagram
 
-n/a
+* n/a
 
 #### d. Demonstration
 
-n/a
+* n/a
+
+
+---
+#### 4.25. Docker - Ansible/AWX
+
+#### a. Installation procedure
+
+* [Reading Pre-requisites before installation](https://hub.docker.com/r/ansible/awx)
+* [Reading Pre-requisites Installing Ansible AWX](docker pull ansible/awx)
+
+```sh
+$ mkdir /opt/githome
+$ cd    /opt/githome
+$ sudo docker pull docker pull ansible/awx
+$ docker run -it ansible/awx
+```
+
+
+#### b. Configuration management
+
+* n/a
+
+#### c. Deploy Diagram
+
+* n/a
+
+#### d. Demonstration
+
+* n/a
+
 
 ---
 
